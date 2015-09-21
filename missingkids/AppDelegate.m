@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "CommManager.h"
 
 @interface AppDelegate ()
 
@@ -113,13 +114,41 @@ AppDelegate *shared = nil;
     
     NSString *apnsToken = hexToken;
     NSLog(@"DeviceToken: %@",apnsToken);
+    if(location){
+        
+    }
 }
 
 - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
     NSLog(@"Error in registration. Error: %@", err);
 }
 
+
+- (void)locationManager:(CLLocationManager *)manager
+     didUpdateLocations:(NSArray *)locations {
+    // If it's a relatively recent event, turn off updates to save power.
+    location = [locations lastObject];
+    [locationManager stopUpdatingLocation];
+}
+
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
+- (void)startStandardUpdates
+{
+    // Create the location manager if this object does not
+    // already have one.
+    if (nil == locationManager){
+        locationManager = [[CLLocationManager alloc] init];
+    }
+    
+    locationManager.delegate = self;
+    locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+    
+    // Set a movement threshold for new events.
+    locationManager.distanceFilter = 500; // meters
+    
+    [locationManager startUpdatingLocation];
+}
+
 - (void)parsePushNotifications:(NSMutableDictionary*)push
 {
     NSLog(@"[AppDelegate] -parsePushNotifications- push: %@", push);

@@ -55,8 +55,9 @@ static CommManager *sharedSampleSingletonDelegate = nil;
 
 -(void)getAPI:(NSString*)api andParams:(NSMutableDictionary*)params{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager GET:@"http://example.com/resources.json" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-    NSLog(@"JSON: %@", responseObject);
+    NSString *fullAPI = [NSString stringWithFormat:@"%@%@",ROOT_API,api];
+    [manager GET:fullAPI parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];

@@ -48,6 +48,8 @@
 		09BF7AD91BB0941100A48BEF /* GTMBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7AD71BB0941100A48BEF /* GTMBase64.m */; settings = {ASSET_TAGS = (); }; };
 		09BF7ADB1BB0944000A48BEF /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09BF7ADA1BB0944000A48BEF /* MessageUI.framework */; };
 		09BF7ADD1BB0965600A48BEF /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 09BF7ADC1BB0965600A48BEF /* libicucore.tbd */; };
+		09BF7AE11BB0A8EF00A48BEF /* MessageDispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7AE01BB0A8EF00A48BEF /* MessageDispatcher.m */; settings = {ASSET_TAGS = (); }; };
+		09BF7AE31BB0AE4D00A48BEF /* MessageDispatcherRules.plist in Resources */ = {isa = PBXBuildFile; fileRef = 09BF7AE21BB0AE4D00A48BEF /* MessageDispatcherRules.plist */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,6 +141,9 @@
 		09BF7AD81BB0941100A48BEF /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		09BF7ADA1BB0944000A48BEF /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		09BF7ADC1BB0965600A48BEF /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
+		09BF7ADF1BB0A8EF00A48BEF /* MessageDispatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageDispatcher.h; sourceTree = "<group>"; };
+		09BF7AE01BB0A8EF00A48BEF /* MessageDispatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageDispatcher.m; sourceTree = "<group>"; };
+		09BF7AE21BB0AE4D00A48BEF /* MessageDispatcherRules.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MessageDispatcherRules.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,6 +233,8 @@
 				09BF7A3F1BB07CEF00A48BEF /* LaunchScreen.storyboard */,
 				09BF7A421BB07CEF00A48BEF /* Info.plist */,
 				09BF7A311BB07CEF00A48BEF /* Supporting Files */,
+				09BF7ADF1BB0A8EF00A48BEF /* MessageDispatcher.h */,
+				09BF7AE01BB0A8EF00A48BEF /* MessageDispatcher.m */,
 			);
 			path = missingkids;
 			sourceTree = "<group>";
@@ -236,6 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				09BF7A321BB07CEF00A48BEF /* main.m */,
+				09BF7AE21BB0AE4D00A48BEF /* MessageDispatcherRules.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -426,6 +434,7 @@
 			files = (
 				09BF7A411BB07CEF00A48BEF /* LaunchScreen.storyboard in Resources */,
 				09BF7A3E1BB07CEF00A48BEF /* Assets.xcassets in Resources */,
+				09BF7AE31BB0AE4D00A48BEF /* MessageDispatcherRules.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,6 +477,7 @@
 				09BF7A981BB0830F00A48BEF /* AFHTTPSessionManager.m in Sources */,
 				09BF7AB51BB0853000A48BEF /* RegexKitLite.m in Sources */,
 				09BF7AB41BB0853000A48BEF /* NSString+UnformattedPhoneNumber.m in Sources */,
+				09BF7AE11BB0A8EF00A48BEF /* MessageDispatcher.m in Sources */,
 				09BF7A9C1BB0830F00A48BEF /* AFURLRequestSerialization.m in Sources */,
 				09BF7AB91BB0853000A48BEF /* UIImage+RoundedCorner.m in Sources */,
 				09BF7A9E1BB0830F00A48BEF /* AFURLSessionManager.m in Sources */,

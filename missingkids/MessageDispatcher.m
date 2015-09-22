@@ -11,28 +11,99 @@
 
 @implementation MessageDispatcher
 
-MessageDispatcher *shared = nil;
+MessageDispatcher *sharedInstance = nil;
 
 
-+ (MessageDispatcher*)shared
++ (MessageDispatcher*)sharedInstance
 {
-    return shared;
-}
-
-- (id)init
-{
-    self = [super init];
+    @synchronized(self) {
+        if (sharedInstance == nil) {
+            [[self alloc] init]; // assignment not done here
+        }
+    }
     
-    shared = self;
-    return (self);
+    return sharedInstance;
 }
 
 
--(void)dispatchMessageTo:(messageRoute)route withType:(messageType)type andParams:(NSMutableDictionary*)params
++ (id)allocWithZone:(NSZone *)zone {
+    @synchronized(self) {
+        if (sharedInstance == nil) {
+            sharedInstance = [super allocWithZone:zone];
+            // assignment and return on first allocation
+            return sharedInstance;
+        }
+    }
+    // on subsequent allocation attempts return nil
+    return nil;
+}
+
+- (id)copyWithZone:(NSZone *)zone
 {
-    switch (route) {
+    return self;
+}
+
+-(id)init
+{
+    if (self = [super init]) {
+        if(messageBus == nil){
+            messageBus = [[NSMutableArray alloc] init];
+        }
+    }
+    return self;
+}
+
+-(void)addMessageToBus:(Message*)newmessage
+{
+    if(newmessage.ttl == DEFAULT_TTL){
+        [messageBus addObject:newmessage];
+        if(dispsatchTimer == nil){
+            [self startDispatching];
+        }
+    }
+    else{
+        NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+        [userInfo setObject:newmessage forKey:@"message"];
+        [NSTimer scheduledTimerWithTimeInterval:newmessage.ttl target:self selector:@selector(dispatchThisMessage:) userInfo:userInfo repeats:NO];
+    }
+}
+
+-(void)dispatchThisMessage:(NSTimer*)timer
+{
+    Message* message = [timer.userInfo objectForKey:@"message"];
+    if(message){
+        [self dispatchMessage:message];
+    }
+}
+
+-(void)startDispatching
+{
+    dispsatchTimer = [NSTimer scheduledTimerWithTimeInterval:15.0 target:self selector:@selector(leave) userInfo:nil repeats:YES];
+}
+
+-(void)stopDispathing
+{
+    if(dispsatchTimer){
+        [dispsatchTimer invalidate];
+        dispsatchTimer = nil;
+    }
+}
+
+-(void)leave
+{
+    for(Message *msg in messageBus){
+        [self dispatchMessage:msg];
+    }
+}
+
+-(void)dispatchMessage:(Message*)message
+{
+    switch (message.mesRoute) {
         case MESSAGEROUTE_API:
-            [self routeMessageToServerWithType:type withParams:params];
+            if([self canSendMessage:message]){
+               [self routeMessageToServerWithType:message];
+            }
+            
             break;
         case MESSAGEROUTE_INTERNAL:
             break;
@@ -44,13 +115,11 @@ MessageDispatcher *shared = nil;
 }
 
 
--(void)routeMessageToServerWithType:(messageType)type withParams:(NSMutableDictionary*)params
+-(void)routeMessageToServerWithType:(Message*)message
 {
-    switch (type) {
+    switch (message.mesType) {
         case MESSAGETYPE_SIGNIN:
-            //NSMutableDictionary * params = [[NSMutableDictionary alloc] init];
-            //[params setObject:apnsToken forKey:@"apnskey"];
-            //[[CommManager sharedInstance] getAPI:@"NewUser" andParams:<#(NSMutableDictionary *)#>]
+            [[CommManager sharedInstance] postAPI:@"NewUser" andParams:message.params];
             break;
         default:
             break;
@@ -58,14 +127,19 @@ MessageDispatcher *shared = nil;
 }
 
 
--(BOOL)canSendMessage:(messageType)type withParams:(NSMutableDictionary*)params
+-(BOOL)canSendMessage:(Message*)message
 {
-    switch (type) {
+    switch (message.mesType) {
         case MESSAGETYPE_SIGNIN:
         {
-            if(params.count < 3){
+            if(message.params.count < 3){
                 return NO;
             }
+          
+            if(((NSString*)([message.params objectForKey:@"apnskey"])).length <= 10){
+                return NO;
+            }
+            
             
         }
         break;

@@ -7,21 +7,21 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Message.h"
 
+#define DEFAULT_TTL 15.0
 
-typedef enum{
-    MESSAGEROUTE_INTERNAL,
-    MESSAGEROUTE_API,
-    MESSAGEROUTE_OTHER
-}messageRoute;
-
-typedef enum{
-    MESSAGETYPE_SIGNIN
-}messageType;
 
 @interface MessageDispatcher : NSObject
+{
+    NSTimer *dispsatchTimer;
+    NSMutableArray*messageBus;
+}
++ (MessageDispatcher*) sharedInstance;
 
-+ (MessageDispatcher*)shared;
 
+-(void)addMessageToBus:(Message*)newmessage;
+-(void)startDispatching;
+-(void)stopDispathing;
 
 @end

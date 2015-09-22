@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "CommManager.h"
+#import "MessageDispatcher.h"
 
 @interface AppDelegate ()
 
@@ -38,9 +38,9 @@ AppDelegate *shared = nil;
     
     NSLocale *currentLocale = [NSLocale currentLocale];  // get the current locale.
     NSString *countryCode = [currentLocale objectForKey:NSLocaleCountryCode];
-    
     NSLog(@"country code is: %@", countryCode);
 
+    apnsToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"apnskey"];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
@@ -77,6 +77,7 @@ AppDelegate *shared = nil;
         [self parsePushNotifications:[userInfo mutableCopy]];
     }
     
+    [self startStandardUpdates];
     return YES;
 }
 
@@ -112,15 +113,20 @@ AppDelegate *shared = nil;
                           ntohl(tokenBytes[3]), ntohl(tokenBytes[4]), ntohl(tokenBytes[5]),
                           ntohl(tokenBytes[6]), ntohl(tokenBytes[7])];
     
-    NSString *apnsToken = hexToken;
+    apnsToken = hexToken;
     NSLog(@"DeviceToken: %@",apnsToken);
-    if(location){
-        
-    }
+    [[NSUserDefaults standardUserDefaults] setObject:apnsToken forKey:@"apnskey"];
+    [self signin];
 }
 
 - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
     NSLog(@"Error in registration. Error: %@", err);
+    if(err.code == 3010){
+        //simulator
+        apnsToken = @"simulator1010";
+        [[NSUserDefaults standardUserDefaults] setObject:apnsToken forKey:@"apnskey"];
+        [self signin];
+    }
 }
 
 
@@ -129,15 +135,36 @@ AppDelegate *shared = nil;
     // If it's a relatively recent event, turn off updates to save power.
     location = [locations lastObject];
     [locationManager stopUpdatingLocation];
+    [self signin];
+    
 }
 
+
+-(void)signin
+{
+    if(apnsToken && apnsToken.length > 10 && location != nil){
+        Message * msg = [[Message alloc] init];
+        msg.mesType = MESSAGETYPE_SIGNIN;
+        msg.mesRoute = MESSAGEROUTE_API;
+        msg.ttl = DEFAULT_TTL;
+        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+        [params setObject:apnsToken forKey:@"apnskey"];
+        [params setObject:[NSNumber numberWithDouble:location.coordinate.latitude] forKey:@"latitude"];
+        [params setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
+        msg.params = params;
+        [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+    }
+}
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
 - (void)startStandardUpdates
 {
     // Create the location manager if this object does not
     // already have one.
+    
+    
     if (nil == locationManager){
         locationManager = [[CLLocationManager alloc] init];
+        [locationManager requestWhenInUseAuthorization];
     }
     
     locationManager.delegate = self;

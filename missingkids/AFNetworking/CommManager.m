@@ -56,7 +56,9 @@ static CommManager *sharedSampleSingletonDelegate = nil;
 -(void)getAPI:(NSString*)api andParams:(NSMutableDictionary*)params{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSString *fullAPI = [NSString stringWithFormat:@"%@%@",ROOT_API,api];
-    [manager GET:fullAPI parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&error];
+    [manager GET:fullAPI parameters:jsonData success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
@@ -65,7 +67,10 @@ static CommManager *sharedSampleSingletonDelegate = nil;
 
 -(void)postAPI:(NSString*)api andParams:(NSMutableDictionary*)params{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    [manager POST:api parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSString *fullAPI = [NSString stringWithFormat:@"%@%@",ROOT_API,api];
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&error];
+    [manager POST:fullAPI parameters:jsonData success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"JSON: %@", responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);

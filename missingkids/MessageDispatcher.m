@@ -49,6 +49,10 @@ MessageDispatcher *sharedInstance = nil;
         if(messageBus == nil){
             messageBus = [[NSMutableArray alloc] init];
         }
+        
+        if(dispatchedMessages == nil){
+            dispatchedMessages = [[NSMutableArray alloc] init];
+        }
     }
     return self;
 }
@@ -66,6 +70,15 @@ MessageDispatcher *sharedInstance = nil;
         [userInfo setObject:newmessage forKey:@"message"];
         [NSTimer scheduledTimerWithTimeInterval:newmessage.ttl target:self selector:@selector(dispatchThisMessage:) userInfo:userInfo repeats:NO];
     }
+}
+
+
+-(void)clearDispastchedMessages
+{
+    for (Message *msg in dispatchedMessages) {
+        [messageBus removeObject:msg];
+    }
+    [dispatchedMessages removeAllObjects];
 }
 
 -(void)dispatchThisMessage:(NSTimer*)timer
@@ -96,6 +109,22 @@ MessageDispatcher *sharedInstance = nil;
     }
 }
 
+
+-(NSString*)messageTypeToString:(messageType)Type
+{
+    NSString *retMessage = @"";
+    switch (Type) {
+        case MESSAGETYPE_SIGNIN_RESPONSE:
+            retMessage = @"MESSAGETYPE_SIGNIN_RESPONSE";
+            break;
+            
+        default:
+            break;
+    }
+    
+    return retMessage;
+}
+
 -(void)dispatchMessage:(Message*)message
 {
     switch (message.mesRoute) {
@@ -103,9 +132,11 @@ MessageDispatcher *sharedInstance = nil;
             if([self canSendMessage:message]){
                [self routeMessageToServerWithType:message];
             }
-            
+            [dispatchedMessages addObject:message];
             break;
         case MESSAGEROUTE_INTERNAL:
+            [[NSNotificationCenter defaultCenter] postNotificationName:[self messageTypeToString:message.mesType] object:nil userInfo:message.params];
+            [dispatchedMessages addObject:message];
             break;
         case MESSAGEROUTE_OTHER:
             break;

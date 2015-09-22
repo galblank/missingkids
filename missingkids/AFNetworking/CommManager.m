@@ -9,6 +9,7 @@
 #import "CommManager.h"
 #import "StringHelper.h"
 #import "AppDelegate.h"
+#import "MessageDispatcher.h"
 
 @implementation CommManager
 
@@ -55,6 +56,8 @@ static CommManager *sharedSampleSingletonDelegate = nil;
 
 -(void)getAPI:(NSString*)api andParams:(NSMutableDictionary*)params{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/plain"];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
     NSString *fullAPI = [NSString stringWithFormat:@"%@%@",ROOT_API,api];
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&error];
@@ -67,11 +70,20 @@ static CommManager *sharedSampleSingletonDelegate = nil;
 
 -(void)postAPI:(NSString*)api andParams:(NSMutableDictionary*)params{
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/plain"];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
     NSString *fullAPI = [NSString stringWithFormat:@"%@%@",ROOT_API,api];
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&error];
-    [manager POST:fullAPI parameters:jsonData success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSMutableDictionary *jsonDic = [[NSMutableDictionary alloc] init];
+    [jsonDic setObject:params forKey:@"json"];
+    [manager POST:fullAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"JSON: %@", responseObject);
+        Message *msg = [[Message alloc] init];
+        msg.mesRoute = MESSAGEROUTE_INTERNAL;
+        msg.mesType = [[responseObject objectForKey:@"messageid"] intValue];
+        msg.params = [responseObject objectForKey:@"data"];
+        [[MessageDispatcher sharedInstance] addMessageToBus:msg];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];

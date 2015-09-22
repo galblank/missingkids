@@ -15,7 +15,8 @@ typedef enum{
 }messageRoute;
 
 typedef enum{
-    MESSAGETYPE_SIGNIN
+    MESSAGETYPE_SIGNIN = 0,
+    MESSAGETYPE_SIGNIN_RESPONSE = 1
 }messageType;
 
 

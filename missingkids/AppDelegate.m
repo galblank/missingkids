@@ -50,6 +50,7 @@ AppDelegate *shared = nil;
     
     mainVc = [[MainViewController alloc] init];
     UINavigationController *rootVC = [[UINavigationController alloc] initWithRootViewController:mainVc];
+    rootVC.navigationBarHidden = YES;
     self.window.rootViewController = rootVC;
     
     NSDictionary *navbarTitleTextAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -146,15 +147,23 @@ AppDelegate *shared = nil;
         Message * msg = [[Message alloc] init];
         msg.mesType = MESSAGETYPE_SIGNIN;
         msg.mesRoute = MESSAGEROUTE_API;
-        msg.ttl = DEFAULT_TTL;
+        msg.ttl = TTL_NOW;
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
         [params setObject:apnsToken forKey:@"apnskey"];
         [params setObject:[NSNumber numberWithDouble:location.coordinate.latitude] forKey:@"latitude"];
         [params setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
         msg.params = params;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signinresponse:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SIGNIN_RESPONSE] object:nil];
         [[MessageDispatcher sharedInstance] addMessageToBus:msg];
     }
 }
+
+
+-(void)signinresponse:(NSNotification*)notify
+{
+    NSLog(@"signinresponse: %@",notify.userInfo);
+}
+
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
 - (void)startStandardUpdates
 {

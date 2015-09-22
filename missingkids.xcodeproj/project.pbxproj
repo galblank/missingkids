@@ -51,6 +51,8 @@
 		09BF7AE11BB0A8EF00A48BEF /* MessageDispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7AE01BB0A8EF00A48BEF /* MessageDispatcher.m */; settings = {ASSET_TAGS = (); }; };
 		09BF7AE31BB0AE4D00A48BEF /* MessageDispatcherRules.plist in Resources */ = {isa = PBXBuildFile; fileRef = 09BF7AE21BB0AE4D00A48BEF /* MessageDispatcherRules.plist */; settings = {ASSET_TAGS = (); }; };
 		09BF7AE71BB0B5A700A48BEF /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7AE61BB0B5A700A48BEF /* Message.m */; settings = {ASSET_TAGS = (); }; };
+		09BF7AEE1BB2057800A48BEF /* WYPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7AEB1BB2057800A48BEF /* WYPopoverController.m */; settings = {ASSET_TAGS = (); }; };
+		09BF7AEF1BB2057800A48BEF /* WYStoryboardPopoverSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7AED1BB2057800A48BEF /* WYStoryboardPopoverSegue.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -147,6 +149,10 @@
 		09BF7AE21BB0AE4D00A48BEF /* MessageDispatcherRules.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MessageDispatcherRules.plist; sourceTree = "<group>"; };
 		09BF7AE51BB0B5A700A48BEF /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Message.h; path = Model/Message.h; sourceTree = "<group>"; };
 		09BF7AE61BB0B5A700A48BEF /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Message.m; path = Model/Message.m; sourceTree = "<group>"; };
+		09BF7AEA1BB2057800A48BEF /* WYPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WYPopoverController.h; sourceTree = "<group>"; };
+		09BF7AEB1BB2057800A48BEF /* WYPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WYPopoverController.m; sourceTree = "<group>"; };
+		09BF7AEC1BB2057800A48BEF /* WYStoryboardPopoverSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WYStoryboardPopoverSegue.h; sourceTree = "<group>"; };
+		09BF7AED1BB2057800A48BEF /* WYStoryboardPopoverSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WYStoryboardPopoverSegue.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +218,7 @@
 		09BF7A301BB07CEF00A48BEF /* missingkids */ = {
 			isa = PBXGroup;
 			children = (
+				09BF7AE91BB2057800A48BEF /* WYPopoverController */,
 				09BF7AE41BB0B58C00A48BEF /* Model */,
 				09BF7AA21BB0853000A48BEF /* Helpers */,
 				09BF7A821BB0830F00A48BEF /* AFNetworking */,
@@ -340,6 +347,17 @@
 				09BF7AC61BB090FC00A48BEF /* UIKit.framework */,
 			);
 			name = frameworks;
+			sourceTree = "<group>";
+		};
+		09BF7AE91BB2057800A48BEF /* WYPopoverController */ = {
+			isa = PBXGroup;
+			children = (
+				09BF7AEA1BB2057800A48BEF /* WYPopoverController.h */,
+				09BF7AEB1BB2057800A48BEF /* WYPopoverController.m */,
+				09BF7AEC1BB2057800A48BEF /* WYStoryboardPopoverSegue.h */,
+				09BF7AED1BB2057800A48BEF /* WYStoryboardPopoverSegue.m */,
+			);
+			path = WYPopoverController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -485,9 +503,11 @@
 				09BF7A9D1BB0830F00A48BEF /* AFURLResponseSerialization.m in Sources */,
 				09BF7AA11BB0834700A48BEF /* CommManager.m in Sources */,
 				09BF7AE71BB0B5A700A48BEF /* Message.m in Sources */,
+				09BF7AEE1BB2057800A48BEF /* WYPopoverController.m in Sources */,
 				09BF7A9B1BB0830F00A48BEF /* AFURLConnectionOperation.m in Sources */,
 				09BF7A9A1BB0830F00A48BEF /* AFSecurityPolicy.m in Sources */,
 				09BF7ABA1BB0853000A48BEF /* Utils.m in Sources */,
+				09BF7AEF1BB2057800A48BEF /* WYStoryboardPopoverSegue.m in Sources */,
 				09BF7A981BB0830F00A48BEF /* AFHTTPSessionManager.m in Sources */,
 				09BF7AB51BB0853000A48BEF /* RegexKitLite.m in Sources */,
 				09BF7AB41BB0853000A48BEF /* NSString+UnformattedPhoneNumber.m in Sources */,

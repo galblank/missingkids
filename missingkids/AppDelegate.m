@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "MessageDispatcher.h"
-
+#import "WYPopoverController/WYPopoverController.h"
 @interface AppDelegate ()
 
 @end
@@ -162,9 +162,49 @@ AppDelegate *shared = nil;
 -(void)signinresponse:(NSNotification*)notify
 {
     NSLog(@"signinresponse: %@",notify.userInfo);
+    NSString *secToken = [notify.userInfo objectForKey:@"securitytoken"];
+    if(secToken){
+        [[NSUserDefaults standardUserDefaults] setObject:secToken forKey:@"securitytoken"];
+    }
+    [self showMenuButton];
 }
 
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
+-(void)showMenuButton
+{
+    menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    menuButton.frame = CGRectMake(self.window.frame.size.width - 70, self.window.frame.size.height - 70, 50, 50);
+    [menuButton setBackgroundColor:[UIColor purpleColor]];
+    [menuButton addTarget:self action:@selector(populateMenu) forControlEvents:UIControlEventTouchUpInside];
+    menuButton.layer.cornerRadius = menuButton.frame.size.height / 2;
+    [self.window addSubview:menuButton];
+}
+
+-(void)populateMenu
+{
+    
+    popoverController = [[WYPopoverController alloc] initWithContentViewController:[self topViewController]]; //content view controller needs to be tableviewcontroller
+    popoverController.delegate = self;
+    [popoverController presentPopoverFromRect:menuButton.bounds inView:menuButton permittedArrowDirections:WYPopoverArrowDirectionAny animated:YES];
+
+}
+
+- (BOOL)popoverControllerShouldDismissPopover:(WYPopoverController *)controller
+{
+    return YES;
+}
+
+- (void)popoverControllerDidDismissPopover:(WYPopoverController *)controller
+{
+    popoverController.delegate = nil;
+    popoverController = nil;
+}
+
+-(void)hideMenuButton
+{
+    
+}
+
 - (void)startStandardUpdates
 {
     // Create the location manager if this object does not
@@ -192,5 +232,23 @@ AppDelegate *shared = nil;
     NSNumber *type = [push objectForKey:@"type"];
 }
 
+- (UIViewController*)topViewController {
+    return [self topViewControllerWithRootViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+}
 
+- (UIViewController*)topViewControllerWithRootViewController:(UIViewController*)rootViewController {
+    if ([rootViewController isKindOfClass:[UITabBarController class]]) {
+        UITabBarController* tabBarController = (UITabBarController*)rootViewController;
+        return [self topViewControllerWithRootViewController:tabBarController.selectedViewController];
+    } else if ([rootViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController* navigationController = (UINavigationController*)rootViewController;
+        return [self topViewControllerWithRootViewController:navigationController.visibleViewController];
+    } else if (rootViewController.presentedViewController) {
+        UIViewController* presentedViewController = rootViewController.presentedViewController;
+        return [self topViewControllerWithRootViewController:presentedViewController];
+        
+    } else {
+        return rootViewController;
+    }
+}
 @end

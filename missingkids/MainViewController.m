@@ -23,6 +23,15 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    Message *msg = [[Message alloc] init];
+    msg.mesRoute = MESSAGEROUTE_INTERNAL;
+    msg.mesType = MESSAGETYPE_CHANGE_MENU_BUTTON;
+    msg.params = [[NSMutableDictionary alloc] init];
+    [msg.params setObject:[NSNumber numberWithInt:FLOATINGBUTTON_TYPE_MENU] forKey:@"buttontype"];
+    NSMutableDictionary *userinfo = [[NSMutableDictionary alloc] init];
+    [userinfo setObject:msg forKey:@"message"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil userInfo:userinfo];
 }
 
 - (void)viewDidLoad {

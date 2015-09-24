@@ -170,11 +170,11 @@ AppDelegate *shared = nil;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_MENU_BUTTON] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU_BUTTON] object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeMenuButton:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil];
     
     [self showMenuButton];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu) name:MESSAGE_SHOW_SHARING_MENU object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SHARING_MENU] object:nil];
 }
 
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
@@ -199,9 +199,37 @@ AppDelegate *shared = nil;
     [shareBubbles show];
 }
 
--(void)changeMenuButton
+-(void)changeMenuButton:(NSNotification*)notify
 {
-    [menuButton setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+    Message *msg = [notify.userInfo objectForKey:@"message"];
+    FLOATINGBUTTONTYPE flbType = [[msg.params objectForKey:@"buttontype"] intValue];
+    switch (flbType) {
+        case FLOATINGBUTTON_TYPE_BACK:
+        {
+            if(menuButton.tag != FLOATINGBUTTON_TYPE_BACK){
+                [menuButton setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+                [menuButton removeTarget:self action:@selector(populateMenu) forControlEvents:UIControlEventTouchUpInside];
+                [menuButton addTarget:self action:@selector(popTopViewController) forControlEvents:UIControlEventTouchUpInside];
+            }
+        }
+            break;
+        case FLOATINGBUTTON_TYPE_MENU:
+        {
+            if(menuButton.tag != FLOATINGBUTTON_TYPE_MENU){
+                [menuButton setImage:[UIImage imageNamed:@"menu"] forState:UIControlStateNormal];
+                [menuButton removeTarget:self action:@selector(popTopViewController) forControlEvents:UIControlEventTouchUpInside];
+                [menuButton addTarget:self action:@selector(populateMenu) forControlEvents:UIControlEventTouchUpInside];
+            }
+        }
+        default:
+            break;
+    }
+    menuButton.tag = flbType;
+}
+
+-(void)popTopViewController
+{
+    [[self topViewController].navigationController popViewControllerAnimated:YES];
 }
 
 -(void)showMenuButton

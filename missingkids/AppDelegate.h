@@ -23,7 +23,7 @@
 //#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
 #define ROOT_API    @"http://localhost:8080/amberalertapi/"
 
-#define MESSAGE_SHOW_SHARING_MENU @"MESSAGE_SHOW_SHARING_MENU"
+
 
 typedef enum {
     FIRST_NAME = 1,
@@ -54,6 +54,8 @@ typedef enum {
     ORG_PREFIX = 26,
     LAST_UPDATED = 27
 }PERSON_TABLE_COLUMNS;
+
+
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,WYPopoverControllerDelegate>
 {

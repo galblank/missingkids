@@ -23,7 +23,14 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil];
+    Message *msg = [[Message alloc] init];
+    msg.mesRoute = MESSAGEROUTE_INTERNAL;
+    msg.mesType = MESSAGETYPE_CHANGE_MENU_BUTTON;
+    msg.params = [[NSMutableDictionary alloc] init];
+    [msg.params setObject:[NSNumber numberWithInt:FLOATINGBUTTON_TYPE_BACK] forKey:@"buttontype"];
+    NSMutableDictionary *userinfo = [[NSMutableDictionary alloc] init];
+    [userinfo setObject:msg forKey:@"message"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil userInfo:userinfo];
     
     // Do any additional setup after loading the view.
     scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height / 2)];
@@ -93,7 +100,13 @@
 
 -(void)showSharingMenu
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:MESSAGE_SHOW_SHARING_MENU object:nil];
+    Message * msg = [[Message alloc] init];
+    msg.mesRoute = MESSAGEROUTE_INTERNAL;
+    msg.mesType = MESSAGETYPE_SHOW_SHARING_MENU;
+    msg.ttl = TTL_NOW;
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
+    [dic setObject:msg forKey:@"message"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SHARING_MENU] object:nil userInfo:dic];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -115,7 +128,7 @@
     if(cell == nil){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"myCell"];
         cell.textLabel.numberOfLines = 0;;
-        cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14];
+        cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:15];
         cell.textLabel.textColor = [UIColor blackColor];
     }
     
@@ -125,7 +138,7 @@
         NSDateFormatter *df = [[NSDateFormatter alloc] init];
         df.dateFormat = @"MMM dd yyyy";
         NSString * strDate = [df stringFromDate:date];
-        cell.textLabel.text = [NSString stringWithFormat:@"%@ from %@ %@",strDate,[person objectAtIndex:MISSING_CITY],[person objectAtIndex:MISSING_COUNTRY]];
+        cell.textLabel.text = [NSString stringWithFormat:@"Went missing on %@ from %@ %@",strDate,[person objectAtIndex:MISSING_CITY],[person objectAtIndex:MISSING_COUNTRY]];
     }
     else if(indexPath.row == 1){
         cell.textLabel.text = [person objectAtIndex:CIRCUMSTANCE];

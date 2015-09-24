@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		095C4BA51BB46D3000749CD8 /* PersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BA41BB46D3000749CD8 /* PersonViewController.m */; settings = {ASSET_TAGS = (); }; };
+		095C4BA71BB49F4700749CD8 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095C4BA61BB49F4700749CD8 /* Social.framework */; };
 		09BF7A331BB07CEF00A48BEF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A321BB07CEF00A48BEF /* main.m */; };
 		09BF7A361BB07CEF00A48BEF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A351BB07CEF00A48BEF /* AppDelegate.m */; };
 		09BF7A391BB07CEF00A48BEF /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A381BB07CEF00A48BEF /* MainViewController.m */; };
@@ -94,6 +95,7 @@
 /* Begin PBXFileReference section */
 		095C4BA31BB46D3000749CD8 /* PersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonViewController.h; sourceTree = "<group>"; };
 		095C4BA41BB46D3000749CD8 /* PersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonViewController.m; sourceTree = "<group>"; };
+		095C4BA61BB49F4700749CD8 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		09BF7A2E1BB07CEF00A48BEF /* missingkids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = missingkids.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09BF7A321BB07CEF00A48BEF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		09BF7A341BB07CEF00A48BEF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				095C4BA71BB49F4700749CD8 /* Social.framework in Frameworks */,
 				09BF7AF91BB2FF0900A48BEF /* libsqlite3.tbd in Frameworks */,
 				09BF7ADD1BB0965600A48BEF /* libicucore.tbd in Frameworks */,
 				09BF7ADB1BB0944000A48BEF /* MessageUI.framework in Frameworks */,
@@ -300,6 +303,7 @@
 		09BF7A311BB07CEF00A48BEF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				095C4BA61BB49F4700749CD8 /* Social.framework */,
 				09BF7A3D1BB07CEF00A48BEF /* Assets.xcassets */,
 				09BF7A3F1BB07CEF00A48BEF /* LaunchScreen.storyboard */,
 				09BF7A421BB07CEF00A48BEF /* Info.plist */,

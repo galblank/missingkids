@@ -11,6 +11,7 @@
 #import "WYPopoverController/WYPopoverController.h"
 #import "MenuViewController.h"
 #import <MessageUI/MessageUI.h>
+#import "Social/Social.h"
 
 @interface AppDelegate ()
 
@@ -42,7 +43,7 @@ AppDelegate *shared = nil;
     NSLocale *currentLocale = [NSLocale currentLocale];  // get the current locale.
     NSString *countryCode = [currentLocale objectForKey:NSLocaleCountryCode];
     NSLog(@"country code is: %@", countryCode);
-
+    
     apnsToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"apnskey"];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
@@ -62,7 +63,7 @@ AppDelegate *shared = nil;
                                                ,nil];
     
     [[UINavigationBar appearance] setTitleTextAttributes:navbarTitleTextAttributes];
-
+    
     
     [self.window makeKeyAndVisible];
     
@@ -183,14 +184,55 @@ AppDelegate *shared = nil;
 -(void)sendMail{
     MFMailComposeViewController *mailComp = [[MFMailComposeViewController alloc] init];
     [mailComp setMailComposeDelegate:self];
-
+    
     if ([MFMailComposeViewController canSendMail]) {
-    
+        
         [mailComp setSubject:@"Subject test"];
-    
+        
         [mailComp setMessageBody:@"Message body test" isHTML:NO];
-    
+        
         [[self topViewController] presentViewController:mailComp animated:YES completion:nil];
+    }
+}
+
+
+-(void)TweetPressed{
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
+    {
+        SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+        [tweetSheet setInitialText:@"This is a tweet!"];
+        [[self topViewController] presentViewController:tweetSheet animated:YES completion:nil];
+        
+    }
+    else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't send a tweet right now, make sure your device has an internet connection and you have at least one Twitter account setup"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }
+    
+}
+
+
+-(void)FBPressed{
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
+    {
+        SLComposeViewController *fbPostSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        [fbPostSheet setInitialText:@"This is a Facebook post!"];
+        [[self topViewController] presentViewController:fbPostSheet animated:YES completion:nil];
+    } else
+    {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Sorry"
+                                  message:@"You can't post right now, make sure your device has an internet connection and you have at least one facebook account setup"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
     }
 }
 
@@ -206,7 +248,7 @@ AppDelegate *shared = nil;
 -(void)showSharingMenu:(NSNotification*)notify
 {
     Message * msg = [notify.userInfo objectForKey:@"message"];
-    NSMutableArray * person = [msg.params objectForKey:@"person"];
+    sharemissingperson = [msg.params objectForKey:@"person"];
     AAShareBubbles *shareBubbles = [[AAShareBubbles alloc] initCenteredInWindowWithRadius:130];
     shareBubbles.delegate = self;
     shareBubbles.bubbleRadius = 45; // Default is 40
@@ -217,8 +259,8 @@ AppDelegate *shared = nil;
     
     // add custom buttons -- buttonId for custom buttons MUST be greater than or equal to 100
     /*[shareBubbles addCustomButtonWithIcon:[UIImage imageNamed:@"custom-icon"]
-                          backgroundColor:[UIColor greenColor]
-                              andButtonId:100];*/
+     backgroundColor:[UIColor greenColor]
+     andButtonId:100];*/
     
     
     [shareBubbles show];
@@ -229,9 +271,11 @@ AppDelegate *shared = nil;
     switch (bubbleType) {
         case AAShareBubbleTypeFacebook:
             NSLog(@"Facebook");
+            [self FBPressed];
             break;
         case AAShareBubbleTypeTwitter:
             NSLog(@"Twitter");
+            [self TweetPressed];
             break;
         case AAShareBubbleTypeMail:
         {
@@ -328,7 +372,7 @@ AppDelegate *shared = nil;
         popoverController.delegate = self;
     }
     [popoverController presentPopoverFromRect:menuButton.bounds inView:menuButton permittedArrowDirections:WYPopoverArrowDirectionAny animated:YES];
-
+    
 }
 
 - (BOOL)popoverControllerShouldDismissPopover:(WYPopoverController *)controller

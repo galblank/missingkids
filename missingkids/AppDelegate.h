@@ -65,6 +65,7 @@ typedef enum {
     NSString *apnsToken;
     UIButton *menuButton;
     WYPopoverController* popoverController;
+    NSMutableArray *sharemissingperson;
 }
 @property (strong, nonatomic) UIWindow *window;
 + (AppDelegate*)shared;

@@ -211,38 +211,4 @@
     //[maincollectionView reloadItemsAtIndexPaths:[maincollectionView indexPathsForVisibleItems]];
 }
 
-
--(void)aaShareBubbles:(AAShareBubbles *)shareBubbles tappedBubbleWithType:(AAShareBubbleType)bubbleType
-{
-    switch (bubbleType) {
-        case AAShareBubbleTypeFacebook:
-            NSLog(@"Facebook");
-            break;
-        case AAShareBubbleTypeTwitter:
-            NSLog(@"Twitter");
-            break;
-        case AAShareBubbleTypeMail:
-            NSLog(@"Email");
-            break;
-        case AAShareBubbleTypeGooglePlus:
-            NSLog(@"Google+");
-            break;
-        case AAShareBubbleTypeTumblr:
-            NSLog(@"Tumblr");
-            break;
-        case AAShareBubbleTypeVk:
-            NSLog(@"Vkontakte (vk.com)");
-            break;
-        case 100:
-            // custom buttons have type >= 100
-            NSLog(@"Custom Button With Type 100");
-            break;
-        default:
-            break;
-    }
-}
-
--(void)aaShareBubblesDidHide:(AAShareBubbles *)bubbles {
-    NSLog(@"All Bubbles hidden");
-}
 @end

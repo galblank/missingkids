@@ -23,6 +23,7 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -47,16 +48,16 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"myCell"];
     }
     if(indexPath.row == 0){
-        cell.textLabel.text = @"Share";
+        cell.textLabel.text = NSLocalizedString(@"Filter", nil);
     }
     else if(indexPath.row == 1){
-        cell.textLabel.text = @"Share";
+        cell.textLabel.text = NSLocalizedString(@"Sort", nil);
     }
     else if(indexPath.row == 2){
-        cell.textLabel.text = @"Share";
+        cell.textLabel.text = NSLocalizedString(@"Share", nil);
     }
     else if(indexPath.row == 3){
-        cell.textLabel.text = @"Share";
+        cell.textLabel.text = NSLocalizedString(@"Filter", nil);
     }
     return cell;
 }

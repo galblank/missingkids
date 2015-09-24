@@ -104,6 +104,8 @@
     msg.mesRoute = MESSAGEROUTE_INTERNAL;
     msg.mesType = MESSAGETYPE_SHOW_SHARING_MENU;
     msg.ttl = TTL_NOW;
+    msg.params = [[NSMutableDictionary alloc] init];
+    [msg.params setObject:person forKey:@"person"];
     NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
     [dic setObject:msg forKey:@"message"];
     [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SHARING_MENU] object:nil userInfo:dic];

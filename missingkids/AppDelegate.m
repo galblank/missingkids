@@ -10,6 +10,8 @@
 #import "MessageDispatcher.h"
 #import "WYPopoverController/WYPopoverController.h"
 #import "MenuViewController.h"
+#import <MessageUI/MessageUI.h>
+
 @interface AppDelegate ()
 
 @end
@@ -174,20 +176,43 @@ AppDelegate *shared = nil;
     
     [self showMenuButton];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SHARING_MENU] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SHARING_MENU] object:nil];
 }
 
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
--(void)showSharingMenu
+-(void)sendMail{
+    MFMailComposeViewController *mailComp = [[MFMailComposeViewController alloc] init];
+    [mailComp setMailComposeDelegate:self];
+
+    if ([MFMailComposeViewController canSendMail]) {
+    
+        [mailComp setSubject:@"Subject test"];
+    
+        [mailComp setMessageBody:@"Message body test" isHTML:NO];
+    
+        [[self topViewController] presentViewController:mailComp animated:YES completion:nil];
+    }
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    
+    if (error) {
+        // Error handling
+    }
+    [controller dismissViewControllerAnimated:NO completion:nil];
+}
+
+
+-(void)showSharingMenu:(NSNotification*)notify
 {
-    AAShareBubbles *shareBubbles = [[AAShareBubbles alloc] initCenteredInWindowWithRadius:150];
+    Message * msg = [notify.userInfo objectForKey:@"message"];
+    NSMutableArray * person = [msg.params objectForKey:@"person"];
+    AAShareBubbles *shareBubbles = [[AAShareBubbles alloc] initCenteredInWindowWithRadius:130];
     shareBubbles.delegate = self;
     shareBubbles.bubbleRadius = 45; // Default is 40
     shareBubbles.showFacebookBubble = YES;
     shareBubbles.showTwitterBubble = YES;
     shareBubbles.showMailBubble = YES;
-    shareBubbles.showGooglePlusBubble = YES;
-    shareBubbles.showTumblrBubble = YES;
     shareBubbles.showVkBubble = YES;
     
     // add custom buttons -- buttonId for custom buttons MUST be greater than or equal to 100
@@ -197,6 +222,43 @@ AppDelegate *shared = nil;
     
     
     [shareBubbles show];
+}
+
+-(void)aaShareBubbles:(AAShareBubbles *)shareBubbles tappedBubbleWithType:(AAShareBubbleType)bubbleType
+{
+    switch (bubbleType) {
+        case AAShareBubbleTypeFacebook:
+            NSLog(@"Facebook");
+            break;
+        case AAShareBubbleTypeTwitter:
+            NSLog(@"Twitter");
+            break;
+        case AAShareBubbleTypeMail:
+        {
+            NSLog(@"Email");
+            [self sendMail];
+        }
+            break;
+        case AAShareBubbleTypeGooglePlus:
+            NSLog(@"Google+");
+            break;
+        case AAShareBubbleTypeTumblr:
+            NSLog(@"Tumblr");
+            break;
+        case AAShareBubbleTypeVk:
+            NSLog(@"Vkontakte (vk.com)");
+            break;
+        case 100:
+            // custom buttons have type >= 100
+            NSLog(@"Custom Button With Type 100");
+            break;
+        default:
+            break;
+    }
+}
+
+-(void)aaShareBubblesDidHide:(AAShareBubbles *)bubbles {
+    NSLog(@"All Bubbles hidden");
 }
 
 -(void)changeMenuButton:(NSNotification*)notify

@@ -20,8 +20,8 @@
 #define THEME_COLOR_DISABLED [UIColor colorWithRed:105.0 / 255.0 green:217.0 / 255.0 blue:255.0 / 255.0 alpha:1.0]
 
 
-//#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
-#define ROOT_API    @"http://localhost:8080/amberalertapi/"
+#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
+//#define ROOT_API    @"http://localhost:8080/amberalertapi/"
 
 
 

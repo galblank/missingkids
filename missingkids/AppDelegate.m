@@ -165,6 +165,7 @@ AppDelegate *shared = nil;
 
 -(void)signinresponse:(NSNotification*)notify
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SIGNIN_RESPONSE] object:nil];
     NSLog(@"signinresponse: %@",notify.userInfo);
     Message * msg = [notify.userInfo objectForKey:@"message"];
     if([msg.params objectForKey:@"securitytoken"]){

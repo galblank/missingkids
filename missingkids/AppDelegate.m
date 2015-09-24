@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "MessageDispatcher.h"
 #import "WYPopoverController/WYPopoverController.h"
+#import "MenuViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -169,6 +170,8 @@ AppDelegate *shared = nil;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_MENU_BUTTON] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU_BUTTON] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil];
+    
     [self showMenuButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu) name:MESSAGE_SHOW_SHARING_MENU object:nil];
@@ -195,14 +198,25 @@ AppDelegate *shared = nil;
     
     [shareBubbles show];
 }
+
+-(void)changeMenuButton
+{
+    [menuButton setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
+}
+
 -(void)showMenuButton
 {
     if(menuButton == nil){
+        
         menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        menuButton.frame = CGRectMake(self.window.frame.size.width - 70, self.window.frame.size.height - 70, 50, 50);
-        [menuButton setBackgroundColor:[UIColor purpleColor]];
-        [menuButton addTarget:self action:@selector(showSharingMenu) forControlEvents:UIControlEventTouchUpInside];
+        menuButton.frame = CGRectMake(self.window.frame.size.width - 80, self.window.frame.size.height - 80, 60, 60);
+        menuButton.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        menuButton.layer.borderWidth = 0.3;
+        menuButton.alpha = 0.8;
+        [menuButton setBackgroundColor:[UIColor whiteColor]];
+        [menuButton addTarget:self action:@selector(populateMenu) forControlEvents:UIControlEventTouchUpInside];
         menuButton.layer.cornerRadius = menuButton.frame.size.height / 2;
+        [menuButton setImage:[UIImage imageNamed:@"menu"] forState:UIControlStateNormal];
         [self.window addSubview:menuButton];
     }
     menuButton.hidden = NO;
@@ -217,9 +231,12 @@ AppDelegate *shared = nil;
 
 -(void)populateMenu
 {
-    
-    popoverController = [[WYPopoverController alloc] initWithContentViewController:[self topViewController]]; //content view controller needs to be tableviewcontroller
-    popoverController.delegate = self;
+    MenuViewController *menu = [[MenuViewController alloc] init];
+    if(popoverController == nil){
+        popoverController = [[WYPopoverController alloc] initWithContentViewController:menu]; //content view controller needs to be tableviewcontroller
+        popoverController.popoverContentSize = CGSizeMake(200, 200);
+        popoverController.delegate = self;
+    }
     [popoverController presentPopoverFromRect:menuButton.bounds inView:menuButton permittedArrowDirections:WYPopoverArrowDirectionAny animated:YES];
 
 }

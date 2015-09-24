@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		095C4BA51BB46D3000749CD8 /* PersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BA41BB46D3000749CD8 /* PersonViewController.m */; settings = {ASSET_TAGS = (); }; };
 		09BF7A331BB07CEF00A48BEF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A321BB07CEF00A48BEF /* main.m */; };
 		09BF7A361BB07CEF00A48BEF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A351BB07CEF00A48BEF /* AppDelegate.m */; };
 		09BF7A391BB07CEF00A48BEF /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A381BB07CEF00A48BEF /* MainViewController.m */; };
@@ -70,6 +71,7 @@
 		09BF7B4D1BB38C1200A48BEF /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7B431BB38C1200A48BEF /* UIProgressView+AFNetworking.m */; settings = {ASSET_TAGS = (); }; };
 		09BF7B4E1BB38C1200A48BEF /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7B451BB38C1200A48BEF /* UIRefreshControl+AFNetworking.m */; settings = {ASSET_TAGS = (); }; };
 		09BF7B4F1BB38C1200A48BEF /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7B471BB38C1200A48BEF /* UIWebView+AFNetworking.m */; settings = {ASSET_TAGS = (); }; };
+		09BF7B521BB42FB600A48BEF /* MenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7B511BB42FB600A48BEF /* MenuViewController.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +92,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		095C4BA31BB46D3000749CD8 /* PersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonViewController.h; sourceTree = "<group>"; };
+		095C4BA41BB46D3000749CD8 /* PersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonViewController.m; sourceTree = "<group>"; };
 		09BF7A2E1BB07CEF00A48BEF /* missingkids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = missingkids.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09BF7A321BB07CEF00A48BEF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		09BF7A341BB07CEF00A48BEF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -203,6 +207,8 @@
 		09BF7B451BB38C1200A48BEF /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
 		09BF7B461BB38C1200A48BEF /* UIWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		09BF7B471BB38C1200A48BEF /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
+		09BF7B501BB42FB600A48BEF /* MenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuViewController.h; sourceTree = "<group>"; };
+		09BF7B511BB42FB600A48BEF /* MenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -248,6 +254,7 @@
 		09BF7A251BB07CEF00A48BEF = {
 			isa = PBXGroup;
 			children = (
+				09BF7A311BB07CEF00A48BEF /* Supporting Files */,
 				09BF7AE81BB0BD6100A48BEF /* frameworks */,
 				09BF7A301BB07CEF00A48BEF /* missingkids */,
 				09BF7A4A1BB07CF000A48BEF /* missingkidsTests */,
@@ -282,7 +289,10 @@
 				09BF7AE01BB0A8EF00A48BEF /* MessageDispatcher.m */,
 				09BF7AF01BB2E6B900A48BEF /* CollectionViewCell.h */,
 				09BF7AF11BB2E6B900A48BEF /* CollectionViewCell.m */,
-				09BF7A311BB07CEF00A48BEF /* Supporting Files */,
+				09BF7B501BB42FB600A48BEF /* MenuViewController.h */,
+				09BF7B511BB42FB600A48BEF /* MenuViewController.m */,
+				095C4BA31BB46D3000749CD8 /* PersonViewController.h */,
+				095C4BA41BB46D3000749CD8 /* PersonViewController.m */,
 			);
 			path = missingkids;
 			sourceTree = "<group>";
@@ -297,6 +307,7 @@
 				09BF7AE21BB0AE4D00A48BEF /* MessageDispatcherRules.plist */,
 			);
 			name = "Supporting Files";
+			path = missingkids;
 			sourceTree = "<group>";
 		};
 		09BF7A4A1BB07CF000A48BEF /* missingkidsTests */ = {
@@ -597,6 +608,7 @@
 				09BF7A961BB0830F00A48BEF /* AFHTTPRequestOperation.m in Sources */,
 				09BF7B4E1BB38C1200A48BEF /* UIRefreshControl+AFNetworking.m in Sources */,
 				09BF7AB71BB0853000A48BEF /* UIImage+Alpha.m in Sources */,
+				095C4BA51BB46D3000749CD8 /* PersonViewController.m in Sources */,
 				09BF7A391BB07CEF00A48BEF /* MainViewController.m in Sources */,
 				09BF7B341BB381CD00A48BEF /* InsetUILabel.m in Sources */,
 				09BF7B051BB3817900A48BEF /* InsetTextField.m in Sources */,
@@ -618,6 +630,7 @@
 				09BF7AEE1BB2057800A48BEF /* WYPopoverController.m in Sources */,
 				09BF7A9B1BB0830F00A48BEF /* AFURLConnectionOperation.m in Sources */,
 				09BF7A9A1BB0830F00A48BEF /* AFSecurityPolicy.m in Sources */,
+				09BF7B521BB42FB600A48BEF /* MenuViewController.m in Sources */,
 				09BF7B4B1BB38C1200A48BEF /* UIButton+AFNetworking.m in Sources */,
 				09BF7AF71BB2FEB200A48BEF /* DBManager.m in Sources */,
 				09BF7B4D1BB38C1200A48BEF /* UIProgressView+AFNetworking.m in Sources */,
@@ -861,6 +874,7 @@
 				09BF7A5D1BB07CF000A48BEF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		09BF7A5E1BB07CF000A48BEF /* Build configuration list for PBXNativeTarget "missingkidsTests" */ = {
 			isa = XCConfigurationList;
@@ -869,6 +883,7 @@
 				09BF7A601BB07CF000A48BEF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		09BF7A611BB07CF000A48BEF /* Build configuration list for PBXNativeTarget "missingkidsUITests" */ = {
 			isa = XCConfigurationList;
@@ -877,6 +892,7 @@
 				09BF7A631BB07CF000A48BEF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

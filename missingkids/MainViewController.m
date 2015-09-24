@@ -12,6 +12,7 @@
 #import "DBManager.h"
 #import "AppDelegate.h"
 #import "UIImageView+AFNetworking.h"
+#import "PersonViewController.h"
 
 @interface MainViewController ()
 
@@ -19,19 +20,24 @@
 
 @implementation MainViewController
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
-    collectionView=[[UICollectionView alloc] initWithFrame:CGRectMake(2, 0, self.view.frame.size
+    maincollectionView=[[UICollectionView alloc] initWithFrame:CGRectMake(2, 0, self.view.frame.size
                                                                       .width - 4, self.view.frame.size.height) collectionViewLayout:layout];
-    [collectionView setDataSource:self];
-    [collectionView setDelegate:self];
+    [maincollectionView setDataSource:self];
+    [maincollectionView setDelegate:self];
     
-    [collectionView registerClass:[CollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
-    [collectionView setBackgroundColor:[UIColor whiteColor]];
+    [maincollectionView registerClass:[CollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+    [maincollectionView setBackgroundColor:[UIColor whiteColor]];
     
-    [self.view addSubview:collectionView];
+    [self.view addSubview:maincollectionView];
     
     self.view.backgroundColor = [UIColor whiteColor];
     Message * msg = [[Message alloc] init];
@@ -44,12 +50,12 @@
      [params setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
      msg.params = params;*/
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gotpersons:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_FETCH_PERSON_RESPONSE] object:nil];
-    [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+    //[[MessageDispatcher sharedInstance] addMessageToBus:msg];
     
     NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:@"select * from person order by missingDate desc"];
     if(results){
         collectionData = results;
-        [collectionView reloadData];
+        [maincollectionView reloadData];
     }
 }
 
@@ -78,7 +84,7 @@
         
         if(bFoundNew){
             collectionData = msg.params;
-            [collectionView reloadData];
+            [maincollectionView reloadData];
         }
     });
     
@@ -92,20 +98,25 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake((self.view.frame.size.width - 15) / 2, self.view.frame.size.height / 3);
+    return CGSizeMake((collectionView.frame.size.width - 10) / 2, self.view.frame.size.height / 3);
+}
+
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+    
+    NSMutableArray *person = [collectionData objectAtIndex:indexPath.item];
+    PersonViewController *personVC = [[PersonViewController alloc] init];
+    [personVC setPerson:person];
+    [self.navigationController pushViewController:personVC animated:YES];
 }
 
 
 - (CollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *identifier = @"cellIdentifier";
     CollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
-    cell.tag = indexPath.row;
-    cell.imageview.image = nil;
-    cell.label.text = @"";
-    if(bScrolling){
-        return cell;
-    }
-    NSMutableArray * person = [collectionData objectAtIndex:indexPath.row];
+    NSMutableArray * person = [collectionData objectAtIndex:indexPath.item];
     if([person objectAtIndex:IMAGE]){
         NSString *imagename = [person objectAtIndex:IMAGE];
         if(imagename.length > 2){
@@ -113,10 +124,27 @@
         }
         NSString * buildFullPath = [NSString stringWithFormat:@"%@/%@%@%@.jpg",ROOT_IMAGES,[person objectAtIndex:ORG_PREFIX],[person objectAtIndex:CASE_NUMBER],imagename];
         NSURL *url = [NSURL URLWithString:buildFullPath];
+        /*NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
+        [NSURLConnection sendAsynchronousRequest:urlRequest
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse * response, NSData * data, NSError * error)
+         {
+             if (data) {
+                 UIImage *image = [UIImage imageWithData:data];
+                 if(image){
+                     cell.backgroundView = [[UIImageView alloc] initWithImage:image];
+                 }
+                 else{
+                     NSLog(@"image is null");
+                 }
+             }
+         }];*/
+        
         [cell.imageview setImageWithURL:url placeholderImage:[UIImage imageNamed:@"profile"]];
-        [cell sendSubviewToBack:cell.imageview];
     }
-    
+    else{
+        NSLog(@"no image");
+    }
     NSNumber * missingDate = [person objectAtIndex:MISSING_DATE];
     NSDate * date = [NSDate dateWithTimeIntervalSince1970:(missingDate.doubleValue / 1000)];
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
@@ -141,8 +169,9 @@
     [msgDic setObject:msg forKey:@"message"];
     [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU_BUTTON] object:nil userInfo:msgDic];
     
-    [collectionView reloadData];
+    //[maincollectionView reloadItemsAtIndexPaths:[maincollectionView indexPathsForVisibleItems]];
 }
+
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
@@ -155,9 +184,10 @@
         NSMutableDictionary * msgDic = [[NSMutableDictionary alloc] init];
         [msgDic setObject:msg forKey:@"message"];
         [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_MENU_BUTTON] object:nil userInfo:msgDic];
-        [collectionView reloadData];
+        //[maincollectionView reloadItemsAtIndexPaths:[maincollectionView indexPathsForVisibleItems]];
     }
 }
+
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
@@ -169,8 +199,9 @@
     NSMutableDictionary * msgDic = [[NSMutableDictionary alloc] init];
     [msgDic setObject:msg forKey:@"message"];
     [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_MENU_BUTTON] object:nil userInfo:msgDic];
-    [collectionView reloadData];
+    //[maincollectionView reloadItemsAtIndexPaths:[maincollectionView indexPathsForVisibleItems]];
 }
+
 
 -(void)aaShareBubbles:(AAShareBubbles *)shareBubbles tappedBubbleWithType:(AAShareBubbleType)bubbleType
 {

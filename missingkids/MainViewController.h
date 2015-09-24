@@ -11,7 +11,7 @@
 
 @interface MainViewController : UIViewController<UICollectionViewDelegate,UICollectionViewDataSource,AAShareBubblesDelegate>
 {
-    UICollectionView    *collectionView;
+    UICollectionView    *maincollectionView;
     NSMutableArray      *collectionData;
     BOOL bScrolling;
 }

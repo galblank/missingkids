@@ -129,6 +129,9 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_SHOW_MENU_BUTTON:
             retMessage = @"MESSAGETYPE_SHOW_MENU_BUTTON";
             break;
+        case MESSAGETYPE_CHANGE_MENU_BUTTON:
+            retMessage = @"MESSAGETYPE_CHANGE_MENU_BUTTON";
+            break;
         default:
             break;
     }

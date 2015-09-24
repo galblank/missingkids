@@ -12,6 +12,8 @@
 #define DEFAULT_TTL 15.0
 #define TTL_NOW 0.5;
 
+#define ROOT_IMAGES @"http://www.missingkids.com/photographs/"
+
 @interface MessageDispatcher : NSObject
 {
     NSTimer *dispsatchTimer;

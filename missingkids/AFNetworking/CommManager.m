@@ -59,10 +59,13 @@ static CommManager *sharedSampleSingletonDelegate = nil;
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/plain"];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
     NSString *fullAPI = [NSString stringWithFormat:@"%@%@",ROOT_API,api];
-    NSError *error = nil;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&error];
-    [manager GET:fullAPI parameters:jsonData success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"JSON: %@", responseObject);
+    [manager GET:fullAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        //NSLog(@"JSON: %@", responseObject);
+        Message *msg = [[Message alloc] init];
+        msg.mesRoute = MESSAGEROUTE_INTERNAL;
+        msg.mesType = [[responseObject objectForKey:@"messageid"] intValue];
+        msg.params = [responseObject objectForKey:@"data"];
+        [[MessageDispatcher sharedInstance] addMessageToBus:msg];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
@@ -73,12 +76,8 @@ static CommManager *sharedSampleSingletonDelegate = nil;
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/plain"];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
     NSString *fullAPI = [NSString stringWithFormat:@"%@%@",ROOT_API,api];
-    NSError *error = nil;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:params options:0 error:&error];
-    NSMutableDictionary *jsonDic = [[NSMutableDictionary alloc] init];
-    [jsonDic setObject:params forKey:@"json"];
     [manager POST:fullAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"JSON: %@", responseObject);
+        //NSLog(@"JSON: %@", responseObject);
         Message *msg = [[Message alloc] init];
         msg.mesRoute = MESSAGEROUTE_INTERNAL;
         msg.mesType = [[responseObject objectForKey:@"messageid"] intValue];

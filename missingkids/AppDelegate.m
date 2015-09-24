@@ -162,22 +162,57 @@ AppDelegate *shared = nil;
 -(void)signinresponse:(NSNotification*)notify
 {
     NSLog(@"signinresponse: %@",notify.userInfo);
-    NSString *secToken = [notify.userInfo objectForKey:@"securitytoken"];
-    if(secToken){
-        [[NSUserDefaults standardUserDefaults] setObject:secToken forKey:@"securitytoken"];
+    Message * msg = [notify.userInfo objectForKey:@"message"];
+    if([msg.params objectForKey:@"securitytoken"]){
+        [[NSUserDefaults standardUserDefaults] setObject:[msg.params objectForKey:@"securitytoken"] forKey:@"securitytoken"];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_MENU_BUTTON] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU_BUTTON] object:nil];
     [self showMenuButton];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu) name:MESSAGE_SHOW_SHARING_MENU object:nil];
 }
 
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
+-(void)showSharingMenu
+{
+    AAShareBubbles *shareBubbles = [[AAShareBubbles alloc] initCenteredInWindowWithRadius:150];
+    shareBubbles.delegate = self;
+    shareBubbles.bubbleRadius = 45; // Default is 40
+    shareBubbles.showFacebookBubble = YES;
+    shareBubbles.showTwitterBubble = YES;
+    shareBubbles.showMailBubble = YES;
+    shareBubbles.showGooglePlusBubble = YES;
+    shareBubbles.showTumblrBubble = YES;
+    shareBubbles.showVkBubble = YES;
+    
+    // add custom buttons -- buttonId for custom buttons MUST be greater than or equal to 100
+    /*[shareBubbles addCustomButtonWithIcon:[UIImage imageNamed:@"custom-icon"]
+                          backgroundColor:[UIColor greenColor]
+                              andButtonId:100];*/
+    
+    
+    [shareBubbles show];
+}
 -(void)showMenuButton
 {
-    menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    menuButton.frame = CGRectMake(self.window.frame.size.width - 70, self.window.frame.size.height - 70, 50, 50);
-    [menuButton setBackgroundColor:[UIColor purpleColor]];
-    [menuButton addTarget:self action:@selector(populateMenu) forControlEvents:UIControlEventTouchUpInside];
-    menuButton.layer.cornerRadius = menuButton.frame.size.height / 2;
-    [self.window addSubview:menuButton];
+    if(menuButton == nil){
+        menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        menuButton.frame = CGRectMake(self.window.frame.size.width - 70, self.window.frame.size.height - 70, 50, 50);
+        [menuButton setBackgroundColor:[UIColor purpleColor]];
+        [menuButton addTarget:self action:@selector(showSharingMenu) forControlEvents:UIControlEventTouchUpInside];
+        menuButton.layer.cornerRadius = menuButton.frame.size.height / 2;
+        [self.window addSubview:menuButton];
+    }
+    menuButton.hidden = NO;
+}
+
+-(void)hideMenuButton
+{
+    if(menuButton){
+        menuButton.hidden = YES;
+    }
 }
 
 -(void)populateMenu
@@ -200,10 +235,7 @@ AppDelegate *shared = nil;
     popoverController = nil;
 }
 
--(void)hideMenuButton
-{
-    
-}
+
 
 - (void)startStandardUpdates
 {

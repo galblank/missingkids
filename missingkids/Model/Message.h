@@ -16,7 +16,11 @@ typedef enum{
 
 typedef enum{
     MESSAGETYPE_SIGNIN = 0,
-    MESSAGETYPE_SIGNIN_RESPONSE = 1
+    MESSAGETYPE_SIGNIN_RESPONSE = 1,
+    MESSAGETYPE_FETCH_PERSONS = 2,
+    MESSAGETYPE_FETCH_PERSON_RESPONSE=3,
+    MESSAGETYPE_HIDE_MENU_BUTTON = 1000,
+    MESSAGETYPE_SHOW_MENU_BUTTON = 1001
 }messageType;
 
 
@@ -25,7 +29,7 @@ typedef enum{
 
 @property(nonatomic)messageRoute mesRoute;
 @property(nonatomic)messageType mesType;
-@property(nonatomic,strong)NSMutableDictionary *params;
+@property(nonatomic,strong)id params;
 @property(nonatomic)int ttl;
 
 @end

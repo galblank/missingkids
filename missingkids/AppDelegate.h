@@ -23,6 +23,38 @@
 //#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
 #define ROOT_API    @"http://localhost:8080/amberalertapi/"
 
+#define MESSAGE_SHOW_SHARING_MENU @"MESSAGE_SHOW_SHARING_MENU"
+
+typedef enum {
+    FIRST_NAME = 1,
+    MIDDLE_NAME = 2,
+    LAST_NAME = 3,
+    AGE = 4,
+    SEX = 5,
+    RACE = 6,
+    AGENOW = 7,
+    IMAGE = 8,
+   BIRTHDATE = 9,
+    CASE_NUMBER = 10,
+    CASE_TYPE = 11,
+    CIRCUMSTANCE = 12,
+    EYE_COLOR = 13,
+    HAIR_COLOR = 14,
+    HEIGHT = 15,
+    WEIGHT = 16,
+    MISSING_CITY = 17,
+    MISSING_COUNTRY = 18,
+    MISSING_COUNTY = 19,
+    MISSING_PROVINCE = 20,
+    MISSING_STATE = 21,
+    MISSING_DATE = 22,
+    ORG_CONTACT_INFO = 23,
+    ORG_LOGO = 24,
+    ORG_NAME = 25,
+    ORG_PREFIX = 26,
+    LAST_UPDATED = 27
+}PERSON_TABLE_COLUMNS;
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate,WYPopoverControllerDelegate>
 {
     MainViewController *mainVc;

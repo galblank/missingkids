@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AAShareBubbles.h"
 
-@interface MainViewController : UIViewController
-
+@interface MainViewController : UIViewController<UICollectionViewDelegate,UICollectionViewDataSource,AAShareBubblesDelegate>
+{
+    UICollectionView    *collectionView;
+    NSMutableArray      *collectionData;
+    BOOL bScrolling;
+}
 
 @end
 

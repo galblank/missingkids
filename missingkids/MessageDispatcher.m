@@ -91,7 +91,7 @@ MessageDispatcher *sharedInstance = nil;
 
 -(void)startDispatching
 {
-    dispsatchTimer = [NSTimer scheduledTimerWithTimeInterval:15.0 target:self selector:@selector(leave) userInfo:nil repeats:YES];
+    dispsatchTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(leave) userInfo:nil repeats:YES];
 }
 
 -(void)stopDispathing
@@ -117,7 +117,18 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_SIGNIN_RESPONSE:
             retMessage = @"MESSAGETYPE_SIGNIN_RESPONSE";
             break;
-            
+        case MESSAGETYPE_FETCH_PERSONS:
+            retMessage = @"MESSAGETYPE_FETCH_PERSONS";
+            break;
+        case MESSAGETYPE_FETCH_PERSON_RESPONSE:
+            retMessage = @"MESSAGETYPE_FETCH_PERSON_RESPONSE";
+            break;
+        case MESSAGETYPE_HIDE_MENU_BUTTON:
+            retMessage = @"MESSAGETYPE_HIDE_MENU_BUTTON";
+            break;
+        case MESSAGETYPE_SHOW_MENU_BUTTON:
+            retMessage = @"MESSAGETYPE_SHOW_MENU_BUTTON";
+            break;
         default:
             break;
     }
@@ -135,8 +146,12 @@ MessageDispatcher *sharedInstance = nil;
             [dispatchedMessages addObject:message];
             break;
         case MESSAGEROUTE_INTERNAL:
-            [[NSNotificationCenter defaultCenter] postNotificationName:[self messageTypeToString:message.mesType] object:nil userInfo:message.params];
+        {
+            NSMutableDictionary * messageDic = [[NSMutableDictionary alloc] init];
+            [messageDic setObject:message forKey:@"message"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:[self messageTypeToString:message.mesType] object:nil userInfo:messageDic];
             [dispatchedMessages addObject:message];
+        }
             break;
         case MESSAGEROUTE_OTHER:
             break;
@@ -152,6 +167,9 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_SIGNIN:
             [[CommManager sharedInstance] postAPI:@"NewUser" andParams:message.params];
             break;
+        case MESSAGETYPE_FETCH_PERSONS:
+            [[CommManager sharedInstance] getAPI:@"fetchpersons" andParams:message.params];
+            break;
         default:
             break;
     }
@@ -163,7 +181,7 @@ MessageDispatcher *sharedInstance = nil;
     switch (message.mesType) {
         case MESSAGETYPE_SIGNIN:
         {
-            if(message.params.count < 3){
+            if(((NSMutableDictionary*)message.params).count < 3){
                 return NO;
             }
           
@@ -174,6 +192,8 @@ MessageDispatcher *sharedInstance = nil;
             
         }
         break;
+        case MESSAGETYPE_FETCH_PERSONS:
+            return YES;
         default:
             break;
     }

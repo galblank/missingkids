@@ -24,8 +24,6 @@
 //#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
 #define ROOT_API    @"http://localhost:8080/amberalertapi/"
 
-
-
 typedef enum {
     FIRST_NAME = 1,
     MIDDLE_NAME = 2,

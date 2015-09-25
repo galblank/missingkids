@@ -86,6 +86,10 @@ AppDelegate *shared = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_MENU_BUTTON] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU_BUTTON] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeMenuButton:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactDeveloper) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CONTACT_DEVELOPER] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shareThisApp) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHARE_THIS_APP] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMenu) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU] object:nil];
+    
     
     [self showMenuButton];
     
@@ -182,16 +186,30 @@ AppDelegate *shared = nil;
 }
 
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
+-(void)shareThisApp
+{
+    [self showSharingMenu:nil];
+}
+-(void)contactDeveloper
+{
+    if(mailComp == nil){
+        mailComp = [[MFMailComposeViewController alloc] init];
+        [mailComp setMailComposeDelegate:self];
+    }
+    if ([MFMailComposeViewController canSendMail]) {
+        [mailComp setToRecipients:@[@"galblank@gmail.com"]];
+        [mailComp setSubject:NSLocalizedString(@"Contact for MissingKids developer", nil)];
+        [self.window.rootViewController presentViewController:mailComp animated:YES completion:nil];
+    }
+}
 -(void)sendMail{
-    mailComp = [[MFMailComposeViewController alloc] init];
-    [mailComp setMailComposeDelegate:self];
+    if(mailComp == nil){
+        mailComp = [[MFMailComposeViewController alloc] init];
+        [mailComp setMailComposeDelegate:self];
+    }
     
     if ([MFMailComposeViewController canSendMail]) {
-        [mailComp setToRecipients:@[@"vasia@vasia.com"]];
         [mailComp setSubject:NSLocalizedString(@"Please help find this missing child!", nil)];
-        
-        [mailComp setMessageBody:@"Message body test" isHTML:NO];
-        
         NSNumber * missingDate = [sharemissingperson objectAtIndex:MISSING_DATE];
         NSDate * date = [NSDate dateWithTimeIntervalSince1970:(missingDate.doubleValue / 1000)];
         NSDateFormatter *df = [[NSDateFormatter alloc] init];
@@ -212,7 +230,16 @@ AppDelegate *shared = nil;
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
         SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-        [tweetSheet setInitialText:@"This is a tweet!"];
+        NSNumber * missingDate = [sharemissingperson objectAtIndex:MISSING_DATE];
+        NSDate * date = [NSDate dateWithTimeIntervalSince1970:(missingDate.doubleValue / 1000)];
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        df.dateFormat = @"MMM dd yyyy";
+        NSString * strDate = [df stringFromDate:date];
+        NSString *shareString = [NSString stringWithFormat:@"%@\r\n%@ %@ went missing on %@ from %@ %@",NSLocalizedString(@"Please help find this missing child!", nil),[sharemissingperson objectAtIndex:FIRST_NAME],[sharemissingperson objectAtIndex:LAST_NAME],strDate,[sharemissingperson objectAtIndex:MISSING_CITY],[sharemissingperson objectAtIndex:MISSING_COUNTRY]];
+        [tweetSheet setInitialText:shareString];
+        if([[sharemissingperson lastObject] isKindOfClass:[UIImage class]]){
+            [tweetSheet addImage:[sharemissingperson lastObject]];
+        }
         [[self topViewController] presentViewController:tweetSheet animated:YES completion:nil];
         
     }
@@ -239,8 +266,10 @@ AppDelegate *shared = nil;
         NSDateFormatter *df = [[NSDateFormatter alloc] init];
         df.dateFormat = @"MMM dd yyyy";
         NSString * strDate = [df stringFromDate:date];
-        NSString *shareString = [NSString stringWithFormat:@"%@\r\n%@%@ %@ went missing on %@ from %@ %@",NSLocalizedString(@"Please help find this missing child!", nil),[sharemissingperson objectAtIndex:FIRST_NAME],[sharemissingperson objectAtIndex:LAST_NAME],strDate,[sharemissingperson objectAtIndex:MISSING_CITY],[sharemissingperson objectAtIndex:MISSING_COUNTRY]];
-        [fbPostSheet setInitialText:shareString];
+        NSString *shareString = [NSString stringWithFormat:@"%@\r\n%@ %@ went missing on %@ from %@ %@",NSLocalizedString(@"Please help find this missing child!", nil),[sharemissingperson objectAtIndex:FIRST_NAME],[sharemissingperson objectAtIndex:LAST_NAME],strDate,[sharemissingperson objectAtIndex:MISSING_CITY],[sharemissingperson objectAtIndex:MISSING_COUNTRY]];
+        if([fbPostSheet setInitialText:shareString] == NO){
+            
+        }
         if([[sharemissingperson lastObject] isKindOfClass:[UIImage class]]){
             [fbPostSheet addImage:[sharemissingperson lastObject]];
         }
@@ -268,8 +297,13 @@ AppDelegate *shared = nil;
 
 -(void)showSharingMenu:(NSNotification*)notify
 {
-    Message * msg = [notify.userInfo objectForKey:@"message"];
-    sharemissingperson = [msg.params objectForKey:@"person"];
+    if(notify){
+        Message * msg = [notify.userInfo objectForKey:@"message"];
+        sharemissingperson = [msg.params objectForKey:@"person"];
+    }
+    else{
+        sharemissingperson = nil;
+    }
     AAShareBubbles *shareBubbles = [[AAShareBubbles alloc] initCenteredInWindowWithRadius:130];
     shareBubbles.delegate = self;
     shareBubbles.bubbleRadius = 45; // Default is 40
@@ -393,6 +427,13 @@ AppDelegate *shared = nil;
     }
     [popoverController presentPopoverFromRect:menuButton.bounds inView:menuButton permittedArrowDirections:WYPopoverArrowDirectionAny animated:YES];
     
+}
+
+-(void)hideMenu
+{
+    if(popoverController){
+        [popoverController dismissPopoverAnimated:YES];
+    }
 }
 
 - (BOOL)popoverControllerShouldDismissPopover:(WYPopoverController *)controller

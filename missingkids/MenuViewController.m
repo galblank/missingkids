@@ -7,6 +7,8 @@
 //
 
 #import "MenuViewController.h"
+#import "Message.h"
+#import "MessageDispatcher.h"
 
 @interface MenuViewController ()
 
@@ -70,6 +72,32 @@
     return 50.0;
 }
 
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    Message * msg = [[Message alloc] init];
+    msg.mesRoute = MESSAGEROUTE_INTERNAL;
+    msg.ttl = TTL_NOW;
+    if(indexPath.row == 0){
+        msg.mesType = MESSAGETYPE_SHOW_FILTER_OPTIONS;
+    }
+    else if(indexPath.row == 1){
+        msg.mesType = MESSAGETYPE_SHOW_SORTING_OPTIONS;
+    }
+    else if(indexPath.row == 2){
+        msg.mesType = MESSAGETYPE_SHARE_THIS_APP;
+    }
+    else if(indexPath.row == 3){
+        msg.mesType = MESSAGETYPE_CONTACT_DEVELOPER;
+    }
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU] object:nil];
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:msg.mesType] object:nil];
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {

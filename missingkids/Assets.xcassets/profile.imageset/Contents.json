@@ -2,26 +2,27 @@
   "images" : [
     {
       "idiom" : "iphone",
-      "filename" : "profile.png",
+      "filename" : "question_mark.png",
       "scale" : "1x"
     },
     {
       "idiom" : "iphone",
-      "filename" : "profile@2x.png",
+      "filename" : "question_mark@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "iphone",
-      "filename" : "profile@2x-1.png",
+      "filename" : "question_mark@3x.png",
       "scale" : "3x"
     },
     {
       "idiom" : "ipad",
-      "filename" : "profile-1.png",
+      "filename" : "question_mark-1.png",
       "scale" : "1x"
     },
     {
       "idiom" : "ipad",
+      "filename" : "question_mark@2x-1.png",
       "scale" : "2x"
     }
   ],

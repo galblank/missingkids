@@ -32,6 +32,8 @@
     NSMutableDictionary *userinfo = [[NSMutableDictionary alloc] init];
     [userinfo setObject:msg forKey:@"message"];
     [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil userInfo:userinfo];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_FILTER_OPTIONS] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSorting) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SORTING_OPTIONS] object:nil];
 }
 
 - (void)viewDidLoad {
@@ -66,6 +68,26 @@
         collectionData = results;
         [maincollectionView reloadData];
     }
+}
+
+-(void)showFilter
+{
+    
+}
+
+-(void)hideFilter
+{
+    
+}
+
+-(void)showSorting
+{
+    
+}
+
+-(void)hideSorting
+{
+    
 }
 
 - (void)didReceiveMemoryWarning {

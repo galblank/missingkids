@@ -135,6 +135,21 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_SHOW_SHARING_MENU:
             retMessage = @"MESSAGETYPE_SHOW_SHARING_MENU";
             break;
+        case MESSAGETYPE_SHARE_THIS_APP:
+            retMessage = @"MESSAGETYPE_SHARE_THIS_APP";
+            break;
+        case MESSAGETYPE_SHOW_FILTER_OPTIONS:
+            retMessage = @"MESSAGETYPE_SHOW_FILTER_OPTIONS";
+            break;
+        case MESSAGETYPE_SHOW_SORTING_OPTIONS:
+            retMessage = @"MESSAGETYPE_SHOW_SORTING_OPTIONS";
+            break;
+        case MESSAGETYPE_CONTACT_DEVELOPER:
+            retMessage = @"MESSAGETYPE_CONTACT_DEVELOPER";
+            break;
+        case MESSAGETYPE_HIDE_MENU:
+            retMessage = @"MESSAGETYPE_HIDE_MENU";
+            break;
         default:
             break;
     }

@@ -169,6 +169,10 @@ MessageDispatcher *sharedInstance = nil;
 
 -(void)routeMessageToServerWithType:(Message*)message
 {
+    if(message.params == nil){
+        message.params = [[NSMutableDictionary alloc] init];
+    }
+    [message.params setObject:[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"] forKey:@"securitytoken"];
     switch (message.mesType) {
         case MESSAGETYPE_SIGNIN:
             [[CommManager sharedInstance] postAPI:@"NewUser" andParams:message.params];

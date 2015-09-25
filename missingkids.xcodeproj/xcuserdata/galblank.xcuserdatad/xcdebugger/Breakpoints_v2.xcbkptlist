@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "missingkids/AppDelegate.m"
-            timestampString = "464823197.910153"
+            filePath = "missingkids/AFNetworking/CommManager.m"
+            timestampString = "464885912.142376"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "169"
-            endingLineNumber = "169"
-            landmarkName = "-signinresponse:"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "-getAPI:andParams:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -59,7 +59,7 @@
      [params setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
      msg.params = params;*/
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gotpersons:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_FETCH_PERSON_RESPONSE] object:nil];
-    //[[MessageDispatcher sharedInstance] addMessageToBus:msg];
+    [[MessageDispatcher sharedInstance] addMessageToBus:msg];
     
     NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:@"select * from person order by missingDate desc"];
     if(results){

@@ -46,6 +46,8 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"myCell"];
     if(cell == nil){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"myCell"];
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18];
     }
     if(indexPath.row == 0){
         cell.textLabel.text = NSLocalizedString(@"Filter", nil);
@@ -57,7 +59,7 @@
         cell.textLabel.text = NSLocalizedString(@"Share", nil);
     }
     else if(indexPath.row == 3){
-        cell.textLabel.text = NSLocalizedString(@"Filter", nil);
+        cell.textLabel.text = NSLocalizedString(@"Contact", nil);
     }
     return cell;
 }

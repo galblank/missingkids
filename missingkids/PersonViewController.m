@@ -66,6 +66,7 @@
         [scrollView setMinimumZoomScale:minimumScale];
         [scrollView setZoomScale:minimumScale];
         [scrollView addSubview:imageView];
+        [person addObject:imageView.image];
     }
     
     scrollView.contentSize = CGSizeMake(self.view.frame.size.width * arrayOfImages.count,scrollView.frame.size.height);

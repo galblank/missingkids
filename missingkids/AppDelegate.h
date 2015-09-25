@@ -10,6 +10,7 @@
 #import "MainViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "WYPopoverController.h"
+#import <MessageUI/MessageUI.h>
 
 #define TITLE_HEADER_COLOR [UIColor colorWithRed:133.0 / 255.0 green:150.0  / 255.0 blue:166.0 / 255.0 alpha:1.0]
 #define THEME_GRAY_BG_COLOR [UIColor colorWithRed:243.0 / 255.0 green:243.0  / 255.0 blue:243.0 / 255.0 alpha:1.0]
@@ -20,8 +21,8 @@
 #define THEME_COLOR_DISABLED [UIColor colorWithRed:105.0 / 255.0 green:217.0 / 255.0 blue:255.0 / 255.0 alpha:1.0]
 
 
-#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
-//#define ROOT_API    @"http://localhost:8080/amberalertapi/"
+//#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
+#define ROOT_API    @"http://localhost:8080/amberalertapi/"
 
 
 
@@ -66,6 +67,7 @@ typedef enum {
     UIButton *menuButton;
     WYPopoverController* popoverController;
     NSMutableArray *sharemissingperson;
+    MFMailComposeViewController *mailComp;
 }
 @property (strong, nonatomic) UIWindow *window;
 + (AppDelegate*)shared;

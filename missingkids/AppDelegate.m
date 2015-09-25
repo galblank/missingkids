@@ -10,9 +10,8 @@
 #import "MessageDispatcher.h"
 #import "WYPopoverController/WYPopoverController.h"
 #import "MenuViewController.h"
-#import <MessageUI/MessageUI.h>
 #import "Social/Social.h"
-
+#import "UIKit+AFNetworking.h"
 @interface AppDelegate ()
 
 @end
@@ -83,6 +82,15 @@ AppDelegate *shared = nil;
     }
     
     [self startStandardUpdates];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_MENU_BUTTON] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU_BUTTON] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeMenuButton:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil];
+    
+    [self showMenuButton];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SHARING_MENU] object:nil];
+    
     return YES;
 }
 
@@ -140,22 +148,22 @@ AppDelegate *shared = nil;
     // If it's a relatively recent event, turn off updates to save power.
     location = [locations lastObject];
     [locationManager stopUpdatingLocation];
-    [self signin];
-    
 }
 
 
 -(void)signin
 {
-    if(apnsToken && apnsToken.length > 10 && location != nil){
+    if(apnsToken && apnsToken.length > 10){
         Message * msg = [[Message alloc] init];
         msg.mesType = MESSAGETYPE_SIGNIN;
         msg.mesRoute = MESSAGEROUTE_API;
         msg.ttl = TTL_NOW;
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
         [params setObject:apnsToken forKey:@"apnskey"];
-        [params setObject:[NSNumber numberWithDouble:location.coordinate.latitude] forKey:@"latitude"];
-        [params setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
+        if(location){
+            [params setObject:[NSNumber numberWithDouble:location.coordinate.latitude] forKey:@"latitude"];
+            [params setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
+        }
         msg.params = params;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signinresponse:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SIGNIN_RESPONSE] object:nil];
         [[MessageDispatcher sharedInstance] addMessageToBus:msg];
@@ -171,28 +179,31 @@ AppDelegate *shared = nil;
     if([msg.params objectForKey:@"securitytoken"]){
         [[NSUserDefaults standardUserDefaults] setObject:[msg.params objectForKey:@"securitytoken"] forKey:@"securitytoken"];
     }
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_MENU_BUTTON] object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMenuButton) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU_BUTTON] object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeMenuButton:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil];
-    
-    [self showMenuButton];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SHARING_MENU] object:nil];
 }
 
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
 -(void)sendMail{
-    MFMailComposeViewController *mailComp = [[MFMailComposeViewController alloc] init];
+    mailComp = [[MFMailComposeViewController alloc] init];
     [mailComp setMailComposeDelegate:self];
     
     if ([MFMailComposeViewController canSendMail]) {
-        
-        [mailComp setSubject:@"Subject test"];
+        [mailComp setToRecipients:@[@"vasia@vasia.com"]];
+        [mailComp setSubject:NSLocalizedString(@"Please help find this missing child!", nil)];
         
         [mailComp setMessageBody:@"Message body test" isHTML:NO];
         
-        [[self topViewController] presentViewController:mailComp animated:YES completion:nil];
+        NSNumber * missingDate = [sharemissingperson objectAtIndex:MISSING_DATE];
+        NSDate * date = [NSDate dateWithTimeIntervalSince1970:(missingDate.doubleValue / 1000)];
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        df.dateFormat = @"MMM dd yyyy";
+        NSString * strDate = [df stringFromDate:date];
+        NSString *shareString = [NSString stringWithFormat:@"%@\r\n%@ %@ went missing on %@ from %@ %@",NSLocalizedString(@"Please help find this missing child!", nil),[sharemissingperson objectAtIndex:FIRST_NAME],[sharemissingperson objectAtIndex:LAST_NAME],strDate,[sharemissingperson objectAtIndex:MISSING_CITY],[sharemissingperson objectAtIndex:MISSING_COUNTRY]];
+        [mailComp setMessageBody:shareString isHTML:YES];
+        if([[sharemissingperson lastObject] isKindOfClass:[UIImage class]]){
+            [mailComp addAttachmentData:UIImageJPEGRepresentation([sharemissingperson lastObject],1.0) mimeType:@"image/jpeg" fileName:@"image"];
+        }
+        
+        [self.window.rootViewController presentViewController:mailComp animated:YES completion:nil];
     }
 }
 
@@ -223,7 +234,16 @@ AppDelegate *shared = nil;
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
     {
         SLComposeViewController *fbPostSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-        [fbPostSheet setInitialText:@"This is a Facebook post!"];
+        NSNumber * missingDate = [sharemissingperson objectAtIndex:MISSING_DATE];
+        NSDate * date = [NSDate dateWithTimeIntervalSince1970:(missingDate.doubleValue / 1000)];
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        df.dateFormat = @"MMM dd yyyy";
+        NSString * strDate = [df stringFromDate:date];
+        NSString *shareString = [NSString stringWithFormat:@"%@\r\n%@%@ %@ went missing on %@ from %@ %@",NSLocalizedString(@"Please help find this missing child!", nil),[sharemissingperson objectAtIndex:FIRST_NAME],[sharemissingperson objectAtIndex:LAST_NAME],strDate,[sharemissingperson objectAtIndex:MISSING_CITY],[sharemissingperson objectAtIndex:MISSING_COUNTRY]];
+        [fbPostSheet setInitialText:shareString];
+        if([[sharemissingperson lastObject] isKindOfClass:[UIImage class]]){
+            [fbPostSheet addImage:[sharemissingperson lastObject]];
+        }
         [[self topViewController] presentViewController:fbPostSheet animated:YES completion:nil];
     } else
     {
@@ -342,7 +362,6 @@ AppDelegate *shared = nil;
 -(void)showMenuButton
 {
     if(menuButton == nil){
-        
         menuButton = [UIButton buttonWithType:UIButtonTypeCustom];
         menuButton.frame = CGRectMake(self.window.frame.size.width - 80, self.window.frame.size.height - 80, 60, 60);
         menuButton.layer.borderColor = [UIColor lightGrayColor].CGColor;

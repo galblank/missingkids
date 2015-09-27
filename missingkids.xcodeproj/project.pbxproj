@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		095C4BA51BB46D3000749CD8 /* PersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BA41BB46D3000749CD8 /* PersonViewController.m */; settings = {ASSET_TAGS = (); }; };
 		095C4BA71BB49F4700749CD8 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095C4BA61BB49F4700749CD8 /* Social.framework */; };
+		095C4BAA1BB5DBEA00749CD8 /* ABContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BA91BB5DBEA00749CD8 /* ABContactsViewController.m */; settings = {ASSET_TAGS = (); }; };
+		095C4BAF1BB5DCBA00749CD8 /* AFAddressBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BAC1BB5DCBA00749CD8 /* AFAddressBookManager.m */; settings = {ASSET_TAGS = (); }; };
+		095C4BB01BB5DCBA00749CD8 /* AFContact.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BAE1BB5DCBA00749CD8 /* AFContact.m */; settings = {ASSET_TAGS = (); }; };
+		095C4BB51BB5DD4500749CD8 /* ImageResizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BB21BB5DD4500749CD8 /* ImageResizer.m */; settings = {ASSET_TAGS = (); }; };
+		095C4BB61BB5DD4500749CD8 /* RoundImageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BB41BB5DD4500749CD8 /* RoundImageTableViewCell.m */; settings = {ASSET_TAGS = (); }; };
+		095C4BB91BB5DD8A00749CD8 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095C4BB71BB5DD8A00749CD8 /* AddressBook.framework */; };
+		095C4BBA1BB5DD8A00749CD8 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095C4BB81BB5DD8A00749CD8 /* AddressBookUI.framework */; };
 		09BF7A331BB07CEF00A48BEF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A321BB07CEF00A48BEF /* main.m */; };
 		09BF7A361BB07CEF00A48BEF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A351BB07CEF00A48BEF /* AppDelegate.m */; };
 		09BF7A391BB07CEF00A48BEF /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A381BB07CEF00A48BEF /* MainViewController.m */; };
@@ -96,6 +103,18 @@
 		095C4BA31BB46D3000749CD8 /* PersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonViewController.h; sourceTree = "<group>"; };
 		095C4BA41BB46D3000749CD8 /* PersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonViewController.m; sourceTree = "<group>"; };
 		095C4BA61BB49F4700749CD8 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		095C4BA81BB5DBEA00749CD8 /* ABContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABContactsViewController.h; sourceTree = "<group>"; };
+		095C4BA91BB5DBEA00749CD8 /* ABContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABContactsViewController.m; sourceTree = "<group>"; };
+		095C4BAB1BB5DCBA00749CD8 /* AFAddressBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFAddressBookManager.h; sourceTree = "<group>"; };
+		095C4BAC1BB5DCBA00749CD8 /* AFAddressBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFAddressBookManager.m; sourceTree = "<group>"; };
+		095C4BAD1BB5DCBA00749CD8 /* AFContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFContact.h; sourceTree = "<group>"; };
+		095C4BAE1BB5DCBA00749CD8 /* AFContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFContact.m; sourceTree = "<group>"; };
+		095C4BB11BB5DD4500749CD8 /* ImageResizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageResizer.h; sourceTree = "<group>"; };
+		095C4BB21BB5DD4500749CD8 /* ImageResizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageResizer.m; sourceTree = "<group>"; };
+		095C4BB31BB5DD4500749CD8 /* RoundImageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundImageTableViewCell.h; sourceTree = "<group>"; };
+		095C4BB41BB5DD4500749CD8 /* RoundImageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundImageTableViewCell.m; sourceTree = "<group>"; };
+		095C4BB71BB5DD8A00749CD8 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		095C4BB81BB5DD8A00749CD8 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		09BF7A2E1BB07CEF00A48BEF /* missingkids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = missingkids.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09BF7A321BB07CEF00A48BEF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		09BF7A341BB07CEF00A48BEF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -218,6 +237,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				095C4BB91BB5DD8A00749CD8 /* AddressBook.framework in Frameworks */,
+				095C4BBA1BB5DD8A00749CD8 /* AddressBookUI.framework in Frameworks */,
 				095C4BA71BB49F4700749CD8 /* Social.framework in Frameworks */,
 				09BF7AF91BB2FF0900A48BEF /* libsqlite3.tbd in Frameworks */,
 				09BF7ADD1BB0965600A48BEF /* libicucore.tbd in Frameworks */,
@@ -280,10 +301,8 @@
 			isa = PBXGroup;
 			children = (
 				09BF7AF31BB2FE7400A48BEF /* amberalert.db */,
-				09BF7AE91BB2057800A48BEF /* WYPopoverController */,
 				09BF7AE41BB0B58C00A48BEF /* Model */,
 				09BF7AA21BB0853000A48BEF /* Helpers */,
-				09BF7A821BB0830F00A48BEF /* AFNetworking */,
 				09BF7A341BB07CEF00A48BEF /* AppDelegate.h */,
 				09BF7A351BB07CEF00A48BEF /* AppDelegate.m */,
 				09BF7A371BB07CEF00A48BEF /* MainViewController.h */,
@@ -358,12 +377,23 @@
 				09BF7A941BB0830F00A48BEF /* AFURLSessionManager.h */,
 				09BF7A951BB0830F00A48BEF /* AFURLSessionManager.m */,
 			);
-			path = AFNetworking;
+			name = AFNetworking;
+			path = missingkids/AFNetworking;
 			sourceTree = "<group>";
 		};
 		09BF7AA21BB0853000A48BEF /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				095C4BB11BB5DD4500749CD8 /* ImageResizer.h */,
+				095C4BB21BB5DD4500749CD8 /* ImageResizer.m */,
+				095C4BB31BB5DD4500749CD8 /* RoundImageTableViewCell.h */,
+				095C4BB41BB5DD4500749CD8 /* RoundImageTableViewCell.m */,
+				095C4BAB1BB5DCBA00749CD8 /* AFAddressBookManager.h */,
+				095C4BAC1BB5DCBA00749CD8 /* AFAddressBookManager.m */,
+				095C4BAD1BB5DCBA00749CD8 /* AFContact.h */,
+				095C4BAE1BB5DCBA00749CD8 /* AFContact.m */,
+				095C4BA81BB5DBEA00749CD8 /* ABContactsViewController.h */,
+				095C4BA91BB5DBEA00749CD8 /* ABContactsViewController.m */,
 				09BF7B331BB381CD00A48BEF /* InsetUILabel.m */,
 				09BF7B001BB3817900A48BEF /* InsetTextField.h */,
 				09BF7B011BB3817900A48BEF /* InsetTextField.m */,
@@ -409,6 +439,10 @@
 		09BF7AE81BB0BD6100A48BEF /* frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				09BF7AE91BB2057800A48BEF /* WYPopoverController */,
+				09BF7A821BB0830F00A48BEF /* AFNetworking */,
+				095C4BB71BB5DD8A00749CD8 /* AddressBook.framework */,
+				095C4BB81BB5DD8A00749CD8 /* AddressBookUI.framework */,
 				09BF7AFA1BB320E500A48BEF /* AAShareBubbles */,
 				09BF7AF81BB2FF0900A48BEF /* libsqlite3.tbd */,
 				09BF7ADC1BB0965600A48BEF /* libicucore.tbd */,
@@ -437,7 +471,8 @@
 				09BF7AEC1BB2057800A48BEF /* WYStoryboardPopoverSegue.h */,
 				09BF7AED1BB2057800A48BEF /* WYStoryboardPopoverSegue.m */,
 			);
-			path = WYPopoverController;
+			name = WYPopoverController;
+			path = missingkids/WYPopoverController;
 			sourceTree = "<group>";
 		};
 		09BF7AFA1BB320E500A48BEF /* AAShareBubbles */ = {
@@ -612,6 +647,7 @@
 				09BF7A961BB0830F00A48BEF /* AFHTTPRequestOperation.m in Sources */,
 				09BF7B4E1BB38C1200A48BEF /* UIRefreshControl+AFNetworking.m in Sources */,
 				09BF7AB71BB0853000A48BEF /* UIImage+Alpha.m in Sources */,
+				095C4BB51BB5DD4500749CD8 /* ImageResizer.m in Sources */,
 				095C4BA51BB46D3000749CD8 /* PersonViewController.m in Sources */,
 				09BF7A391BB07CEF00A48BEF /* MainViewController.m in Sources */,
 				09BF7B341BB381CD00A48BEF /* InsetUILabel.m in Sources */,
@@ -625,6 +661,7 @@
 				09BF7A991BB0830F00A48BEF /* AFNetworkReachabilityManager.m in Sources */,
 				09BF7B4A1BB38C1200A48BEF /* UIAlertView+AFNetworking.m in Sources */,
 				09BF7AD91BB0941100A48BEF /* GTMBase64.m in Sources */,
+				095C4BB61BB5DD4500749CD8 /* RoundImageTableViewCell.m in Sources */,
 				09BF7A9D1BB0830F00A48BEF /* AFURLResponseSerialization.m in Sources */,
 				09BF7AFF1BB320E500A48BEF /* AAShareBubbles.m in Sources */,
 				09BF7B4F1BB38C1200A48BEF /* UIWebView+AFNetworking.m in Sources */,
@@ -638,6 +675,7 @@
 				09BF7B4B1BB38C1200A48BEF /* UIButton+AFNetworking.m in Sources */,
 				09BF7AF71BB2FEB200A48BEF /* DBManager.m in Sources */,
 				09BF7B4D1BB38C1200A48BEF /* UIProgressView+AFNetworking.m in Sources */,
+				095C4BAA1BB5DBEA00749CD8 /* ABContactsViewController.m in Sources */,
 				09BF7ABA1BB0853000A48BEF /* Utils.m in Sources */,
 				09BF7AEF1BB2057800A48BEF /* WYStoryboardPopoverSegue.m in Sources */,
 				09BF7A981BB0830F00A48BEF /* AFHTTPSessionManager.m in Sources */,
@@ -648,7 +686,9 @@
 				09BF7A9C1BB0830F00A48BEF /* AFURLRequestSerialization.m in Sources */,
 				09BF7AB91BB0853000A48BEF /* UIImage+RoundedCorner.m in Sources */,
 				09BF7A9E1BB0830F00A48BEF /* AFURLSessionManager.m in Sources */,
+				095C4BAF1BB5DCBA00749CD8 /* AFAddressBookManager.m in Sources */,
 				09BF7A361BB07CEF00A48BEF /* AppDelegate.m in Sources */,
+				095C4BB01BB5DCBA00749CD8 /* AFContact.m in Sources */,
 				09BF7AF21BB2E6B900A48BEF /* CollectionViewCell.m in Sources */,
 				09BF7A331BB07CEF00A48BEF /* main.m in Sources */,
 			);

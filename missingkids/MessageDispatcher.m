@@ -150,6 +150,15 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_HIDE_MENU:
             retMessage = @"MESSAGETYPE_HIDE_MENU";
             break;
+        case MESSAGETYPE_SORT_BY_MISSINGDATE:
+            retMessage = @"MESSAGETYPE_SORT_BY_MISSINGDATE";
+            break;
+        case MESSAGETYPE_SORT_BY_AGE:
+            retMessage = @"MESSAGETYPE_SORT_BY_AGE";
+            break;
+        case MESSAGETYPE_SORT_BY_SEX:
+            retMessage = @"MESSAGETYPE_SORT_BY_SEX";
+            break;
         default:
             break;
     }

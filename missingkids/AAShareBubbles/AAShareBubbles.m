@@ -61,7 +61,7 @@
         self.instagramBackgroundColorRGB = 0x2e5e89;
         self.favoriteBackgroundColorRGB = 0xedd013;
         self.whatsappBackgroundColorRGB = 0x00B000;
-        
+        self.smsappBackgroundColorRGB = 0x00B000;
         self.customButtons = [[NSMutableArray alloc] init];
     }
     return self;
@@ -127,6 +127,7 @@
         if(self.showInstagramBubble)    [self createButtonWithIcon:@"icon-aa-instagram.png" backgroundColor:self.instagramBackgroundColorRGB andType:AAShareBubbleTypeInstagram];
         if(self.showFavoriteBubble)     [self createButtonWithIcon:@"icon-aa-star.png" backgroundColor:self.favoriteBackgroundColorRGB andType:AAShareBubbleTypeFavorite];
         if(self.showWhatsappBubble)     [self createButtonWithIcon:@"icon-aa-whatsapp.png" backgroundColor:self.whatsappBackgroundColorRGB andType:AAShareBubbleTypeWhatsapp];
+        if(self.showSmsBubble)          [self createButtonWithIcon:@"smsicon.png" backgroundColor:self.smsappBackgroundColorRGB andType:AAShareBubbleTypeSMS];
         
         for (AACustomShareBubble *customBubble in self.customButtons)
         {

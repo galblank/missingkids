@@ -32,16 +32,19 @@
     NSMutableDictionary *userinfo = [[NSMutableDictionary alloc] init];
     [userinfo setObject:msg forKey:@"message"];
     [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil userInfo:userinfo];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_FILTER_OPTIONS] object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSorting) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SORTING_OPTIONS] object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_MISSINGDATE] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_AGE] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_SEX] object:nil];
+    
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
-    maincollectionView=[[UICollectionView alloc] initWithFrame:CGRectMake(2, 0, self.view.frame.size
-                                                                      .width - 4, self.view.frame.size.height) collectionViewLayout:layout];
+    maincollectionView=[[UICollectionView alloc] initWithFrame:CGRectMake(2, 15, self.view.frame.size
+                                                                      .width - 4, self.view.frame.size.height - 15) collectionViewLayout:layout];
     [maincollectionView setDataSource:self];
     [maincollectionView setDelegate:self];
     
@@ -51,6 +54,53 @@
     [self.view addSubview:maincollectionView];
     
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    
+    scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width,50)];
+    scrollView.pagingEnabled = YES;
+    scrollView.bounces = YES;
+    scrollView.delegate = self;
+    scrollView.minimumZoomScale=0.5;
+    scrollView.maximumZoomScale=6.0;
+    //scrollView.layer.borderWidth = 0.3;
+    //scrollView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    scrollView.backgroundColor = [UIColor whiteColor];
+    scrollView.alpha = 0.8;
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    scrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    //[self.view addSubview:scrollView];
+    
+    CGFloat x = 0 * self.view.frame.size.width;
+    UIButton *buttonDate = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonDate.titleLabel.numberOfLines = 0;
+    [buttonDate.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:25]];
+    [buttonDate setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    buttonDate.frame = CGRectMake(x, 0, scrollView.frame.size.width, scrollView.frame.size.height);
+    [buttonDate setTitle:NSLocalizedString(@"Sort by : Missing Date", nil) forState:UIControlStateNormal];
+    [scrollView addSubview:buttonDate];
+    
+    x += scrollView.frame.size.width;
+    UIButton *buttonAge = [UIButton buttonWithType:UIButtonTypeCustom];
+    [buttonAge.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:25]];
+    buttonAge.titleLabel.numberOfLines = 0;
+    buttonAge.frame = CGRectMake(x, 0, scrollView.frame.size.width, scrollView.frame.size.height);
+    [buttonAge setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [buttonAge setTitle:NSLocalizedString(@"Sort by : Age", nil) forState:UIControlStateNormal];
+    [scrollView addSubview:buttonAge];
+    
+    x += scrollView.frame.size.width;
+    UIButton *buttonSex = [UIButton buttonWithType:UIButtonTypeCustom];
+    [buttonSex.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:25]];
+    buttonSex.titleLabel.numberOfLines = 0;
+    [buttonSex setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    buttonSex.frame = CGRectMake(x, 0, scrollView.frame.size.width, scrollView.frame.size.height);
+    [buttonSex setTitle:NSLocalizedString(@"Sort by : Sex", nil) forState:UIControlStateNormal];
+    [scrollView addSubview:buttonSex];
+    
+    scrollView.contentSize = CGSizeMake(self.view.frame.size.width * 3,scrollView.frame.size.height);
+    
+    
+    
     Message * msg = [[Message alloc] init];
     msg.mesType = MESSAGETYPE_FETCH_PERSONS;
     msg.mesRoute = MESSAGEROUTE_API;
@@ -70,25 +120,57 @@
     }
 }
 
--(void)showFilter
+
+-(void)filter:(NSNotification*)notify
 {
     
 }
 
--(void)hideFilter
+-(void)sort:(NSNotification*)notify
 {
+    Message *msg = [notify.userInfo objectForKey:@"message"];
+    switch (msg.mesType) {
+        case MESSAGETYPE_SORT_BY_MISSINGDATE:
+        {
+            NSArray *sortedArray = [collectionData sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+                NSNumber * missingdatefirst =  [(NSMutableArray*)a objectAtIndex:MISSING_DATE];
+                NSNumber * missingdatesecond =  [(NSMutableArray*)b objectAtIndex:MISSING_DATE];
+                return [missingdatefirst compare:missingdatesecond];
+            }];
+            
+            collectionData = [NSMutableArray arrayWithArray:sortedArray];
+        }
+            break;
+        case MESSAGETYPE_SORT_BY_SEX:
+        {
+            NSArray *sortedArray = [collectionData sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+                NSString * sexfirst =  [(NSMutableArray*)a objectAtIndex:SEX];
+                NSString * sexsecond =  [(NSMutableArray*)b objectAtIndex:SEX];
+                return [sexfirst compare:sexsecond];
+            }];
+            
+            collectionData = [NSMutableArray arrayWithArray:sortedArray];
+        }
+            break;
+        case MESSAGETYPE_SORT_BY_AGE:
+        {
+            NSArray *sortedArray = [collectionData sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+                NSNumber * agefirst =  [(NSMutableArray*)a objectAtIndex:AGE];
+                NSNumber * agesecond =  [(NSMutableArray*)b objectAtIndex:AGE];
+                return [agefirst compare:agesecond];
+            }];
+            
+            collectionData = [NSMutableArray arrayWithArray:sortedArray];
+        }
+            break;
+        default:
+            break;
+    }
     
+    [maincollectionView reloadData];
 }
 
--(void)showSorting
-{
-    
-}
 
--(void)hideSorting
-{
-    
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

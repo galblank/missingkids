@@ -12,6 +12,9 @@
 #import "MenuViewController.h"
 #import "Social/Social.h"
 #import "UIKit+AFNetworking.h"
+#import "AFContact.h"
+#import <MobileCoreServices/MobileCoreServices.h>
+
 @interface AppDelegate ()
 
 @end
@@ -311,7 +314,7 @@ AppDelegate *shared = nil;
     shareBubbles.showTwitterBubble = YES;
     shareBubbles.showMailBubble = YES;
     shareBubbles.showVkBubble = YES;
-    
+    shareBubbles.showSmsBubble = YES;
     // add custom buttons -- buttonId for custom buttons MUST be greater than or equal to 100
     /*[shareBubbles addCustomButtonWithIcon:[UIImage imageNamed:@"custom-icon"]
      backgroundColor:[UIColor greenColor]
@@ -347,12 +350,137 @@ AppDelegate *shared = nil;
         case AAShareBubbleTypeVk:
             NSLog(@"Vkontakte (vk.com)");
             break;
+        case AAShareBubbleTypeSMS:
+            NSLog(@"SMS");
+            [self sendText];
+            break;
         case 100:
             // custom buttons have type >= 100
             NSLog(@"Custom Button With Type 100");
             break;
         default:
             break;
+    }
+}
+
+
+-(void)CancelSmsSending{
+    [contactsController dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
+-(void)finishSendingSms:(NSArray*)theList
+{
+    NSLog(@"finishSendingSms");
+    [contactsController dismissViewControllerAnimated:YES completion:^{
+        if((theList) && (theList.count > 0))
+        {
+            NSMutableArray *listOfPhoneNumbers = [NSMutableArray array];
+            
+            for(AFContact *contact in theList)
+            {
+                NSArray *userPhoneNumberList = contact.numbers;
+                
+                if((userPhoneNumberList) && (userPhoneNumberList.count > 0))
+                {
+                    for(NSString *eachNumber in userPhoneNumberList)
+                    {
+                        NSLog(@"eachNumber: %@", eachNumber);
+                        
+                        // Might need to clean up the numbers here...
+                        
+                        [listOfPhoneNumbers addObject:eachNumber];
+                    }
+                }
+            }
+            
+
+            NSNumber * missingDate = [sharemissingperson objectAtIndex:MISSING_DATE];
+            NSDate * date = [NSDate dateWithTimeIntervalSince1970:(missingDate.doubleValue / 1000)];
+            NSDateFormatter *df = [[NSDateFormatter alloc] init];
+            df.dateFormat = @"MMM dd yyyy";
+            NSString * strDate = [df stringFromDate:date];
+            NSString *shareString = [NSString stringWithFormat:@"%@\r\n%@ %@ went missing on %@ from %@ %@",NSLocalizedString(@"Please help find this missing child!", nil),[sharemissingperson objectAtIndex:FIRST_NAME],[sharemissingperson objectAtIndex:LAST_NAME],strDate,[sharemissingperson objectAtIndex:MISSING_CITY],[sharemissingperson objectAtIndex:MISSING_COUNTRY]];
+            
+            
+            if(listOfPhoneNumbers.count > 0)
+            {
+                if(messageController == nil)
+                {
+                    messageController = [[MFMessageComposeViewController alloc] init];
+                }
+                
+                
+                if(messageController)
+                {
+                    messageController.messageComposeDelegate = self;
+                    [messageController setRecipients:listOfPhoneNumbers];
+                    [messageController setBody:shareString];
+                    if([[sharemissingperson lastObject] isKindOfClass:[UIImage class]]){
+                        if([messageController addAttachmentData:UIImageJPEGRepresentation([sharemissingperson lastObject], 1.0) typeIdentifier:@"public.jpeg" filename:@"image.jpg"] == NO){
+                            NSLog(@"Adding attachment failed");
+                        }
+                    }
+                    
+                    [self.window.rootViewController presentViewController:messageController animated:YES completion:NULL];
+                    
+                }
+                else
+                {
+                    NSLog(@"{WARNING} The Simulator can't show the MFMessageComposeViewController interface.");
+                }
+            }
+            
+        }
+    }];
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller
+                 didFinishWithResult:(MessageComposeResult)result
+{
+    
+    if(result == MessageComposeResultSent)
+    {
+        NSLog(@"MessageComposeResultSent");
+    }
+    
+    if(result == MessageComposeResultCancelled)
+    {
+        NSLog(@"MessageComposeResultCancelled");
+    }
+    
+    if(result == MessageComposeResultFailed)
+    {
+        NSLog(@"MessageComposeResultCancelled");
+    }
+    
+    
+    [messageController dismissViewControllerAnimated:YES completion:^
+     {
+         
+     }];
+}
+
+- (void)sendText
+{
+    NSLog(@"sendText");
+    
+    if([MFMessageComposeViewController canSendText] == YES)
+    {
+        ABContactsViewController *abcontact = [[ABContactsViewController alloc] init];
+        abcontact.abcontactsDel = self;
+        contactsController = [[UINavigationController alloc] initWithRootViewController:abcontact];
+        [self.window.rootViewController presentViewController:contactsController animated:YES completion:^
+         {
+         }];
+    }
+    else
+    {
+        NSString *title   = NSLocalizedString(@"Device Settings", nil);
+        NSString *message = NSLocalizedString(@"Your device is not currently configured to support sending a message. Please check your device Settings and try again.", nil);
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"Ok", nil) otherButtonTitles:nil];
+        [alert show];
     }
 }
 
@@ -419,9 +547,10 @@ AppDelegate *shared = nil;
 
 -(void)populateMenu
 {
-    MenuViewController *menu = [[MenuViewController alloc] init];
+    MenuViewController *menu = [[MenuViewController alloc] initWithStyle:UITableViewStylePlain];
     if(popoverController == nil){
         popoverController = [[WYPopoverController alloc] initWithContentViewController:menu]; //content view controller needs to be tableviewcontroller
+        [popoverController setTheme:[WYPopoverTheme themeForIOS7]];
         popoverController.popoverContentSize = CGSizeMake(200, 200);
         popoverController.delegate = self;
     }

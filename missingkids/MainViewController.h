@@ -14,6 +14,7 @@
     UICollectionView    *maincollectionView;
     NSMutableArray      *collectionData;
     BOOL bScrolling;
+    UIScrollView *scrollView;
 }
 
 @end

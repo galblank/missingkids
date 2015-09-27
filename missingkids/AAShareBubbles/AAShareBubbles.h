@@ -25,7 +25,8 @@ typedef enum AAShareBubbleType : int {
     AAShareBubbleTypeReddit = 10,
     AAShareBubbleTypeInstagram = 11,
     AAShareBubbleTypeFavorite = 12,
-    AAShareBubbleTypeWhatsapp = 13
+    AAShareBubbleTypeWhatsapp = 13,
+    AAShareBubbleTypeSMS = 14
     
 } AAShareBubbleType;
 
@@ -47,6 +48,7 @@ typedef enum AAShareBubbleType : int {
 @property (nonatomic, assign) BOOL showInstagramBubble;
 @property (nonatomic, assign) BOOL showFavoriteBubble;
 @property (nonatomic, assign) BOOL showWhatsappBubble;
+@property (nonatomic, assign) BOOL showSmsBubble;
 @property (nonatomic, strong) NSMutableArray *customButtons;
 
 // The radius from center point to each share button
@@ -80,6 +82,7 @@ typedef enum AAShareBubbleType : int {
 @property (nonatomic, assign) int instagramBackgroundColorRGB;
 @property (nonatomic, assign) int favoriteBackgroundColorRGB;
 @property (nonatomic, assign) int whatsappBackgroundColorRGB;
+@property (nonatomic, assign) int smsappBackgroundColorRGB;
 
 -(id)initWithPoint:(CGPoint)point radius:(int)radiusValue inView:(UIView *)inView;
 

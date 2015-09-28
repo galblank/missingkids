@@ -126,16 +126,16 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_SEX] object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filter:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_FILTER_OPTIONS] object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidefilter:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_FILTER_OPTIONS] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidefilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_FILTER_OPTIONS] object:nil];
 }
 
 
 -(void)hidefilter
 {
     if(filterWindow){
-        [UIView animateWithDuration:2.0
+        [UIView animateWithDuration:1.0
                          animations:^{
-                             filterWindow.alpha = 0.0;
+                             filterWindow.frame = CGRectMake(0,-250,self.view.frame.size.width,250);
                          }
                          completion:^(BOOL finished){
                              [self.view sendSubviewToBack:filterWindow];
@@ -153,7 +153,7 @@
     
     
     
-    [UIView animateWithDuration:1.5
+    [UIView animateWithDuration:1.0
                      animations:^{
                          filterWindow.frame = CGRectMake(0,0,self.view.frame.size.width,250);
                      }

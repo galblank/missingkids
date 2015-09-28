@@ -196,9 +196,6 @@
         {
             if(indexPath.row == 0){
                 msg.mesType = MESSAGETYPE_SHOW_FILTER_OPTIONS;
-                self.currentMenuType = MENUTYPE_FILTER;
-                [tableView reloadData];
-                return;
             }
             else if(indexPath.row == 1){
                 msg.mesType = MESSAGETYPE_SHOW_SORTING_OPTIONS;
@@ -256,6 +253,7 @@
     }
    
     self.currentMenuType = MENUTYPE_MAIN;
+    [tableView reloadData];
     [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU] object:nil];
     
     [[MessageDispatcher sharedInstance] addMessageToBus:msg];

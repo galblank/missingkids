@@ -8,14 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "AAShareBubbles.h"
+#import "FilterView.h"
 
 typedef enum{
     SORTING_MISSING_DATE_DESC = 1,
     SORTING_MISSING_DATE_ASC,
     SORTING_AGE_DESC,
     SORTING_AGE_ASC,
-    SORTING_SEX_DESC,
-    SORTING_SEX_ASC
+    SORTING_SEX_MALE,
+    SORTING_SEX_FEMALE
 }SORTING_OPTIONS;
 
 @interface MainViewController : UIViewController<UICollectionViewDelegate,UICollectionViewDataSource,AAShareBubblesDelegate>
@@ -24,6 +25,8 @@ typedef enum{
     NSMutableArray      *collectionData;
     BOOL bScrolling;
     UIScrollView *scrollView;
+    
+    FilterView * filterWindow;
     
     SORTING_OPTIONS currentSortingMissingDateOption;
     SORTING_OPTIONS currentSortingAgeOption;

@@ -13,6 +13,7 @@
 #import <MessageUI/MessageUI.h>
 #import "ABContactsViewController.h"
 
+
 #define TITLE_HEADER_COLOR [UIColor colorWithRed:133.0 / 255.0 green:150.0  / 255.0 blue:166.0 / 255.0 alpha:1.0]
 #define THEME_GRAY_BG_COLOR [UIColor colorWithRed:243.0 / 255.0 green:243.0  / 255.0 blue:243.0 / 255.0 alpha:1.0]
 
@@ -71,6 +72,7 @@ typedef enum {
     MFMessageComposeViewController *messageController;
 }
 @property (strong, nonatomic) UIWindow *window;
+
 + (AppDelegate*)shared;
 
 

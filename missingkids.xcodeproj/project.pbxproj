@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09281A071BB96DF50010E4BA /* FilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09281A061BB96DF50010E4BA /* FilterView.m */; settings = {ASSET_TAGS = (); }; };
 		095C4BA51BB46D3000749CD8 /* PersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BA41BB46D3000749CD8 /* PersonViewController.m */; settings = {ASSET_TAGS = (); }; };
 		095C4BA71BB49F4700749CD8 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095C4BA61BB49F4700749CD8 /* Social.framework */; };
 		095C4BAA1BB5DBEA00749CD8 /* ABContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BA91BB5DBEA00749CD8 /* ABContactsViewController.m */; settings = {ASSET_TAGS = (); }; };
@@ -100,6 +101,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		09281A051BB96DF50010E4BA /* FilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterView.h; sourceTree = "<group>"; };
+		09281A061BB96DF50010E4BA /* FilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterView.m; sourceTree = "<group>"; };
 		095C4BA31BB46D3000749CD8 /* PersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonViewController.h; sourceTree = "<group>"; };
 		095C4BA41BB46D3000749CD8 /* PersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonViewController.m; sourceTree = "<group>"; };
 		095C4BA61BB49F4700749CD8 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
@@ -315,6 +318,8 @@
 				09BF7B511BB42FB600A48BEF /* MenuViewController.m */,
 				095C4BA31BB46D3000749CD8 /* PersonViewController.h */,
 				095C4BA41BB46D3000749CD8 /* PersonViewController.m */,
+				09281A051BB96DF50010E4BA /* FilterView.h */,
+				09281A061BB96DF50010E4BA /* FilterView.m */,
 			);
 			path = missingkids;
 			sourceTree = "<group>";
@@ -668,6 +673,7 @@
 				09BF7B061BB3817900A48BEF /* InsetTextView.m in Sources */,
 				09BF7AA11BB0834700A48BEF /* CommManager.m in Sources */,
 				09BF7AE71BB0B5A700A48BEF /* Message.m in Sources */,
+				09281A071BB96DF50010E4BA /* FilterView.m in Sources */,
 				09BF7AEE1BB2057800A48BEF /* WYPopoverController.m in Sources */,
 				09BF7A9B1BB0830F00A48BEF /* AFURLConnectionOperation.m in Sources */,
 				09BF7A9A1BB0830F00A48BEF /* AFSecurityPolicy.m in Sources */,

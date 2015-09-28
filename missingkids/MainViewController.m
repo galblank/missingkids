@@ -30,13 +30,11 @@
     msg.params = [[NSMutableDictionary alloc] init];
     [msg.params setObject:[NSNumber numberWithInt:FLOATINGBUTTON_TYPE_MENU] forKey:@"buttontype"];
     NSMutableDictionary *userinfo = [[NSMutableDictionary alloc] init];
-    currentSortingMissingDateOption = SORTING_MISSING_DATE_DESC;
+    
     [userinfo setObject:msg forKey:@"message"];
     [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil userInfo:userinfo];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_MISSINGDATE] object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_AGE] object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_SEX] object:nil];
+    
     
 }
 
@@ -56,6 +54,9 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
+    currentSortingMissingDateOption = SORTING_MISSING_DATE_DESC;
+    currentSortingAgeOption = SORTING_AGE_DESC;
+    currentSortingSexOption =SORTING_SEX_MALE;
     
     scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width,50)];
     scrollView.pagingEnabled = YES;
@@ -119,12 +120,47 @@
         collectionData = results;
         [maincollectionView reloadData];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_MISSINGDATE] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_AGE] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_SEX] object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filter:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_FILTER_OPTIONS] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidefilter:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_FILTER_OPTIONS] object:nil];
 }
 
 
+-(void)hidefilter
+{
+    if(filterWindow){
+        [UIView animateWithDuration:2.0
+                         animations:^{
+                             filterWindow.alpha = 0.0;
+                         }
+                         completion:^(BOOL finished){
+                             [self.view sendSubviewToBack:filterWindow];
+                         }];
+    }
+}
+
 -(void)filter:(NSNotification*)notify
 {
+    if(filterWindow == nil){
+        filterWindow = [[FilterView alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 200)/ 2,(self.view.frame.size.height - 300) / 2, 200, 300)];
+        filterWindow.alpha = 0.0;
+        [self.view addSubview:filterWindow];
+        
+    }
     
+    
+    
+    [UIView animateWithDuration:2.0
+                     animations:^{
+                         filterWindow.alpha = 1.0;
+                     }
+                     completion:^(BOOL finished){
+                         [self.view bringSubviewToFront:filterWindow];
+                     }];
 }
 
 -(void)sort:(NSNotification*)notify
@@ -155,24 +191,42 @@
             break;
         case MESSAGETYPE_SORT_BY_SEX:
         {
-            NSArray *sortedArray = [collectionData sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
-                NSString * sexfirst =  [(NSMutableArray*)a objectAtIndex:SEX];
-                NSString * sexsecond =  [(NSMutableArray*)b objectAtIndex:SEX];
-                return [sexfirst compare:sexsecond];
-            }];
+            NSString * query = @"select * from person order by age";
+            if(currentSortingAgeOption == SORTING_AGE_DESC){
+                query = [query stringByAppendingString:@" asc;"];
+                currentSortingAgeOption = SORTING_AGE_ASC;
+                
+            }
+            else{
+                query = [query stringByAppendingString:@" desc;"];
+                currentSortingAgeOption = SORTING_AGE_DESC;
+            }
             
-            collectionData = [NSMutableArray arrayWithArray:sortedArray];
+            NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:query];
+            if(results){
+                collectionData = results;
+                [maincollectionView reloadData];
+            }
         }
             break;
         case MESSAGETYPE_SORT_BY_AGE:
         {
-            NSArray *sortedArray = [collectionData sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
-                NSNumber * agefirst =  [(NSMutableArray*)a objectAtIndex:AGE];
-                NSNumber * agesecond =  [(NSMutableArray*)b objectAtIndex:AGE];
-                return [agefirst compare:agesecond];
-            }];
+            NSString * query = @"select * from person where sex like '%";
+            if(currentSortingSexOption == SORTING_SEX_MALE){
+                query = [query stringByAppendingString:@"female%';"];
+                currentSortingSexOption = SORTING_SEX_FEMALE;
+                
+            }
+            else{
+                query = [query stringByAppendingString:@"male%'"];
+                currentSortingSexOption = SORTING_SEX_MALE;
+            }
             
-            collectionData = [NSMutableArray arrayWithArray:sortedArray];
+            NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:query];
+            if(results){
+                collectionData = results;
+                [maincollectionView reloadData];
+            }
         }
             break;
         default:

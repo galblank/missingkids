@@ -146,17 +146,16 @@
 -(void)filter:(NSNotification*)notify
 {
     if(filterWindow == nil){
-        filterWindow = [[FilterView alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 200)/ 2,(self.view.frame.size.height - 300) / 2, 200, 300)];
-        filterWindow.alpha = 0.0;
+        filterWindow = [[FilterView alloc] initWithFrame:CGRectMake(0,-250,self.view.frame.size.width,250)];
         [self.view addSubview:filterWindow];
         
     }
     
     
     
-    [UIView animateWithDuration:2.0
+    [UIView animateWithDuration:1.5
                      animations:^{
-                         filterWindow.alpha = 1.0;
+                         filterWindow.frame = CGRectMake(0,0,self.view.frame.size.width,250);
                      }
                      completion:^(BOOL finished){
                          [self.view bringSubviewToFront:filterWindow];

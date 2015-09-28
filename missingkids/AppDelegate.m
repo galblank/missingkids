@@ -51,7 +51,7 @@ AppDelegate *shared = nil;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
     [[UINavigationBar appearance] setBarTintColor:[UIColor whiteColor]];
-    [[UINavigationBar appearance] setTintColor:TITLE_BUTTONS_COLOR];
+    [[UINavigationBar appearance] setTintColor:[UIColor lightGrayColor]];
     
     
     mainVc = [[MainViewController alloc] init];
@@ -315,6 +315,7 @@ AppDelegate *shared = nil;
     shareBubbles.showMailBubble = YES;
     shareBubbles.showVkBubble = YES;
     shareBubbles.showSmsBubble = YES;
+    shareBubbles.showPhoneBubble = YES;
     // add custom buttons -- buttonId for custom buttons MUST be greater than or equal to 100
     /*[shareBubbles addCustomButtonWithIcon:[UIImage imageNamed:@"custom-icon"]
      backgroundColor:[UIColor greenColor]
@@ -353,6 +354,8 @@ AppDelegate *shared = nil;
         case AAShareBubbleTypeSMS:
             NSLog(@"SMS");
             [self sendText];
+            break;
+        case AAShareBubbleTypePhone:
             break;
         case 100:
             // custom buttons have type >= 100

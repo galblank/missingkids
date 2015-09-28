@@ -328,7 +328,7 @@
                 NSInteger n = [selectedContacts indexOfObject:contact];
                 
                 if(n != NSNotFound){
-                    selectButton.image = [UIImage imageNamed:@"radio_on"];
+                    selectButton.image = [UIImage imageNamed:@"check"];
                 }
                 else{
                     selectButton.image = [UIImage imageNamed:@"radio_off"];
@@ -358,7 +358,7 @@
             UIImageView *accessory = (UIImageView*)cell.accessoryView;
             if(accessory.tag == 0){
                 accessory.tag = 1;
-                accessory.image = [UIImage imageNamed:@"radio_on"];
+                accessory.image = [UIImage imageNamed:@"check"];
                 [selectedContacts addObject:contact];
             }
             else{
@@ -388,7 +388,7 @@
         UIImageView *accessory = (UIImageView*)cell.accessoryView;
         if(accessory.tag == 0){
             accessory.tag = 1;
-            accessory.image = [UIImage imageNamed:@"radio_on"];
+            accessory.image = [UIImage imageNamed:@"check"];
             [selectedContacts addObject:contact];
         }
         else{

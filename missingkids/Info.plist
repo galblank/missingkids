@@ -42,7 +42,7 @@
 		<string>location</string>
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>sdgdsfgsdfgdsfgsd dfsg</string>
+	<string>We ask for your location so we could notify you if there were a kid missing around you.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

@@ -30,6 +30,7 @@
     msg.params = [[NSMutableDictionary alloc] init];
     [msg.params setObject:[NSNumber numberWithInt:FLOATINGBUTTON_TYPE_MENU] forKey:@"buttontype"];
     NSMutableDictionary *userinfo = [[NSMutableDictionary alloc] init];
+    currentSortingMissingDateOption = SORTING_MISSING_DATE_DESC;
     [userinfo setObject:msg forKey:@"message"];
     [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil userInfo:userinfo];
 
@@ -132,13 +133,24 @@
     switch (msg.mesType) {
         case MESSAGETYPE_SORT_BY_MISSINGDATE:
         {
-            NSArray *sortedArray = [collectionData sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
-                NSNumber * missingdatefirst =  [(NSMutableArray*)a objectAtIndex:MISSING_DATE];
-                NSNumber * missingdatesecond =  [(NSMutableArray*)b objectAtIndex:MISSING_DATE];
-                return [missingdatefirst compare:missingdatesecond];
-            }];
+            NSString * query = @"select * from person order by missingDate";
+            if(currentSortingMissingDateOption == SORTING_MISSING_DATE_DESC){
+                query = [query stringByAppendingString:@" asc;"];
+                currentSortingMissingDateOption = SORTING_MISSING_DATE_ASC;
+                
+            }
+            else{
+                query = [query stringByAppendingString:@" desc;"];
+                currentSortingMissingDateOption = SORTING_MISSING_DATE_DESC;
+            }
             
-            collectionData = [NSMutableArray arrayWithArray:sortedArray];
+            NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:query];
+            if(results){
+                collectionData = results;
+                [maincollectionView reloadData];
+            }
+            
+            
         }
             break;
         case MESSAGETYPE_SORT_BY_SEX:

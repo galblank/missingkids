@@ -165,6 +165,9 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_SHOW_LIST_VIEW:
             retMessage = @"MESSAGETYPE_SHOW_LIST_VIEW";
             break;
+        case MESSAGETYPE_APPLY_FILTER:
+            retMessage = @"MESSAGETYPE_APPLY_FILTER";
+            break;
         default:
             break;
     }

@@ -128,6 +128,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filter:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_FILTER_OPTIONS] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidefilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_FILTER_OPTIONS] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showItemsList:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_LIST_VIEW] object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_APPLY_FILTER] object:nil];
+    
 }
 
 -(void)didselectItem:(NSString*)item forItemType:(ITEMTYPE)type
@@ -160,6 +163,32 @@
 }
 
 
+-(void)applyFilter
+{
+    [self hidefilter];
+    if(filterWindow){
+        
+        NSString * query = @"select * from person where";
+        if([filterWindow.countryButton.titleLabel.text caseInsensitiveCompare:NSLocalizedString(@"Country", nil)] != NSOrderedSame){
+            query = [query stringByAppendingFormat:@" missingCountry = %@",filterWindow.countryButton.titleLabel.text];
+            if([filterWindow.stateButton.titleLabel.text caseInsensitiveCompare:NSLocalizedString(@"State", nil)] != NSOrderedSame){
+                query = [query stringByAppendingFormat:@"or missingState = %@",filterWindow.stateButton.titleLabel.text];
+            }
+            if([filterWindow.cityButton.titleLabel.text caseInsensitiveCompare:NSLocalizedString(@"City", nil)] != NSOrderedSame){
+                query = [query stringByAppendingFormat:@"or missingCity = %@",filterWindow.cityButton.titleLabel.text];
+            }
+        }
+        
+        
+        
+        NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:query];
+        if(results){
+            collectionData = results;
+            [maincollectionView reloadData];
+        }
+    }
+}
+
 -(void)hidefilter
 {
     if(filterWindow){
@@ -191,18 +220,6 @@
                          [self.view bringSubviewToFront:filterWindow];
                      }];
    
-    Message *msg = [notify.userInfo objectForKey:@"message"];
-    switch (msg.mesType) {
-        case MESSAGETYPE_FILTERBY_COUNTRY:
-        {
-            NSString *str = @"select distinct missingCountry from person;";
-            
-        }
-            break;
-            
-        default:
-            break;
-    }
 }
 
 -(void)sort:(NSNotification*)notify

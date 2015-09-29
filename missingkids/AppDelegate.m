@@ -190,6 +190,17 @@ AppDelegate *shared = nil;
 }
 
 
+-(void)fetchpersons
+{
+    if([[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"]){
+        Message * msg = [[Message alloc] init];
+        msg.mesType = MESSAGETYPE_FETCH_PERSONS;
+        msg.mesRoute = MESSAGEROUTE_API;
+        msg.ttl = DEFAULT_TTL;
+        [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+    }
+}
+
 -(void)signinresponse:(NSNotification*)notify
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SIGNIN_RESPONSE] object:nil];
@@ -203,6 +214,8 @@ AppDelegate *shared = nil;
         msg.ttl = TTL_NOW;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatedRegionalContacts:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_FETCH_GETREGIONALCONTACTS_RESPONSE] object:nil];
         [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+        
+        [self fetchpersons];
     }
 }
 
@@ -219,10 +232,10 @@ AppDelegate *shared = nil;
             NSString * query = [NSString stringWithFormat:@"select * from regionalcontacts where country = '%@' AND state = '%@'",country,state];
             NSMutableArray * result = [[DBManager sharedInstance] loadDataFromDB:query];
             if(result && result.count > 0){
-                query = [NSString stringWithFormat:@"update regionalcontacts set contactnumber = %@, contactname = %@",contactnumber,contactname];
+                query = [NSString stringWithFormat:@"update regionalcontacts set contactnumber = '%@', contactname = '%@'",contactnumber,contactname];
             }
             else{
-                query = [NSString stringWithFormat:@"insert into regionalcontacts values(%@,%@,%@,%@,%@)",country,state,contactname,contactnumber,isostate];
+                query = [NSString stringWithFormat:@"insert into regionalcontacts values('%@','%@','%@','%@','%@')",country,state,contactname,contactnumber,isostate];
             }
             [[DBManager sharedInstance] executeQuery:query];
         }
@@ -248,7 +261,6 @@ AppDelegate *shared = nil;
     
     NSString *phoneNumber = [@"tel://" stringByAppendingString:[msg.params objectForKey:@"contactnumber"]];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneNumber]];
-    
 }
 
 

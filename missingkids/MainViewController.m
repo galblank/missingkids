@@ -99,20 +99,6 @@
     
     scrollView.contentSize = CGSizeMake(self.view.frame.size.width * 3,scrollView.frame.size.height);
     
-    
-    
-    Message * msg = [[Message alloc] init];
-    msg.mesType = MESSAGETYPE_FETCH_PERSONS;
-    msg.mesRoute = MESSAGEROUTE_API;
-    msg.ttl = TTL_NOW;
-    /*NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-     [params setObject:apnsToken forKey:@"apnskey"];
-     [params setObject:[NSNumber numberWithDouble:location.coordinate.latitude] forKey:@"latitude"];
-     [params setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
-     msg.params = params;*/
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gotpersons:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_FETCH_PERSON_RESPONSE] object:nil];
-    [[MessageDispatcher sharedInstance] addMessageToBus:msg];
-    
     NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:@"select * from person order by missingDate desc"];
     if(results){
         collectionData = results;
@@ -125,7 +111,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filter:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_FILTER_OPTIONS] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidefilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_FILTER_OPTIONS] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showItemsList:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_LIST_VIEW] object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gotpersons:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_FETCH_PERSON_RESPONSE] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_APPLY_FILTER] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CLEAR_FILTER] object:nil];
     

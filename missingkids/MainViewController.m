@@ -127,8 +127,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showItemsList:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_LIST_VIEW] object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_APPLY_FILTER] object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSageTYPE_CLEAR_FILTER] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CLEAR_FILTER] object:nil];
     
     
 }

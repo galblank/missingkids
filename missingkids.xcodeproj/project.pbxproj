@@ -18,6 +18,7 @@
 		095C4BB91BB5DD8A00749CD8 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095C4BB71BB5DD8A00749CD8 /* AddressBook.framework */; };
 		095C4BBA1BB5DD8A00749CD8 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095C4BB81BB5DD8A00749CD8 /* AddressBookUI.framework */; };
 		096747291BB9EC290048A7FA /* ItemsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 096747281BB9EC290048A7FA /* ItemsTableViewController.m */; settings = {ASSET_TAGS = (); }; };
+		0967472C1BBAC36E0048A7FA /* CallingCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0967472B1BBAC36E0048A7FA /* CallingCardView.m */; settings = {ASSET_TAGS = (); }; };
 		09BF7A331BB07CEF00A48BEF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A321BB07CEF00A48BEF /* main.m */; };
 		09BF7A361BB07CEF00A48BEF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A351BB07CEF00A48BEF /* AppDelegate.m */; };
 		09BF7A391BB07CEF00A48BEF /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 09BF7A381BB07CEF00A48BEF /* MainViewController.m */; };
@@ -121,6 +122,8 @@
 		095C4BB81BB5DD8A00749CD8 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		096747271BB9EC290048A7FA /* ItemsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemsTableViewController.h; sourceTree = "<group>"; };
 		096747281BB9EC290048A7FA /* ItemsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemsTableViewController.m; sourceTree = "<group>"; };
+		0967472A1BBAC36E0048A7FA /* CallingCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallingCardView.h; sourceTree = "<group>"; };
+		0967472B1BBAC36E0048A7FA /* CallingCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallingCardView.m; sourceTree = "<group>"; };
 		09BF7A2E1BB07CEF00A48BEF /* missingkids.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = missingkids.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09BF7A321BB07CEF00A48BEF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		09BF7A341BB07CEF00A48BEF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -325,6 +328,8 @@
 				09281A061BB96DF50010E4BA /* FilterView.m */,
 				096747271BB9EC290048A7FA /* ItemsTableViewController.h */,
 				096747281BB9EC290048A7FA /* ItemsTableViewController.m */,
+				0967472A1BBAC36E0048A7FA /* CallingCardView.h */,
+				0967472B1BBAC36E0048A7FA /* CallingCardView.m */,
 			);
 			path = missingkids;
 			sourceTree = "<group>";
@@ -669,6 +674,7 @@
 				09BF7AD51BB092D000A48BEF /* GCrypto.m in Sources */,
 				09BF7AB31BB0853000A48BEF /* NSData+Base64.m in Sources */,
 				09BF7A991BB0830F00A48BEF /* AFNetworkReachabilityManager.m in Sources */,
+				0967472C1BBAC36E0048A7FA /* CallingCardView.m in Sources */,
 				09BF7B4A1BB38C1200A48BEF /* UIAlertView+AFNetworking.m in Sources */,
 				09BF7AD91BB0941100A48BEF /* GTMBase64.m in Sources */,
 				095C4BB61BB5DD4500749CD8 /* RoundImageTableViewCell.m in Sources */,

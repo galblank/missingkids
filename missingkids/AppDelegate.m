@@ -14,6 +14,8 @@
 #import "UIKit+AFNetworking.h"
 #import "AFContact.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "DBManager.h"
+
 
 @interface AppDelegate ()
 
@@ -92,7 +94,7 @@ AppDelegate *shared = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactDeveloper) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CONTACT_DEVELOPER] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shareThisApp) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHARE_THIS_APP] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMenu) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU] object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(makeacall:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CALL_REGIONAL_AUTHORITIES] object:nil];
     
     [self showMenuButton];
     
@@ -155,6 +157,16 @@ AppDelegate *shared = nil;
     // If it's a relatively recent event, turn off updates to save power.
     location = [locations lastObject];
     [locationManager stopUpdatingLocation];
+    Message * msg = [[Message alloc] init];
+    msg.mesType = MESSAGETYPE_UPDATE_LOCATION;
+    msg.mesRoute = MESSAGEROUTE_API;
+    msg.ttl = TTL_NOW;
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    [params setObject:[NSNumber numberWithDouble:location.coordinate.latitude] forKey:@"latitude"];
+    [params setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
+    msg.params = params;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signinresponse:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SIGNIN_RESPONSE] object:nil];
+    [[MessageDispatcher sharedInstance] addMessageToBus:msg];
 }
 
 
@@ -185,10 +197,74 @@ AppDelegate *shared = nil;
     Message * msg = [notify.userInfo objectForKey:@"message"];
     if([msg.params objectForKey:@"securitytoken"]){
         [[NSUserDefaults standardUserDefaults] setObject:[msg.params objectForKey:@"securitytoken"] forKey:@"securitytoken"];
+        Message * msg = [[Message alloc] init];
+        msg.mesType = MESSAGETYPE_FETCH_GETREGIONALCONTACTS;
+        msg.mesRoute = MESSAGEROUTE_API;
+        msg.ttl = TTL_NOW;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatedRegionalContacts:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_FETCH_GETREGIONALCONTACTS_RESPONSE] object:nil];
+        [[MessageDispatcher sharedInstance] addMessageToBus:msg];
     }
 }
 
+-(void)updatedRegionalContacts:(NSNotification*)notify
+{
+    Message * msg = [notify.userInfo objectForKey:@"message"];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        for(NSMutableDictionary * contact in msg.params){
+            NSString * country = [contact objectForKey:@"country"];
+            NSString * state = [contact objectForKey:@"state"];
+            NSString * contactname = [contact objectForKey:@"contactname"];
+            NSString * contactnumber = [contact objectForKey:@"contactnumber"];
+            NSString * isostate = [contact objectForKey:@"isostate"];
+            NSString * query = [NSString stringWithFormat:@"select * from regionalcontacts where country = '%@' AND state = '%@'",country,state];
+            NSMutableArray * result = [[DBManager sharedInstance] loadDataFromDB:query];
+            if(result && result.count > 0){
+                query = [NSString stringWithFormat:@"update regionalcontacts set contactnumber = %@, contactname = %@",contactnumber,contactname];
+            }
+            else{
+                query = [NSString stringWithFormat:@"insert into regionalcontacts values(%@,%@,%@,%@,%@)",country,state,contactname,contactnumber,isostate];
+            }
+            [[DBManager sharedInstance] executeQuery:query];
+        }
+    });
+}
+
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
+-(void)makeacall:(NSNotification*)notify
+{
+    Message * msg = [notify.userInfo objectForKey:@"message"];
+    if(callwindow == nil){
+            callwindow = [[CallingCardView alloc] initWithFrame:CGRectMake(0,-250,self.window.frame.size.width,250)];
+            [self.window addSubview:callwindow];
+    }
+    
+    [UIView animateWithDuration:0.5
+                         animations:^{
+                             callwindow.frame = CGRectMake(0,0,self.window.frame.size.width,250);
+                         }
+                         completion:^(BOOL finished){
+                             [self.window bringSubviewToFront:callwindow];
+                         }];
+    
+    NSString *phoneNumber = [@"tel://" stringByAppendingString:[msg.params objectForKey:@"contactnumber"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneNumber]];
+    
+}
+
+
+-(void)hideCallingCard
+{
+    if(callwindow){
+        [UIView animateWithDuration:0.5
+                     animations:^{
+                         callwindow.frame = CGRectMake(0,0,self.window.frame.size.width,250);
+                     }
+                     completion:^(BOOL finished){
+                         [self.window bringSubviewToFront:callwindow];
+                     }];
+    }
+}
+
 -(void)shareThisApp
 {
     [self showSharingMenu:nil];
@@ -567,6 +643,9 @@ AppDelegate *shared = nil;
         [popoverController dismissPopoverAnimated:YES];
     }
 }
+
+
+
 
 - (BOOL)popoverControllerShouldDismissPopover:(WYPopoverController *)controller
 {

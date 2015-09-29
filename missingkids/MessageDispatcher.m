@@ -168,8 +168,20 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_APPLY_FILTER:
             retMessage = @"MESSAGETYPE_APPLY_FILTER";
             break;
-        case MESSageTYPE_CLEAR_FILTER:
-            retMessage = @"MESSageTYPE_CLEAR_FILTER";
+        case MESSAGETYPE_CLEAR_FILTER:
+            retMessage = @"MESSAGETYPE_CLEAR_FILTER";
+            break;
+        case MESSAGETYPE_CALL_REGIONAL_AUTHORITIES:
+            retMessage = @"MESSAGETYPE_CALL_REGIONAL_AUTHORITIES";
+            break;
+        case MESSAGETYPE_HIDE_CALLINGCARD:
+            retMessage = @"MESSAGETYPE_HIDE_CALLINGCARD";
+            break;
+        case MESSAGETYPE_FETCH_GETREGIONALCONTACTS_RESPONSE:
+            retMessage = @"MESSAGETYPE_FETCH_GETREGIONALCONTACTS_RESPONSE";
+            break;
+        case MESSAGETYPE_UPDATE_LOCATION:
+            retMessage = @"MESSAGETYPE_UPDATE_LOCATION";
             break;
         default:
             break;
@@ -216,6 +228,12 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_FETCH_PERSONS:
             [[CommManager sharedInstance] getAPI:@"fetchpersons" andParams:message.params];
             break;
+        case MESSAGETYPE_FETCH_GETREGIONALCONTACTS:
+            [[CommManager sharedInstance] getAPI:@"GetRegionalContacts" andParams:message.params];
+            break;
+        case MESSAGETYPE_UPDATE_LOCATION:
+            [[CommManager sharedInstance] postAPI:@"updatelocation" andParams:message.params];
+            break;
         default:
             break;
     }
@@ -227,10 +245,6 @@ MessageDispatcher *sharedInstance = nil;
     switch (message.mesType) {
         case MESSAGETYPE_SIGNIN:
         {
-            if(((NSMutableDictionary*)message.params).count < 3){
-                return NO;
-            }
-          
             if(((NSString*)([message.params objectForKey:@"apnskey"])).length <= 10){
                 return NO;
             }
@@ -239,6 +253,8 @@ MessageDispatcher *sharedInstance = nil;
         }
         break;
         case MESSAGETYPE_FETCH_PERSONS:
+        case MESSAGETYPE_FETCH_GETREGIONALCONTACTS:
+        case MESSAGETYPE_UPDATE_LOCATION:
             return YES;
         default:
             break;

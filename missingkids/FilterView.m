@@ -97,7 +97,7 @@
 {
     Message *msg = [[Message alloc] init];
     msg.mesRoute = MESSAGEROUTE_INTERNAL;
-    msg.mesType = MESSageTYPE_CLEAR_FILTER;
+    msg.mesType = MESSAGETYPE_CLEAR_FILTER;
     msg.ttl = TTL_NOW;
     [[MessageDispatcher sharedInstance] addMessageToBus:msg];
 }

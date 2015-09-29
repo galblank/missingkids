@@ -9,5 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface FilterView : UIView
+{
+    UIButton * countryButton;
+    UIButton * stateButton;
+    UIButton * cityButton;
+}
 
+@property(nonatomic,strong)UIButton * countryButton;
+@property(nonatomic,strong)UIButton * stateButton;
+@property(nonatomic,strong)UIButton * cityButton;
 @end

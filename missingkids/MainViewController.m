@@ -14,6 +14,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "PersonViewController.h"
 
+
 @interface MainViewController ()
 
 @end
@@ -124,16 +125,45 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_MISSINGDATE] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_AGE] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sort:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SORT_BY_SEX] object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filter:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_FILTER_OPTIONS] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidefilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_FILTER_OPTIONS] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showItemsList:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_LIST_VIEW] object:nil];
+}
+
+-(void)didselectItem:(NSString*)item forItemType:(ITEMTYPE)type
+{
+    
+    switch (type) {
+        case ITEM_TYPE_COUNTRY:
+            [filterWindow.countryButton setTitle:item forState:UIControlStateNormal];
+            break;
+        case ITEM_TYPE_STATE:
+            [filterWindow.stateButton setTitle:item forState:UIControlStateNormal];
+            break;
+            case ITEM_TYPE_CITY:
+            [filterWindow.cityButton setTitle:item forState:UIControlStateNormal];
+            break;
+        default:
+            break;
+    }
+   
+}
+
+-(void)showItemsList:(NSNotification*)notify
+{
+    Message * msg = [notify.userInfo objectForKey:@"message"];
+    ItemsTableViewController * countries = [[ItemsTableViewController alloc] init];
+    countries.lsitDelegate = self;
+    NSNumber * itemtype = [msg.params objectForKey:@"itemtype"];
+    countries.iType = [itemtype intValue];
+    [self.navigationController pushViewController:countries animated:YES];
 }
 
 
 -(void)hidefilter
 {
     if(filterWindow){
-        [UIView animateWithDuration:1.0
+        [UIView animateWithDuration:0.5
                          animations:^{
                              filterWindow.frame = CGRectMake(0,-250,self.view.frame.size.width,250);
                          }
@@ -153,13 +183,26 @@
     
     
     
-    [UIView animateWithDuration:1.0
+    [UIView animateWithDuration:0.5
                      animations:^{
                          filterWindow.frame = CGRectMake(0,0,self.view.frame.size.width,250);
                      }
                      completion:^(BOOL finished){
                          [self.view bringSubviewToFront:filterWindow];
                      }];
+   
+    Message *msg = [notify.userInfo objectForKey:@"message"];
+    switch (msg.mesType) {
+        case MESSAGETYPE_FILTERBY_COUNTRY:
+        {
+            NSString *str = @"select distinct missingCountry from person;";
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 -(void)sort:(NSNotification*)notify

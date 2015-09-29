@@ -159,11 +159,11 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_SORT_BY_SEX:
             retMessage = @"MESSAGETYPE_SORT_BY_SEX";
             break;
-        case MESSAGETYPE_APPLY_FILTERING:
-            retMessage = @"MESSAGETYPE_APPLY_FILTERING";
-            break;
         case MESSAGETYPE_HIDE_FILTER_OPTIONS:
             retMessage = @"MESSAGETYPE_HIDE_FILTER_OPTIONS";
+            break;
+        case MESSAGETYPE_SHOW_LIST_VIEW:
+            retMessage = @"MESSAGETYPE_SHOW_LIST_VIEW";
             break;
         default:
             break;

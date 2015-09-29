@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "AAShareBubbles.h"
 #import "FilterView.h"
+#import "ItemsTableViewController.h"
 
 typedef enum{
     SORTING_MISSING_DATE_DESC = 1,
@@ -19,7 +20,7 @@ typedef enum{
     SORTING_SEX_FEMALE
 }SORTING_OPTIONS;
 
-@interface MainViewController : UIViewController<UICollectionViewDelegate,UICollectionViewDataSource,AAShareBubblesDelegate>
+@interface MainViewController : UIViewController<UICollectionViewDelegate,UICollectionViewDataSource,AAShareBubblesDelegate,ListVCDelegate>
 {
     UICollectionView    *maincollectionView;
     NSMutableArray      *collectionData;
@@ -32,6 +33,10 @@ typedef enum{
     SORTING_OPTIONS currentSortingAgeOption;
     SORTING_OPTIONS currentSortingSexOption;
 }
+
+
+//delegate
+-(void)didselectItem:(NSString*)item forItemType:(ITEMTYPE)type;
 
 @end
 

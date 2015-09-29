@@ -94,8 +94,8 @@ AppDelegate *shared = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactDeveloper) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CONTACT_DEVELOPER] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shareThisApp) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHARE_THIS_APP] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMenu) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU] object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(makeacall:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CALL_REGIONAL_AUTHORITIES] object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideCallingCard) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_CALLINGCARD] object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(makeacall) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CALL_REGIONAL_AUTHORITIES] object:nil];
     [self showMenuButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SHARING_MENU] object:nil];
@@ -243,12 +243,13 @@ AppDelegate *shared = nil;
 }
 
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
--(void)makeacall:(NSNotification*)notify
+-(void)makeacall
 {
-    Message * msg = [notify.userInfo objectForKey:@"message"];
     if(callwindow == nil){
-            callwindow = [[CallingCardView alloc] initWithFrame:CGRectMake(0,-250,self.window.frame.size.width,250)];
-            [self.window addSubview:callwindow];
+        callwindow = [[CallingCardView alloc] initWithFrame:CGRectMake(0,-250,self.window.frame.size.width,250)];
+        callwindow.infoDoc = sharemissingperson;
+        [callwindow updateUI];
+        [self.window addSubview:callwindow];
     }
     
     [UIView animateWithDuration:0.5
@@ -259,8 +260,8 @@ AppDelegate *shared = nil;
                              [self.window bringSubviewToFront:callwindow];
                          }];
     
-    NSString *phoneNumber = [@"tel://" stringByAppendingString:[msg.params objectForKey:@"contactnumber"]];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneNumber]];
+    
+    
 }
 
 
@@ -269,10 +270,10 @@ AppDelegate *shared = nil;
     if(callwindow){
         [UIView animateWithDuration:0.5
                      animations:^{
-                         callwindow.frame = CGRectMake(0,0,self.window.frame.size.width,250);
+                         callwindow.frame = CGRectMake(0,-250,self.window.frame.size.width,250);
                      }
                      completion:^(BOOL finished){
-                         [self.window bringSubviewToFront:callwindow];
+                         
                      }];
     }
 }
@@ -444,6 +445,7 @@ AppDelegate *shared = nil;
             [self sendText];
             break;
         case AAShareBubbleTypePhone:
+            [self makeacall];
             break;
         case 100:
             // custom buttons have type >= 100

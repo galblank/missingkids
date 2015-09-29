@@ -11,8 +11,11 @@
 @interface CallingCardView : UIView
 {
     UIActivityIndicatorView * aiView;
-    
+    UILabel * header;
+    UILabel * label;
+    NSString * phone;
 }
 
-@property(nonatomic,strong)NSMutableDictionary * infoDoc;
+-(void)updateUI;
+@property(nonatomic,strong)NSMutableArray * infoDoc;
 @end

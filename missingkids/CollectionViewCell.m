@@ -35,10 +35,7 @@
         self.label.textColor = [UIColor whiteColor];
         self.label.textAlignment = NSTextAlignmentLeft;
         self.label.adjustsFontSizeToFitWidth = YES;
-        
         [self addSubview:self.label];
-        
-        
     }
     return self;
 }

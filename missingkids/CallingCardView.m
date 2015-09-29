@@ -9,6 +9,8 @@
 #import "CallingCardView.h"
 #import "Message.h"
 #import "MessageDispatcher.h"
+#import "AppDelegate.h"
+#import "DBManager.h"
 
 @implementation CallingCardView
 
@@ -22,19 +24,22 @@
         self.backgroundColor = [UIColor blackColor];
         self.layer.borderColor = [UIColor lightGrayColor].CGColor;
         self.layer.borderWidth = 1.2;
-        self.alpha = 0.9;
+        self.alpha = 0.8;
         
-        UILabel * header = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
+        
+        header = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 50)];
         header.backgroundColor = [UIColor clearColor];
+        header.textColor = [UIColor whiteColor];
+        header.textAlignment = NSTextAlignmentCenter;
         header.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
         header.text = NSLocalizedString(@"Contact Authorities", nil);
         [self addSubview:header];
         
-        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0,header.frame.origin.y + header.frame.size.height + 5, self.frame.size.width, 150)];
+        label = [[UILabel alloc] initWithFrame:CGRectMake(10,header.frame.origin.y + header.frame.size.height + 5, self.frame.size.width - 20, 150)];
         label.numberOfLines = 0;
+        label.textColor = [UIColor whiteColor];
         label.backgroundColor = [UIColor clearColor];
         label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
-        label.text = [infoDoc objectForKey:@"organization"];
         [self addSubview:label];
         
         UIButton * btnCall = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -73,13 +78,21 @@
 
 -(void)call
 {
-    Message *msg = [[Message alloc] init];
-    msg.mesRoute = MESSAGEROUTE_INTERNAL;
-    msg.mesType = MESSAGETYPE_CALL_REGIONAL_AUTHORITIES;
-    msg.ttl = TTL_NOW;
-    msg.params = self.infoDoc;
-    [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phone]];
+    [self cancel];
 }
+
+-(void)updateUI
+{
+    NSString * state = [infoDoc objectAtIndex:MISSING_STATE];
+    NSString * query = [NSString stringWithFormat:@"select * from regionalcontacts where isostate = '%@'",state];
+    NSMutableArray * array = [[DBManager sharedInstance] loadDataFromDB:query];
+    if(array){
+        phone = [@"tel://" stringByAppendingString:[[array objectAtIndex:0] objectAtIndex:4]];
+    }
+    label.text = [[array objectAtIndex:0] objectAtIndex:3];
+}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

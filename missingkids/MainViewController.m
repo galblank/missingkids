@@ -34,17 +34,14 @@
     
     [userinfo setObject:msg forKey:@"message"];
     [[NSNotificationCenter defaultCenter] postNotificationName:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CHANGE_MENU_BUTTON] object:nil userInfo:userinfo];
-
-    
-    
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     UICollectionViewFlowLayout *layout=[[UICollectionViewFlowLayout alloc] init];
-    maincollectionView=[[UICollectionView alloc] initWithFrame:CGRectMake(2, 15, self.view.frame.size
-                                                                      .width - 4, self.view.frame.size.height - 15) collectionViewLayout:layout];
+    maincollectionView=[[UICollectionView alloc] initWithFrame:CGRectMake(2, 20, self.view.frame.size
+                                                                      .width - 4, self.view.frame.size.height - 20) collectionViewLayout:layout];
     [maincollectionView setDataSource:self];
     [maincollectionView setDelegate:self];
     

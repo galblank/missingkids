@@ -57,6 +57,18 @@
         cityButton.layer.borderWidth = 0.5;
         [self addSubview:cityButton];
         
+        
+        UIButton *clearfilterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        clearfilterButton.frame = CGRectMake(10, self.frame.size.height - 50 - 40, self.frame.size.width - 20, 30);
+        clearfilterButton.tag = ITEM_TYPE_CITY;
+        [clearfilterButton setBackgroundColor:[UIColor whiteColor]];
+        [clearfilterButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [clearfilterButton setTitle:NSLocalizedString(@"Clear Filter", nil) forState:UIControlStateNormal];
+        clearfilterButton.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        [clearfilterButton addTarget:self action:@selector(clearFilter) forControlEvents:UIControlEventTouchUpInside];
+        clearfilterButton.layer.borderWidth = 0.5;
+        [self addSubview:clearfilterButton];
+        
         UIButton * btnApply = [UIButton buttonWithType:UIButtonTypeCustom];
         btnApply.frame = CGRectMake(10, self.frame.size.height - 50, self.frame.size.width / 2 - 20, 30);
         [btnApply setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -79,6 +91,15 @@
     }
     
     return self;
+}
+
+-(void)clearFilter
+{
+    Message *msg = [[Message alloc] init];
+    msg.mesRoute = MESSAGEROUTE_INTERNAL;
+    msg.mesType = MESSageTYPE_CLEAR_FILTER;
+    msg.ttl = TTL_NOW;
+    [[MessageDispatcher sharedInstance] addMessageToBus:msg];
 }
 
 -(void)selectItem:(UIButton*)button

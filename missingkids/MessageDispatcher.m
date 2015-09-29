@@ -168,6 +168,9 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_APPLY_FILTER:
             retMessage = @"MESSAGETYPE_APPLY_FILTER";
             break;
+        case MESSageTYPE_CLEAR_FILTER:
+            retMessage = @"MESSageTYPE_CLEAR_FILTER";
+            break;
         default:
             break;
     }

@@ -131,6 +131,19 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_APPLY_FILTER] object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSageTYPE_CLEAR_FILTER] object:nil];
+    
+    
+}
+
+-(void)clearFilter
+{
+   [self hidefilter];
+    NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:@"select * from person order by missingDate desc"];
+    if(results){
+        collectionData = results;
+        [maincollectionView reloadData];
+    }
 }
 
 -(void)didselectItem:(NSString*)item forItemType:(ITEMTYPE)type
@@ -170,17 +183,25 @@
         
         NSString * query = @"select * from person where";
         if([filterWindow.countryButton.titleLabel.text caseInsensitiveCompare:NSLocalizedString(@"Country", nil)] != NSOrderedSame){
-            query = [query stringByAppendingFormat:@" missingCountry = %@",filterWindow.countryButton.titleLabel.text];
+            query = [query stringByAppendingFormat:@" missingCountry = '%@'",filterWindow.countryButton.titleLabel.text];
             if([filterWindow.stateButton.titleLabel.text caseInsensitiveCompare:NSLocalizedString(@"State", nil)] != NSOrderedSame){
-                query = [query stringByAppendingFormat:@"or missingState = %@",filterWindow.stateButton.titleLabel.text];
+                query = [query stringByAppendingFormat:@"or missingState = '%@'",filterWindow.stateButton.titleLabel.text];
             }
             if([filterWindow.cityButton.titleLabel.text caseInsensitiveCompare:NSLocalizedString(@"City", nil)] != NSOrderedSame){
-                query = [query stringByAppendingFormat:@"or missingCity = %@",filterWindow.cityButton.titleLabel.text];
+                query = [query stringByAppendingFormat:@"or missingCity = '%@'",filterWindow.cityButton.titleLabel.text];
             }
         }
+        else if([filterWindow.stateButton.titleLabel.text caseInsensitiveCompare:NSLocalizedString(@"State", nil)] != NSOrderedSame){
+            query = [query stringByAppendingFormat:@" missingState = '%@'",filterWindow.stateButton.titleLabel.text];
+            if([filterWindow.cityButton.titleLabel.text caseInsensitiveCompare:NSLocalizedString(@"City", nil)] != NSOrderedSame){
+                query = [query stringByAppendingFormat:@"or missingCity = '%@'",filterWindow.cityButton.titleLabel.text];
+            }
+        }
+        else if([filterWindow.cityButton.titleLabel.text caseInsensitiveCompare:NSLocalizedString(@"City", nil)] != NSOrderedSame){
+            query = [query stringByAppendingFormat:@" missingCity = '%@'",filterWindow.cityButton.titleLabel.text];
+        }
         
-        
-        
+        query = [query stringByAppendingString:@" order by missingDate desc;"];
         NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:query];
         if(results){
             collectionData = results;

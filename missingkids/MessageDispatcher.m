@@ -59,6 +59,10 @@ MessageDispatcher *sharedInstance = nil;
 
 -(void)addMessageToBus:(Message*)newmessage
 {
+    if(newmessage.mesType == MESSAGETYPE_GENERAL_SUCCESS){
+        NSLog(@"General success result");
+        return;
+    }
     if(newmessage.ttl == DEFAULT_TTL){
         [messageBus addObject:newmessage];
         if(dispsatchTimer == nil){

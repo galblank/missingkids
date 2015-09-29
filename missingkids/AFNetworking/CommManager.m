@@ -77,7 +77,7 @@ static CommManager *sharedSampleSingletonDelegate = nil;
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/plain"];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
     NSString *fullAPI = [NSString stringWithFormat:@"%@%@",ROOT_API,api];
-    NSLog(@"POST: %@<>%@",fullAPI,params);
+    NSLog(@"POST: %@:%@",fullAPI,params);
     [manager POST:fullAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         //NSLog(@"JSON: %@", responseObject);
         Message *msg = [[Message alloc] init];

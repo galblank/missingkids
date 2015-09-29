@@ -43,7 +43,7 @@ AppDelegate *shared = nil;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    
+    bShouldUpdateLocation = NO;
     NSLocale *currentLocale = [NSLocale currentLocale];  // get the current locale.
     NSString *countryCode = [currentLocale objectForKey:NSLocaleCountryCode];
     NSLog(@"country code is: %@", countryCode);
@@ -155,17 +155,31 @@ AppDelegate *shared = nil;
 - (void)locationManager:(CLLocationManager *)manager
      didUpdateLocations:(NSArray *)locations {
     // If it's a relatively recent event, turn off updates to save power.
+    
+    if(location != nil){
+        return;
+    }
+    
     location = [locations lastObject];
     [locationManager stopUpdatingLocation];
+    if([[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"]){
+        [self updateLocation];
+    }
+    else{
+        bShouldUpdateLocation = YES;
+    }
+}
+
+-(void)updateLocation
+{
     Message * msg = [[Message alloc] init];
     msg.mesType = MESSAGETYPE_UPDATE_LOCATION;
     msg.mesRoute = MESSAGEROUTE_API;
-    msg.ttl = TTL_NOW;
+    msg.ttl = DEFAULT_TTL;
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     [params setObject:[NSNumber numberWithDouble:location.coordinate.latitude] forKey:@"latitude"];
     [params setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
     msg.params = params;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signinresponse:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SIGNIN_RESPONSE] object:nil];
     [[MessageDispatcher sharedInstance] addMessageToBus:msg];
 }
 
@@ -179,10 +193,6 @@ AppDelegate *shared = nil;
         msg.ttl = TTL_NOW;
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
         [params setObject:apnsToken forKey:@"apnskey"];
-        if(location){
-            [params setObject:[NSNumber numberWithDouble:location.coordinate.latitude] forKey:@"latitude"];
-            [params setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
-        }
         msg.params = params;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signinresponse:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SIGNIN_RESPONSE] object:nil];
         [[MessageDispatcher sharedInstance] addMessageToBus:msg];
@@ -214,7 +224,9 @@ AppDelegate *shared = nil;
         msg.ttl = TTL_NOW;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatedRegionalContacts:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_FETCH_GETREGIONALCONTACTS_RESPONSE] object:nil];
         [[MessageDispatcher sharedInstance] addMessageToBus:msg];
-        
+        if(bShouldUpdateLocation){
+            [self updateLocation];
+        }
         [self fetchpersons];
     }
 }
@@ -402,7 +414,6 @@ AppDelegate *shared = nil;
     shareBubbles.showFacebookBubble = YES;
     shareBubbles.showTwitterBubble = YES;
     shareBubbles.showMailBubble = YES;
-    shareBubbles.showVkBubble = YES;
     shareBubbles.showSmsBubble = YES;
     shareBubbles.showPhoneBubble = YES;
     // add custom buttons -- buttonId for custom buttons MUST be greater than or equal to 100

@@ -19,6 +19,7 @@ MessageDispatcher *sharedInstance = nil;
     @synchronized(self) {
         if (sharedInstance == nil) {
             [[self alloc] init]; // assignment not done here
+            
         }
     }
     
@@ -53,6 +54,8 @@ MessageDispatcher *sharedInstance = nil;
         if(dispatchedMessages == nil){
             dispatchedMessages = [[NSMutableArray alloc] init];
         }
+        
+        [NSTimer scheduledTimerWithTimeInterval:CLEANUP_TIMER target:self selector:@selector(clearDispastchedMessages) userInfo:nil repeats:YES];
     }
     return self;
 }
@@ -95,7 +98,7 @@ MessageDispatcher *sharedInstance = nil;
 
 -(void)startDispatching
 {
-    dispsatchTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(leave) userInfo:nil repeats:YES];
+    dispsatchTimer = [NSTimer scheduledTimerWithTimeInterval:DEFAULT_TTL target:self selector:@selector(leave) userInfo:nil repeats:YES];
 }
 
 -(void)stopDispathing

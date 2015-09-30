@@ -365,22 +365,6 @@
         }
         NSString * buildFullPath = [NSString stringWithFormat:@"%@/%@%@%@.jpg",ROOT_IMAGES,[person objectAtIndex:ORG_PREFIX],[person objectAtIndex:CASE_NUMBER],imagename];
         NSURL *url = [NSURL URLWithString:buildFullPath];
-        /*NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
-        [NSURLConnection sendAsynchronousRequest:urlRequest
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse * response, NSData * data, NSError * error)
-         {
-             if (data) {
-                 UIImage *image = [UIImage imageWithData:data];
-                 if(image){
-                     cell.backgroundView = [[UIImageView alloc] initWithImage:image];
-                 }
-                 else{
-                     NSLog(@"image is null");
-                 }
-             }
-         }];*/
-        
         [cell.imageview setImageWithURL:url placeholderImage:[UIImage imageNamed:@"profile"]];
     }
     else{

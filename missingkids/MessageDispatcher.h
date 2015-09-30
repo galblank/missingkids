@@ -21,6 +21,9 @@
     NSMutableArray * messageBus;
     
     NSMutableArray * dispatchedMessages;
+    
+    void (^uploadFinishedBlock)(void);
+    NSMutableArray *queueCallbacks;
 }
 + (MessageDispatcher*) sharedInstance;
 

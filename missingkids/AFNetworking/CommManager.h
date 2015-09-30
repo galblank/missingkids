@@ -17,7 +17,7 @@
 #define  KEY_RESULT_STRING              @"KEY_RESULT_STRING"
 #define  KEY_RESULT_FAILURE_ERROR       @"KEY_RESULT_FAILURE_ERROR"
 
-#define S3_IMAGES_BUCKET            @"missingkids"
+#define S3_IMAGES_BUCKET                @"missingkids"
 
 
 
@@ -38,5 +38,5 @@
 
 -(void)postAPI:(NSString*)api andParams:(NSMutableDictionary*)params;
 -(void)getAPI:(NSString*)api andParams:(NSMutableDictionary*)params;
-
+-(void)uploadImage:(NSURL *)imageUrl andAssetName:(NSString*)assetName andAssetSize:(NSNumber*)assetSize withDelegate:(id)theDelegate;
 @end

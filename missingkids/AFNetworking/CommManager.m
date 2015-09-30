@@ -16,7 +16,7 @@
 #import <AWSSQS/AWSSQS.h>
 #import <AWSSNS/AWSSNS.h>
 #import <AWSCognito/AWSCognito.h>
-
+#import <AWSS3/AWSS3TransferUtility.h>*
 @implementation CommManager
 
 
@@ -110,7 +110,7 @@ static CommManager *sharedSampleSingletonDelegate = nil;
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     [params setObject:assetName forKeyedSubscript:@"assetName"];
     [params setObject:uploadRequest.bucket forKeyedSubscript:@"bucket"];
-    
+    NSLog(@"uploading Image to S3");
     [[transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask *task) {
         // Do something with the response
         if(task.error == nil) {

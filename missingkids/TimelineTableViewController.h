@@ -8,12 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TimelineTableViewController : UITableViewController
+@interface TimelineTableViewController : UITableViewController<UIActionSheetDelegate>
 {
     NSMutableArray * tableData;
-    void (^uploadFinishedBlock)(void);
-    NSMutableArray *queueCallbacks;
     UITextView * textView;
     BOOL isKeyboardUp;
+    UIView * bgView;
 }
 @end

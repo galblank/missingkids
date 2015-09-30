@@ -9,6 +9,7 @@
 #import "TimelineTableViewController.h"
 #import <UIKit/UIKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "MessageDispatcher.h"
 
 @interface TimelineTableViewController ()
 
@@ -16,20 +17,23 @@
 
 @implementation TimelineTableViewController
 
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     tableData = [[NSMutableArray alloc] init];
     [tableData addObject:@"asdkfjhaskldfha sdfjhas kfjhasjkfhjasdh fjkashfdjklahl sdfglkjsd fsdkljf klasjdflasdj flkadjsfklsadj fklaj sadkljf asdjfhaskdfksadhfjsakdhf sadlhfjasdhfkahdewryuifzdkhj sjkdh jfkdsfhasdifhisdjhkl "];
+    [tableData addObject:@"asdkfjhaskldfha sdfjhas kfjhasjkfhjasdh fjkashfdjklahl sdfglkjsd fsdkljf klasjdflasdj flkadjsfklsadj fklaj sadkljf asdjfhaskdfksadhfjsakdhf sadlhfjasdhfkahdewryuifzdkhj sjkdh jfkdsfhasdifhisdjhkl "];
+    [tableData addObject:@"asdkfjhaskldfha sdfjhas kfjhasjkfhjasdh fjkashfdjklahl sdfglkjsd fsdkljf klasjdflasdj flkadjsfklsadj fklaj sadkljf asdjfhaskdfksadhfjsakdhf sadlhfjasdhfkahdewryuifzdkhj sjkdh jfkdsfhasdifhisdjhkl "];
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableView.backgroundColor = [UIColor whiteColor];
     
-    textView = [[UITextView alloc] initWithFrame:CGRectMake(0,self.navigationController.view.frame.size.height - 40, self.tableView.frame.size.width, 40)];
-    textView.layer.borderColor = [UIColor lightGrayColor].CGColor;
-    textView.layer.borderWidth = 0.5;
-    [self.navigationController.view addSubview:textView];
+    [self addInputView];
 
+    
+    self.tableView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 40);
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
@@ -42,9 +46,74 @@
     
 }
 
+-(void)addInputView
+{
+    bgView = [[UIView alloc] initWithFrame:CGRectMake(0,self.navigationController.view.frame.size.height - 40, self.tableView.frame.size.width, 40)];
+    bgView.backgroundColor = [UIColor whiteColor];
+    //bgView.alpha = 0.3;
+    textView = [[UITextView alloc] initWithFrame:CGRectMake(40,5, bgView.frame.size.width - 80, 30)];
+    textView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    textView.layer.borderWidth = 0.5;
+    textView.backgroundColor = [UIColor whiteColor];
+    [bgView addSubview:textView];
+    
+    UIButton * imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    imageButton.frame = CGRectMake(3, 5, 30, 30);
+    [imageButton setBackgroundImage:[UIImage imageNamed:@"photo"] forState:UIControlStateNormal];
+    [imageButton addTarget:self action:@selector(chooseImage) forControlEvents:UIControlEventTouchUpInside];
+    [bgView addSubview:imageButton];
+    
+    UIButton * enterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    enterButton.frame = CGRectMake(bgView.frame.size.width - 33, 5, 30, 30);
+    [enterButton setBackgroundImage:[UIImage imageNamed:@"send"] forState:UIControlStateNormal];
+    [enterButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
+    [bgView addSubview:enterButton];
+    
+    [self.navigationController.view addSubview:bgView];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+
+- (BOOL)textViewShouldEndEditing:(UITextView * _Nonnull)textView
+{
+    return YES;
+}
+
+-(void)sendMessage
+{
+    [tableData addObject:textView.text];
+    [self.tableView reloadData];
+    NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:tableData.count-1 inSection:0];
+    [self.tableView scrollToRowAtIndexPath:lastIndex atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    
+    Message * msg = [[Message alloc] init];
+    msg.mesRoute = MESSAGEROUTE_API;
+    msg.mesType = MESSAGETYPE_SENDMESSAGE;
+    msg.ttl = TTL_NOW;
+    msg.params = [[NSMutableDictionary alloc] init];
+    [msg.params setObject:textView.text forKeyedSubscript:@"message"];
+    [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+}
+
+-(void)chooseImage
+{
+    UIActionSheet * action = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Take Picture or Choose from Existing", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Take Picture", nil),NSLocalizedString(@"Select from existing", nil), nil];
+    [action showInView:self.view];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == 0){
+        
+    }
+    else if(buttonIndex == 1){
+        [self startMediaBrowserFromViewController:self usingDelegate:self];
+    }
 }
 
 - (void)keyboardWillShow:(NSNotification*)notification
@@ -78,11 +147,13 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    CGRect newFrame = textView.frame;
+    CGRect newFrame = bgView.frame;
     CGRect keyboardFrame = [self.view convertRect:keyboardEndFrame toView:nil];
     
     newFrame.origin.y -= keyboardFrame.size.height * 1;
-    textView.frame = newFrame;
+    bgView.frame = newFrame;
+    
+    self.tableView.frame = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y - keyboardFrame.size.height, self.tableView.frame.size.width, self.tableView.frame.size.height);
     
     [UIView commitAnimations];
 }
@@ -99,9 +170,6 @@
     else{
         return;
     }
-    NSLog(@"[ChatRoomViewController] -keyboardDidHide-");
-    
-    NSLog(@"[ChatRoomViewController] -keyboardDidShow-");
     
     NSDictionary* userInfo = [notification userInfo];
     
@@ -121,11 +189,13 @@
     [UIView setAnimationDuration:animationDuration];
     [UIView setAnimationCurve:animationCurve];
     
-    CGRect newFrame = textView.frame;
+    CGRect newFrame = bgView.frame;
     CGRect keyboardFrame = [self.view convertRect:keyboardEndFrame toView:nil];
     
     newFrame.origin.y -= keyboardFrame.size.height * -1;
-    textView.frame = newFrame;
+    bgView.frame = newFrame;
+    
+    self.tableView.frame = CGRectMake(0,0, self.tableView.frame.size.width, self.tableView.frame.size.height);
     
     [UIView commitAnimations];
     
@@ -159,7 +229,7 @@
     
     mediaUI.delegate = delegate;
     
-    [controller presentModalViewController: mediaUI animated: YES];
+    [controller presentViewController:mediaUI animated:YES completion:nil];
     return YES;
 }
 
@@ -178,11 +248,38 @@
         originalImage = (UIImage *) [info objectForKey:
                                      UIImagePickerControllerOriginalImage];
         
+        NSURL * url = [info objectForKey:UIImagePickerControllerReferenceURL];
+        
         if (editedImage) {
             imageToUse = editedImage;
         } else {
             imageToUse = originalImage;
         }
+        
+        NSUInteger imgSize  = CGImageGetHeight(imageToUse.CGImage) * CGImageGetBytesPerRow(imageToUse.CGImage);
+        
+        Message * msg = [[Message alloc] init];
+        msg.mesRoute = MESSAGEROUTE_API;
+        msg.mesType = MESSAGETYPE_UPLOADIMAGE;
+        msg.ttl = TTL_NOW;
+         NSData *imgData = UIImageJPEGRepresentation(imageToUse, 0);
+        msg.params = [[NSMutableDictionary alloc] init];
+        [msg.params setObject:imageToUse forKey:@"image"];
+        [msg.params setObject:[NSNumber numberWithInteger:imgData.length] forKey:@"size"];
+        [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+        
+        [tableData addObject:imageToUse];
+        [self.tableView reloadData];
+        NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:tableData.count-1 inSection:0];
+        [self.tableView scrollToRowAtIndexPath:lastIndex atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        
+        /*Message * msg = [[Message alloc] init];
+        msg.mesRoute = MESSAGEROUTE_API;
+        msg.mesType = MESSAGETYPE_SENDMESSAGE;
+        msg.ttl = TTL_NOW;
+        msg.params = [[NSMutableDictionary alloc] init];
+        [msg.params setObject:imageToUse forKeyedSubscript:@"image"];
+        [[MessageDispatcher sharedInstance] addMessageToBus:msg];*/
         // Do something with imageToUse
     }
     
@@ -190,35 +287,12 @@
     if (CFStringCompare ((CFStringRef) mediaType, kUTTypeMovie, 0)
         == kCFCompareEqualTo) {
         
-        NSString *moviePath = [[info objectForKey:
-                                UIImagePickerControllerMediaURL] path];
+        NSString *moviePath = [[info objectForKey:UIImagePickerControllerMediaURL] path];
         
         // Do something with the picked movie available at moviePath
     }
     
-    [[picker parentViewController] dismissModalViewControllerAnimated: YES];
-}
-
--(void)uploadMediaWithBlock:(void (^)(void))callbackBlock
-{
-    uploadFinishedBlock = callbackBlock;
-    /*if(self.formImage != nil){
-        [self saveImage];
-        [[CommManager sharedInstance] uploadImage:self.assetLocation andAssetName:self.formimageS3name andAssetSize:self.assetSize withDelegate:self];
-    }*/
-}
-
--(void)uploadAssetFinishedWithResult:(NSError*)error
-{
-    NSLog(@"uploadAssetFinishedWithResult %@",error);
-    if(uploadFinishedBlock){
-        uploadFinishedBlock();
-        uploadFinishedBlock = nil;
-    }
-    for(void (^Queued_fetchImageWithBlock)(void) in queueCallbacks){
-        Queued_fetchImageWithBlock();
-    }
-    [queueCallbacks removeAllObjects];
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -236,18 +310,41 @@
     
     if(cell == nil){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"chatcellid"];
-        cell.layer.borderColor = [UIColor yellowColor].CGColor;
-        cell.layer.borderWidth = 0.5;
+        cell.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        cell.layer.borderWidth = 0.3;
         cell.backgroundColor = [UIColor whiteColor];
         cell.textLabel.numberOfLines = 0;
         cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
         cell.textLabel.textColor = [UIColor blackColor];
     }
     
-    cell.textLabel.text = [tableData objectAtIndex:indexPath.row];
-    
-    
+    id object = [tableData objectAtIndex:indexPath.row];
+    if([object isKindOfClass:[NSString class]]){
+        cell.textLabel.text = [tableData objectAtIndex:indexPath.row];
+    }
+    else if([object isKindOfClass:[UIImage class]]){
+        UIImageView * image = [[UIImageView alloc] initWithFrame:CGRectMake(tableView.frame.size.width / 2 - 100, 5, 200, 200)];
+        image.image = (UIImage*)object;
+        [cell.contentView addSubview:image];
+    }
+
     return cell;
+}
+
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    id object = [tableData objectAtIndex:indexPath.row];
+    if([object isKindOfClass:[NSString class]]){
+        NSString * text = [tableData objectAtIndex:indexPath.row];
+        CGSize s = [text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14] constrainedToSize:CGSizeMake(tableView.frame.size.width, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
+        return s.height + 10;
+    }
+    else if([object isKindOfClass:[UIImage class]]){
+        return 200.0 + 10;
+    }
+    
+    return 0.0;
 }
 /*
 // Override to support conditional editing of the table view.

@@ -193,6 +193,9 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_UPLOADIMAGE:
             retMessage = @"MESSAGETYPE_UPLOADIMAGE";
             break;
+        case MESSAGETYPE_SENDMESSAGE:
+            retMessage = @"MESSAGETYPE_SENDMESSAGE";
+            break;
         default:
             break;
     }
@@ -249,10 +252,77 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_UPDATE_LOCATION:
             [[CommManager sharedInstance] postAPI:@"updatelocation" andParams:message.params];
             break;
+        case MESSAGETYPE_UPLOADIMAGE:
+        {
+            NSMutableDictionary * response = [self saveImage:[message.params objectForKey:@"image"]];
+            NSURL * url = [response objectForKey:@"url"];
+            NSString * imageName = [response objectForKey:@"image"];
+            [[CommManager sharedInstance] uploadImage:url andAssetName:imageName andAssetSize:[message.params objectForKey:@"size"] withDelegate:self];
+        }
+            break;
+        case MESSAGETYPE_SENDMESSAGE:
+            [[CommManager sharedInstance] postAPI:@"sendmessage" andParams:message.params];
+            break;
         default:
             break;
     }
 }
+
+-(NSMutableDictionary*)generateSavingFileLocalPath
+{
+    NSArray *paths = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+    NSURL *documentURL = [paths objectAtIndex:0];
+    documentURL = [documentURL URLByAppendingPathComponent:@"missingkids_images" isDirectory:YES];
+    BOOL bExists = NO;
+    BOOL isFolder;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:[documentURL path] isDirectory:&isFolder])
+    {
+        NSError *error = nil;
+        bExists = [[NSFileManager defaultManager] createDirectoryAtURL:documentURL withIntermediateDirectories:YES attributes:nil error:&error];
+    }
+    else{
+        bExists = YES;
+    }
+    
+    NSString * imageID = [NSString stringWithFormat:@"%f.jpg",[[NSDate date] timeIntervalSince1970]];
+
+    NSString * url = [NSString stringWithFormat:@"%@/%@",documentURL.path,imageID];
+    return @{@"url":url,@"image":imageID}.mutableCopy;
+}
+
+
+-(NSMutableDictionary *)saveImage:(UIImage*)image{
+    NSMutableDictionary * dic = [self generateSavingFileLocalPath];
+    NSString * saveurl = [dic objectForKey:@"url"];
+    BOOL bFileWritten = [UIImageJPEGRepresentation(image, 0.0) writeToFile:saveurl atomically:YES];
+    NSURL * url = [NSURL fileURLWithPath:saveurl];
+    [dic setObject:url forKey:@"url"];
+    return dic;
+}
+
+
+-(void)uploadMediaWithBlock:(void (^)(void))callbackBlock
+{
+    uploadFinishedBlock = callbackBlock;
+    /*if(self.formImage != nil){
+     [self saveImage];
+     [[CommManager sharedInstance] uploadImage:self.assetLocation andAssetName:self.formimageS3name andAssetSize:self.assetSize withDelegate:self];
+     }*/
+}
+
+-(void)uploadAssetFinishedWithResult:(NSError*)error
+{
+    NSLog(@"uploadAssetFinishedWithResult %@",error);
+    if(uploadFinishedBlock){
+        uploadFinishedBlock();
+        uploadFinishedBlock = nil;
+    }
+    for(void (^Queued_fetchImageWithBlock)(void) in queueCallbacks){
+        Queued_fetchImageWithBlock();
+    }
+    [queueCallbacks removeAllObjects];
+}
+
 
 
 -(BOOL)canSendMessage:(Message*)message
@@ -270,6 +340,8 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_FETCH_PERSONS:
         case MESSAGETYPE_FETCH_GETREGIONALCONTACTS:
         case MESSAGETYPE_UPDATE_LOCATION:
+        case MESSAGETYPE_SENDMESSAGE:
+        case MESSAGETYPE_UPLOADIMAGE:
             return YES;
         default:
             break;

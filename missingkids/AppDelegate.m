@@ -18,6 +18,8 @@
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import <AWSCore/AWSCore.h>
+#import <AWSCognito/AWSCognito.h>
+#import <AWSS3/AWSS3.h>
 
 @interface AppDelegate ()
 
@@ -46,9 +48,12 @@ AppDelegate *shared = nil;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [Fabric with:@[[Crashlytics class]]];
 
-    AWSStaticCredentialsProvider *credentialsProvider = [[AWSStaticCredentialsProvider alloc] initWithAccessKey:AWSAccessKeyId secretKey:AWSSecretKey];
-    AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSWest2 credentialsProvider:credentialsProvider];
-
+    AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc]
+                                                          initWithRegionType:AWSRegionUSEast1
+                                                          identityPoolId:@"us-east-1:ae0dc571-0b62-4b1a-9a75-ef572d672c00"];
+    
+    AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSEast1 credentialsProvider:credentialsProvider];
+    
     [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
     
     bShouldUpdateLocation = NO;
@@ -107,6 +112,12 @@ AppDelegate *shared = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SHARING_MENU] object:nil];
     [self showMenuButton];
     return YES;
+}
+
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier
+  completionHandler:(void (^)())completionHandler {
+    /* Store the completion handler.*/
+    [AWSS3TransferUtility interceptApplication:application handleEventsForBackgroundURLSession:identifier completionHandler:completionHandler];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -254,11 +265,9 @@ AppDelegate *shared = nil;
                 query = [NSString stringWithFormat:@"update regionalcontacts set contactnumber = '%@', contactname = '%@' where country = '%@' and state = '%@'",contactnumber,contactname,country,state];
             }
             else{
-                NSLog(@"%@",query);
                 query = [NSString stringWithFormat:@"insert into regionalcontacts values(%@,'%@','%@','%@','%@','%@')",nil,country,state,contactname,contactnumber,isostate];
                 
             }
-            NSLog(@"%@",query);
             [[DBManager sharedInstance] executeQuery:query];
         }
     

@@ -10,6 +10,12 @@
 #import "StringHelper.h"
 #import "AppDelegate.h"
 #import "MessageDispatcher.h"
+#import <AWSCore/AWSCore.h>
+#import <AWSS3/AWSS3.h>
+#import <AWSDynamoDB/AWSDynamoDB.h>
+#import <AWSSQS/AWSSQS.h>
+#import <AWSSNS/AWSSNS.h>
+#import <AWSCognito/AWSCognito.h>
 
 @implementation CommManager
 
@@ -89,5 +95,37 @@ static CommManager *sharedSampleSingletonDelegate = nil;
         NSLog(@"Error: %@", error);
     }];
 }
+
+-(void)uploadImage:(NSURL *)imageUrl andAssetName:(NSString*)assetName andAssetSize:(NSNumber*)assetSize withDelegate:(id)theDelegate
+{
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
+    uploadRequest.bucket = S3_IMAGES_BUCKET;
+    
+    uploadRequest.key = assetName;
+    uploadRequest.body = imageUrl;
+    uploadRequest.contentLength = [NSNumber numberWithUnsignedLongLong:assetSize.doubleValue];
+    uploadRequest.contentType = @"image/jpeg";
+    
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    [params setObject:assetName forKeyedSubscript:@"assetName"];
+    [params setObject:uploadRequest.bucket forKeyedSubscript:@"bucket"];
+    
+    [[transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask *task) {
+        // Do something with the response
+        if(task.error == nil) {
+            AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
+            NSLog(@"Uploaded file with result: %@",task.result);
+        }
+        else{
+            NSLog(@"Upload file error %@",task.error.description);
+        }
+        if(theDelegate && [theDelegate respondsToSelector:@selector(uploadAssetFinishedWithResult:)]){
+            [theDelegate uploadAssetFinishedWithResult:task.error];
+        }
+        return nil;
+    }];
+}
+
 
 @end

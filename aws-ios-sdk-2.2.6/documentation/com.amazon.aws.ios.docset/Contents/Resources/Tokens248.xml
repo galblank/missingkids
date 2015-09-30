@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Tokens version="1.0">
+	<File path="Classes/AWSDynamoDBStreamSpecification.html">
+		
+		<Token>
+			<TokenIdentifier>//apple_ref/occ/cl/AWSDynamoDBStreamSpecification</TokenIdentifier>
+			<Abstract type="html"></Abstract>
+			<DeclaredIn>AWSDynamoDBModel.h</DeclaredIn>
+            
+			
+			<NodeRef refid="248"/>
+		</Token>
+		
+		
+		<Token>
+			<TokenIdentifier>//apple_ref/occ/instm/AWSDynamoDBStreamSpecification/setStreamEnabled:</TokenIdentifier>
+			<Abstract type="html"></Abstract>
+			<DeclaredIn>AWSDynamoDBModel.h</DeclaredIn>
+			
+			<Declaration>@property (nonatomic, strong) NSNumber *streamEnabled</Declaration>
+			
+			
+			<Anchor>//api/name/streamEnabled</Anchor>
+            <NodeRef refid="248"/>
+		</Token>
+		
+		<Token>
+			<TokenIdentifier>//apple_ref/occ/instm/AWSDynamoDBStreamSpecification/streamEnabled</TokenIdentifier>
+			<Abstract type="html"></Abstract>
+			<DeclaredIn>AWSDynamoDBModel.h</DeclaredIn>
+			
+			<Declaration>@property (nonatomic, strong) NSNumber *streamEnabled</Declaration>
+			
+			
+			<Anchor>//api/name/streamEnabled</Anchor>
+            <NodeRef refid="248"/>
+		</Token>
+		
+		<Token>
+			<TokenIdentifier>//apple_ref/occ/instp/AWSDynamoDBStreamSpecification/streamEnabled</TokenIdentifier>
+			<Abstract type="html"></Abstract>
+			<DeclaredIn>AWSDynamoDBModel.h</DeclaredIn>
+			
+			<Declaration>@property (nonatomic, strong) NSNumber *streamEnabled</Declaration>
+			
+			
+			<Anchor>//api/name/streamEnabled</Anchor>
+            <NodeRef refid="248"/>
+		</Token>
+		
+		<Token>
+			<TokenIdentifier>//apple_ref/occ/instm/AWSDynamoDBStreamSpecification/setStreamViewType:</TokenIdentifier>
+			<Abstract type="html"></Abstract>
+			<DeclaredIn>AWSDynamoDBModel.h</DeclaredIn>
+			
+			<Declaration>@property (nonatomic, assign) AWSDynamoDBStreamViewType streamViewType</Declaration>
+			
+			
+			<Anchor>//api/name/streamViewType</Anchor>
+            <NodeRef refid="248"/>
+		</Token>
+		
+		<Token>
+			<TokenIdentifier>//apple_ref/occ/instm/AWSDynamoDBStreamSpecification/streamViewType</TokenIdentifier>
+			<Abstract type="html"></Abstract>
+			<DeclaredIn>AWSDynamoDBModel.h</DeclaredIn>
+			
+			<Declaration>@property (nonatomic, assign) AWSDynamoDBStreamViewType streamViewType</Declaration>
+			
+			
+			<Anchor>//api/name/streamViewType</Anchor>
+            <NodeRef refid="248"/>
+		</Token>
+		
+		<Token>
+			<TokenIdentifier>//apple_ref/occ/instp/AWSDynamoDBStreamSpecification/streamViewType</TokenIdentifier>
+			<Abstract type="html"></Abstract>
+			<DeclaredIn>AWSDynamoDBModel.h</DeclaredIn>
+			
+			<Declaration>@property (nonatomic, assign) AWSDynamoDBStreamViewType streamViewType</Declaration>
+			
+			
+			<Anchor>//api/name/streamViewType</Anchor>
+            <NodeRef refid="248"/>
+		</Token>
+		
+        
+        
+	</File>
+</Tokens>

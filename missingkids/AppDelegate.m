@@ -17,7 +17,7 @@
 #import "DBManager.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
-
+#import <AWSCore/AWSCore.h>
 
 @interface AppDelegate ()
 
@@ -46,6 +46,11 @@ AppDelegate *shared = nil;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [Fabric with:@[[Crashlytics class]]];
 
+    AWSStaticCredentialsProvider *credentialsProvider = [[AWSStaticCredentialsProvider alloc] initWithAccessKey:AWSAccessKeyId secretKey:AWSSecretKey];
+    AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSWest2 credentialsProvider:credentialsProvider];
+
+    [AWSServiceManager defaultServiceManager].defaultServiceConfiguration = configuration;
+    
     bShouldUpdateLocation = NO;
     NSLocale *currentLocale = [NSLocale currentLocale];  // get the current locale.
     NSString *countryCode = [currentLocale objectForKey:NSLocaleCountryCode];

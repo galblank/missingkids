@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "UIImageView+AFNetworking.h"
 #import "MessageDispatcher.h"
+#import "TimelineTableViewController.h"
 
 @interface PersonViewController ()
 
@@ -97,8 +98,24 @@
     shareButton.layer.cornerRadius = shareButton.frame.size.height / 2;
     [shareButton setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
     [self.view addSubview:shareButton];
+    
+    UIButton * timelineButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    timelineButton.frame = CGRectMake(self.view.frame.size.width / 2 - 30, self.view.frame.size.height - 80, 60, 60);
+    timelineButton.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    timelineButton.layer.borderWidth = 0.3;
+    timelineButton.alpha = 0.8;
+    [timelineButton setBackgroundColor:[UIColor whiteColor]];
+    [timelineButton addTarget:self action:@selector(showTimeline) forControlEvents:UIControlEventTouchUpInside];
+    timelineButton.layer.cornerRadius = shareButton.frame.size.height / 2;
+    [timelineButton setImage:[UIImage imageNamed:@"timeline"] forState:UIControlStateNormal];
+    [self.view addSubview:timelineButton];
 }
 
+-(void)showTimeline
+{
+    TimelineTableViewController * tl = [[TimelineTableViewController alloc] init];
+    [self.navigationController pushViewController:tl animated:YES];
+}
 -(void)showSharingMenu
 {
     Message * msg = [[Message alloc] init];

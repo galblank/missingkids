@@ -391,7 +391,9 @@
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     df.dateFormat = @"MMM dd yyyy";
     NSString * strDate = [df stringFromDate:date];
-    NSString * labeltext = [NSString stringWithFormat:@"%@ %@\r\n%@\r\n%@ %@",[person objectAtIndex:FIRST_NAME],[person objectAtIndex:LAST_NAME],strDate,[person objectAtIndex:MISSING_CITY],[person objectAtIndex:MISSING_COUNTRY]];
+    NSString * state = [person objectAtIndex:MISSING_STATE];
+    
+    NSString * labeltext = [NSString stringWithFormat:@"%@ %@\r\n%@\r\n%@ %@",[person objectAtIndex:FIRST_NAME],[person objectAtIndex:LAST_NAME],strDate,[person objectAtIndex:MISSING_CITY],state != nil?state:[person objectAtIndex:MISSING_COUNTRY]];
     cell.label.text = labeltext;
     
     return cell;

@@ -84,10 +84,14 @@
 
 -(void)updateUI
 {
+    if(infoDoc == nil || infoDoc.count < MISSING_STATE){
+        NSLog(@"Invalid array of regional contacts");
+        return;
+    }
     NSString * state = [infoDoc objectAtIndex:MISSING_STATE];
     NSString * query = [NSString stringWithFormat:@"select * from regionalcontacts where isostate = '%@'",state];
     NSMutableArray * array = [[DBManager sharedInstance] loadDataFromDB:query];
-    if(array){
+    if(array && array.count > 0){
         phone = [@"tel://" stringByAppendingString:[[array objectAtIndex:0] objectAtIndex:4]];
     }
     label.text = [[array objectAtIndex:0] objectAtIndex:3];

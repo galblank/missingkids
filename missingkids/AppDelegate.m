@@ -234,24 +234,28 @@ AppDelegate *shared = nil;
 -(void)updatedRegionalContacts:(NSNotification*)notify
 {
     Message * msg = [notify.userInfo objectForKey:@"message"];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
         for(NSMutableDictionary * contact in msg.params){
             NSString * country = [contact objectForKey:@"country"];
             NSString * state = [contact objectForKey:@"state"];
             NSString * contactname = [contact objectForKey:@"contactname"];
+            contactname = [contactname stringByReplacingOccurrencesOfString:@"\n" withString:@"\\"];
             NSString * contactnumber = [contact objectForKey:@"contactnumber"];
             NSString * isostate = [contact objectForKey:@"isostate"];
             NSString * query = [NSString stringWithFormat:@"select * from regionalcontacts where country = '%@' AND state = '%@'",country,state];
             NSMutableArray * result = [[DBManager sharedInstance] loadDataFromDB:query];
             if(result && result.count > 0){
-                query = [NSString stringWithFormat:@"update regionalcontacts set contactnumber = '%@', contactname = '%@'",contactnumber,contactname];
+                query = [NSString stringWithFormat:@"update regionalcontacts set contactnumber = '%@', contactname = '%@' where country = '%@' and state = '%@'",contactnumber,contactname,country,state];
             }
             else{
-                query = [NSString stringWithFormat:@"insert into regionalcontacts values('%@','%@','%@','%@','%@')",country,state,contactname,contactnumber,isostate];
+                NSLog(@"%@",query);
+                query = [NSString stringWithFormat:@"insert into regionalcontacts values(%@,'%@','%@','%@','%@','%@')",nil,country,state,contactname,contactnumber,isostate];
+                
             }
+            NSLog(@"%@",query);
             [[DBManager sharedInstance] executeQuery:query];
         }
-    });
+    
 }
 
 //////////////////////////PROPRETERY FUNCTiONS/////////////////////////////
@@ -259,10 +263,12 @@ AppDelegate *shared = nil;
 {
     if(callwindow == nil){
         callwindow = [[CallingCardView alloc] initWithFrame:CGRectMake(0,-250,self.window.frame.size.width,250)];
-        callwindow.infoDoc = sharemissingperson;
-        [callwindow updateUI];
+        
         [self.window addSubview:callwindow];
     }
+    
+    callwindow.infoDoc = sharemissingperson;
+    [callwindow updateUI];
     
     [UIView animateWithDuration:0.5
                          animations:^{
@@ -306,12 +312,32 @@ AppDelegate *shared = nil;
         [self.window.rootViewController presentViewController:mailComp animated:YES completion:nil];
     }
 }
+
+-(void)shareTheApp{
+    if(mailComp == nil){
+        mailComp = [[MFMailComposeViewController alloc] init];
+        [mailComp setMailComposeDelegate:self];
+    }
+    
+    if ([MFMailComposeViewController canSendMail]) {
+        [mailComp setSubject:NSLocalizedString(@"Missing Children and Amber Alerts App", nil)];
+        NSString *shareString = [NSString stringWithFormat:@"Download this app, it might help save someone https://itunes.apple.com/us/app/missingkids/id1041399210?ls=1&mt=8"];
+        [mailComp setMessageBody:shareString isHTML:YES];
+        
+        [self.window.rootViewController presentViewController:mailComp animated:YES completion:nil];
+    }
+}
+
+
 -(void)sendMail{
     if(mailComp == nil){
         mailComp = [[MFMailComposeViewController alloc] init];
         [mailComp setMailComposeDelegate:self];
     }
     
+    if(sharemissingperson == nil){
+        [self shareTheApp];
+    }
     if ([MFMailComposeViewController canSendMail]) {
         [mailComp setSubject:NSLocalizedString(@"Please help find this missing child!", nil)];
         NSNumber * missingDate = [sharemissingperson objectAtIndex:MISSING_DATE];
@@ -334,16 +360,23 @@ AppDelegate *shared = nil;
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter])
     {
         SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-        NSNumber * missingDate = [sharemissingperson objectAtIndex:MISSING_DATE];
-        NSDate * date = [NSDate dateWithTimeIntervalSince1970:(missingDate.doubleValue / 1000)];
-        NSDateFormatter *df = [[NSDateFormatter alloc] init];
-        df.dateFormat = @"MMM dd yyyy";
-        NSString * strDate = [df stringFromDate:date];
-        NSString *shareString = [NSString stringWithFormat:@"%@\r\n%@ %@ went missing on %@ from %@ %@",NSLocalizedString(@"Please help find this missing child!", nil),[sharemissingperson objectAtIndex:FIRST_NAME],[sharemissingperson objectAtIndex:LAST_NAME],strDate,[sharemissingperson objectAtIndex:MISSING_CITY],[sharemissingperson objectAtIndex:MISSING_COUNTRY]];
-        [tweetSheet setInitialText:shareString];
-        if([[sharemissingperson lastObject] isKindOfClass:[UIImage class]]){
-            [tweetSheet addImage:[sharemissingperson lastObject]];
+        NSString *shareString = @"";
+        if(sharemissingperson == nil){
+            shareString = [NSString stringWithFormat:@"Get this app, it helps save children https://itunes.apple.com/us/app/missingkids/id1041399210?ls=1&mt=8"];
+            [tweetSheet addURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/missingkids/id1041399210?ls=1&mt=8"]];
         }
+        else{
+            NSNumber * missingDate = [sharemissingperson objectAtIndex:MISSING_DATE];
+            NSDate * date = [NSDate dateWithTimeIntervalSince1970:(missingDate.doubleValue / 1000)];
+            NSDateFormatter *df = [[NSDateFormatter alloc] init];
+            df.dateFormat = @"MMM dd yyyy";
+            NSString * strDate = [df stringFromDate:date];
+            shareString = [NSString stringWithFormat:@"%@\r\n%@ %@ went missing on %@ from %@ %@",NSLocalizedString(@"Please help find this missing child!", nil),[sharemissingperson objectAtIndex:FIRST_NAME],[sharemissingperson objectAtIndex:LAST_NAME],strDate,[sharemissingperson objectAtIndex:MISSING_CITY],[sharemissingperson objectAtIndex:MISSING_COUNTRY]];
+            if([[sharemissingperson lastObject] isKindOfClass:[UIImage class]]){
+                [tweetSheet addImage:[sharemissingperson lastObject]];
+            }
+        }
+        [tweetSheet setInitialText:shareString];
         [[self topViewController] presentViewController:tweetSheet animated:YES completion:nil];
         
     }
@@ -364,19 +397,30 @@ AppDelegate *shared = nil;
 -(void)FBPressed{
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
     {
+        
         SLComposeViewController *fbPostSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-        NSNumber * missingDate = [sharemissingperson objectAtIndex:MISSING_DATE];
-        NSDate * date = [NSDate dateWithTimeIntervalSince1970:(missingDate.doubleValue / 1000)];
-        NSDateFormatter *df = [[NSDateFormatter alloc] init];
-        df.dateFormat = @"MMM dd yyyy";
-        NSString * strDate = [df stringFromDate:date];
-        NSString *shareString = [NSString stringWithFormat:@"%@\r\n%@ %@ went missing on %@ from %@ %@",NSLocalizedString(@"Please help find this missing child!", nil),[sharemissingperson objectAtIndex:FIRST_NAME],[sharemissingperson objectAtIndex:LAST_NAME],strDate,[sharemissingperson objectAtIndex:MISSING_CITY],[sharemissingperson objectAtIndex:MISSING_COUNTRY]];
+         NSString *shareString = @"";
+        
+        if(sharemissingperson == nil){
+            shareString = [NSString stringWithFormat:@"Get this app, it helps save children https://itunes.apple.com/us/app/missingkids/id1041399210?ls=1&mt=8"];
+            [fbPostSheet addURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/missingkids/id1041399210?ls=1&mt=8"]];
+        }
+        else{
+            NSNumber * missingDate = [sharemissingperson objectAtIndex:MISSING_DATE];
+            NSDate * date = [NSDate dateWithTimeIntervalSince1970:(missingDate.doubleValue / 1000)];
+            NSDateFormatter *df = [[NSDateFormatter alloc] init];
+            df.dateFormat = @"MMM dd yyyy";
+            NSString * strDate = [df stringFromDate:date];
+            shareString = [NSString stringWithFormat:@"%@\r\n%@ %@ went missing on %@ from %@ %@",NSLocalizedString(@"Please help find this missing child!", nil),[sharemissingperson objectAtIndex:FIRST_NAME],[sharemissingperson objectAtIndex:LAST_NAME],strDate,[sharemissingperson objectAtIndex:MISSING_CITY],[sharemissingperson objectAtIndex:MISSING_COUNTRY]];
+            if([[sharemissingperson lastObject] isKindOfClass:[UIImage class]]){
+                [fbPostSheet addImage:[sharemissingperson lastObject]];
+            }
+        }
+        
         if([fbPostSheet setInitialText:shareString] == NO){
             
         }
-        if([[sharemissingperson lastObject] isKindOfClass:[UIImage class]]){
-            [fbPostSheet addImage:[sharemissingperson lastObject]];
-        }
+        
         [[self topViewController] presentViewController:fbPostSheet animated:YES completion:nil];
     } else
     {

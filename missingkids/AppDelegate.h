@@ -14,51 +14,6 @@
 #import "ABContactsViewController.h"
 #import "CallingCardView.h"
 
-#define TITLE_HEADER_COLOR [UIColor colorWithRed:133.0 / 255.0 green:150.0  / 255.0 blue:166.0 / 255.0 alpha:1.0]
-#define THEME_GRAY_BG_COLOR [UIColor colorWithRed:243.0 / 255.0 green:243.0  / 255.0 blue:243.0 / 255.0 alpha:1.0]
-
-#define GRAY_BG_COLOR [UIColor colorWithRed:240.0 / 255.0 green:240.0  / 255.0 blue:240.0 / 255.0 alpha:1.0]
-#define TITLE_BUTTONS_COLOR [UIColor colorWithRed:11 / 255.0 green:192  / 255.0 blue:255.0 / 255.0 alpha:1.0]
-
-#define THEME_COLOR_DISABLED [UIColor colorWithRed:105.0 / 255.0 green:217.0 / 255.0 blue:255.0 / 255.0 alpha:1.0]
-
-#define AWSAccessKeyId   @"AKIAIRA3Y62O5JJ5HN6A"
-#define AWSSecretKey     @"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"
-#define AwsBucketUrl     @"http://s3.amazonaws.com"
-
-
-#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
-//#define ROOT_API    @"http://localhost:8080/amberalertapi/"
-
-typedef enum {
-    FIRST_NAME = 1,
-    MIDDLE_NAME = 2,
-    LAST_NAME = 3,
-    AGE = 4,
-    SEX = 5,
-    RACE = 6,
-    AGENOW = 7,
-    IMAGE = 8,
-   BIRTHDATE = 9,
-    CASE_NUMBER = 10,
-    CASE_TYPE = 11,
-    CIRCUMSTANCE = 12,
-    EYE_COLOR = 13,
-    HAIR_COLOR = 14,
-    HEIGHT = 15,
-    WEIGHT = 16,
-    MISSING_CITY = 17,
-    MISSING_COUNTRY = 18,
-    MISSING_COUNTY = 19,
-    MISSING_PROVINCE = 20,
-    MISSING_STATE = 21,
-    MISSING_DATE = 22,
-    ORG_CONTACT_INFO = 23,
-    ORG_LOGO = 24,
-    ORG_NAME = 25,
-    ORG_PREFIX = 26,
-    LAST_UPDATED = 27
-}PERSON_TABLE_COLUMNS;
 
 
 

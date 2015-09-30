@@ -15,4 +15,7 @@
     BOOL isKeyboardUp;
     UIView * bgView;
 }
+
+@property(nonatomic,strong)NSMutableArray * person;
+
 @end

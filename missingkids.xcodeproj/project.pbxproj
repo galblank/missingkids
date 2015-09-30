@@ -2800,6 +2800,7 @@
 		094A4FA71BBC757A00B85C01 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		094A4FA91BBC757A00B85C01 /* README.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = README.html; sourceTree = "<group>"; };
 		094A4FAB1BBC757A00B85C01 /* README.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = README.html; sourceTree = "<group>"; };
+		094A54EC1BBC9CBC00B85C01 /* definitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = definitions.h; sourceTree = "<group>"; };
 		095C4BA31BB46D3000749CD8 /* PersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonViewController.h; sourceTree = "<group>"; };
 		095C4BA41BB46D3000749CD8 /* PersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonViewController.m; sourceTree = "<group>"; };
 		095C4BA61BB49F4700749CD8 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
@@ -4494,11 +4495,10 @@
 		09BF7A301BB07CEF00A48BEF /* missingkids */ = {
 			isa = PBXGroup;
 			children = (
-				09BF7A9F1BB0834700A48BEF /* CommManager.h */,
-				09BF7AA01BB0834700A48BEF /* CommManager.m */,
-				09BF7AF31BB2FE7400A48BEF /* amberalert.db */,
 				09BF7AE41BB0B58C00A48BEF /* Model */,
 				09BF7AA21BB0853000A48BEF /* Helpers */,
+				09BF7A9F1BB0834700A48BEF /* CommManager.h */,
+				09BF7AA01BB0834700A48BEF /* CommManager.m */,
 				09BF7A341BB07CEF00A48BEF /* AppDelegate.h */,
 				09BF7A351BB07CEF00A48BEF /* AppDelegate.m */,
 				09BF7A371BB07CEF00A48BEF /* MainViewController.h */,
@@ -4531,6 +4531,8 @@
 				09BF7A421BB07CEF00A48BEF /* Info.plist */,
 				09BF7A321BB07CEF00A48BEF /* main.m */,
 				09BF7AE21BB0AE4D00A48BEF /* MessageDispatcherRules.plist */,
+				094A54EC1BBC9CBC00B85C01 /* definitions.h */,
+				09BF7AF31BB2FE7400A48BEF /* amberalert.db */,
 			);
 			name = "Supporting Files";
 			path = missingkids;

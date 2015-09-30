@@ -9,12 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "Message.h"
 
-#define DEFAULT_TTL 15.0
-#define TTL_NOW 0.5;
-#define CLEANUP_TIMER 10.0
-
-#define ROOT_IMAGES @"http://www.missingkids.com/photographs/"
-
 @interface MessageDispatcher : NSObject
 {
     NSTimer *dispsatchTimer;

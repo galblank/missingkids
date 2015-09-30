@@ -7,13 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-
-typedef enum{
-    ITEM_TYPE_COUNTRY = 0,
-    ITEM_TYPE_STATE,
-    ITEM_TYPE_CITY
-}ITEMTYPE;
+#import "definitions.h"
 
 @protocol ListVCDelegate <NSObject>
 @optional

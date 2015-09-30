@@ -10,6 +10,8 @@
 #import <UIKit/UIKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "MessageDispatcher.h"
+#import "AppDelegate.h"
+#import "DBManager.h"
 
 @interface TimelineTableViewController ()
 
@@ -17,15 +19,15 @@
 
 @implementation TimelineTableViewController
 
-
+@synthesize person;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     tableData = [[NSMutableArray alloc] init];
-    [tableData addObject:@"asdkfjhaskldfha sdfjhas kfjhasjkfhjasdh fjkashfdjklahl sdfglkjsd fsdkljf klasjdflasdj flkadjsfklsadj fklaj sadkljf asdjfhaskdfksadhfjsakdhf sadlhfjasdhfkahdewryuifzdkhj sjkdh jfkdsfhasdifhisdjhkl "];
-    [tableData addObject:@"asdkfjhaskldfha sdfjhas kfjhasjkfhjasdh fjkashfdjklahl sdfglkjsd fsdkljf klasjdflasdj flkadjsfklsadj fklaj sadkljf asdjfhaskdfksadhfjsakdhf sadlhfjasdhfkahdewryuifzdkhj sjkdh jfkdsfhasdifhisdjhkl "];
-    [tableData addObject:@"asdkfjhaskldfha sdfjhas kfjhasjkfhjasdh fjkashfdjklahl sdfglkjsd fsdkljf klasjdflasdj flkadjsfklsadj fklaj sadkljf asdjfhaskdfksadhfjsakdhf sadlhfjasdhfkahdewryuifzdkhj sjkdh jfkdsfhasdifhisdjhkl "];
+    NSString * query = [NSString stringWithFormat:@"select * from timeline where caseid = '%@' order by id desc",[person objectAtIndex:CASE_NUMBER]];
+    tableData = [[DBManager sharedInstance] loadDataFromDB:query];
+
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableView.backgroundColor = [UIColor whiteColor];
@@ -44,6 +46,47 @@
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(messagesFromServer:)
+                                                 name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_GET_ALL_MESSAGESFORCASE_RESPONSE]
+                                               object:nil];
+    
+    [self fetchMessagesFromServer];
+    
+}
+
+-(void)fetchMessagesFromServer
+{
+    Message *msg = [[Message alloc] init];
+    msg.mesRoute = MESSAGEROUTE_API;
+    msg.mesType = MESSAGETYPE_GET_ALL_MESSAGESFORCASE;
+    msg.ttl = DEFAULT_TTL;
+    msg.params = [[NSMutableDictionary alloc] init];
+    [msg.params setObject:[person objectAtIndex:CASE_NUMBER] forKey:@"caseid"];
+    if(tableData && tableData.count > 0){
+        NSMutableDictionary * lastmessage = [tableData lastObject];
+        [msg.params setObject:[lastmessage objectForKey:@"id"] forKey:@"lastmessageid"];
+    }
+    [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+}
+
+-(void)messagesFromServer:(NSNotification*)notify
+{
+    Message * msg = [notify.userInfo objectForKey:@"message"];
+    NSMutableArray * messagesfromserver = (NSMutableArray *)(msg.params);
+    for(NSMutableDictionary * onemessage in messagesfromserver){
+        NSString * caseid = [onemessage objectForKey:@"caseid"];
+        NSString * message = [onemessage objectForKey:@"message"];
+        NSString * imageid = [onemessage objectForKey:@"imageid"];
+        NSString * submittedby = [onemessage objectForKey:@"submittedby"];
+        NSNumber * createdat = [onemessage objectForKey:@"createdat"];
+        
+        NSString * query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@'",createdat.floatValue,submittedby];
+        NSMutableArray * result = [[DBManager sharedInstance] loadDataFromDB:query];
+        if(result && result.count > 0){
+            //exists
+        }
+    }
 }
 
 -(void)addInputView
@@ -97,7 +140,11 @@
     msg.ttl = TTL_NOW;
     msg.params = [[NSMutableDictionary alloc] init];
     [msg.params setObject:textView.text forKeyedSubscript:@"message"];
+    
+    NSString * caseid = [self.person objectAtIndex:CASE_NUMBER];
+    [msg.params setObject:caseid forKey:@"caseid"];
     [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+    textView.text = @"";
 }
 
 -(void)chooseImage

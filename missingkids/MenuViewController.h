@@ -7,12 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "definitions.h"
 
-typedef enum{
-    MENUTYPE_MAIN = 1,
-    MENUTYPE_SORT,
-    MENUTYPE_FILTER
-}MENU_TYPES;
 
 @interface MenuViewController : UITableViewController
 

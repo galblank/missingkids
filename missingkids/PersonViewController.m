@@ -114,6 +114,7 @@
 -(void)showTimeline
 {
     TimelineTableViewController * tl = [[TimelineTableViewController alloc] init];
+    tl.person = self.person;
     [self.navigationController pushViewController:tl animated:YES];
 }
 -(void)showSharingMenu

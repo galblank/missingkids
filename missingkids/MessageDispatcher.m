@@ -196,6 +196,15 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_SENDMESSAGE:
             retMessage = @"MESSAGETYPE_SENDMESSAGE";
             break;
+        case MESSAGETYPE_SENDMESSAGE_RESPONSE:
+            retMessage = @"MESSAGETYPE_SENDMESSAGE_RESPONSE";
+            break;
+        case MESSAGETYPE_GET_ALL_MESSAGESFORCASE:
+            retMessage = @"MESSAGETYPE_GET_ALL_MESSAGESFORCASE";
+            break;
+        case MESSAGETYPE_GET_ALL_MESSAGESFORCASE_RESPONSE:
+            retMessage = @"MESSAGETYPE_GET_ALL_MESSAGESFORCASE_RESPONSE";
+            break;
         default:
             break;
     }
@@ -262,6 +271,9 @@ MessageDispatcher *sharedInstance = nil;
             break;
         case MESSAGETYPE_SENDMESSAGE:
             [[CommManager sharedInstance] postAPI:@"sendmessage" andParams:message.params];
+            break;
+        case MESSAGETYPE_GET_ALL_MESSAGESFORCASE:
+            [[CommManager sharedInstance] getAPI:@"getmessages" andParams:message.params];
             break;
         default:
             break;
@@ -342,6 +354,7 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_UPDATE_LOCATION:
         case MESSAGETYPE_SENDMESSAGE:
         case MESSAGETYPE_UPLOADIMAGE:
+        case MESSAGETYPE_GET_ALL_MESSAGESFORCASE:
             return YES;
         default:
             break;

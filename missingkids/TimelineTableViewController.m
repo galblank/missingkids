@@ -24,11 +24,11 @@
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableView.backgroundColor = [UIColor whiteColor];
-    textView = [[UITextView alloc] initWithFrame:CGRectMake(0,self.view.frame.size.height - 40, self.tableView.frame.size.width, 40)];
+    
+    textView = [[UITextView alloc] initWithFrame:CGRectMake(0,self.navigationController.view.frame.size.height - 40, self.tableView.frame.size.width, 40)];
     textView.layer.borderColor = [UIColor lightGrayColor].CGColor;
     textView.layer.borderWidth = 0.5;
-    [self.view addSubview:textView];
-    
+    [self.navigationController.view addSubview:textView];
 
     
     [[NSNotificationCenter defaultCenter] addObserver:self

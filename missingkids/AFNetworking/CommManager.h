@@ -24,6 +24,7 @@
 @protocol CommunicationManagerDelegate <NSObject>
 @optional
 -(void)getApiFinished:(NSMutableDictionary*)response;
+-(void)uploadAssetFinishedWithResult:(NSError*)error;
 @end
 
 

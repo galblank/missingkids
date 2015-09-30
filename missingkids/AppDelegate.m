@@ -104,10 +104,8 @@ AppDelegate *shared = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMenu) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_MENU] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideCallingCard) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_HIDE_CALLINGCARD] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(makeacall) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CALL_REGIONAL_AUTHORITIES] object:nil];
-    [self showMenuButton];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showSharingMenu:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_SHOW_SHARING_MENU] object:nil];
-    
+    [self showMenuButton];
     return YES;
 }
 

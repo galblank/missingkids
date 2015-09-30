@@ -11,5 +11,9 @@
 @interface TimelineTableViewController : UITableViewController
 {
     NSMutableArray * tableData;
+    void (^uploadFinishedBlock)(void);
+    NSMutableArray *queueCallbacks;
+    UITextView * textView;
+    BOOL isKeyboardUp;
 }
 @end

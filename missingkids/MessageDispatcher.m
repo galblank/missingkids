@@ -190,6 +190,9 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_UPDATE_LOCATION:
             retMessage = @"MESSAGETYPE_UPDATE_LOCATION";
             break;
+        case MESSAGETYPE_UPLOADIMAGE:
+            retMessage = @"MESSAGETYPE_UPLOADIMAGE";
+            break;
         default:
             break;
     }

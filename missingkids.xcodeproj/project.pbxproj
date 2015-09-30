@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		09281A071BB96DF50010E4BA /* FilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09281A061BB96DF50010E4BA /* FilterView.m */; settings = {ASSET_TAGS = (); }; };
+		094A3FC61BBC195B00B85C01 /* TimelineTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 094A3FC51BBC195B00B85C01 /* TimelineTableViewController.m */; settings = {ASSET_TAGS = (); }; };
+		094A3FCA1BBC1B1B00B85C01 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 094A3FC81BBC1B1B00B85C01 /* Fabric.framework */; settings = {ASSET_TAGS = (); }; };
+		094A3FCB1BBC1B1B00B85C01 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 094A3FC91BBC1B1B00B85C01 /* Crashlytics.framework */; settings = {ASSET_TAGS = (); }; };
 		095C4BA51BB46D3000749CD8 /* PersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BA41BB46D3000749CD8 /* PersonViewController.m */; settings = {ASSET_TAGS = (); }; };
 		095C4BA71BB49F4700749CD8 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095C4BA61BB49F4700749CD8 /* Social.framework */; };
 		095C4BAA1BB5DBEA00749CD8 /* ABContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BA91BB5DBEA00749CD8 /* ABContactsViewController.m */; settings = {ASSET_TAGS = (); }; };
@@ -105,6 +108,10 @@
 /* Begin PBXFileReference section */
 		09281A051BB96DF50010E4BA /* FilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterView.h; sourceTree = "<group>"; };
 		09281A061BB96DF50010E4BA /* FilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterView.m; sourceTree = "<group>"; };
+		094A3FC41BBC195B00B85C01 /* TimelineTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimelineTableViewController.h; sourceTree = "<group>"; };
+		094A3FC51BBC195B00B85C01 /* TimelineTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineTableViewController.m; sourceTree = "<group>"; };
+		094A3FC81BBC1B1B00B85C01 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		094A3FC91BBC1B1B00B85C01 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		095C4BA31BB46D3000749CD8 /* PersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonViewController.h; sourceTree = "<group>"; };
 		095C4BA41BB46D3000749CD8 /* PersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonViewController.m; sourceTree = "<group>"; };
 		095C4BA61BB49F4700749CD8 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
@@ -249,8 +256,10 @@
 				095C4BB91BB5DD8A00749CD8 /* AddressBook.framework in Frameworks */,
 				095C4BBA1BB5DD8A00749CD8 /* AddressBookUI.framework in Frameworks */,
 				095C4BA71BB49F4700749CD8 /* Social.framework in Frameworks */,
+				094A3FCA1BBC1B1B00B85C01 /* Fabric.framework in Frameworks */,
 				09BF7AF91BB2FF0900A48BEF /* libsqlite3.tbd in Frameworks */,
 				09BF7ADD1BB0965600A48BEF /* libicucore.tbd in Frameworks */,
+				094A3FCB1BBC1B1B00B85C01 /* Crashlytics.framework in Frameworks */,
 				09BF7ADB1BB0944000A48BEF /* MessageUI.framework in Frameworks */,
 				09BF7AC71BB090FC00A48BEF /* CFNetwork.framework in Frameworks */,
 				09BF7AC81BB090FC00A48BEF /* CoreFoundation.framework in Frameworks */,
@@ -330,6 +339,8 @@
 				096747281BB9EC290048A7FA /* ItemsTableViewController.m */,
 				0967472A1BBAC36E0048A7FA /* CallingCardView.h */,
 				0967472B1BBAC36E0048A7FA /* CallingCardView.m */,
+				094A3FC41BBC195B00B85C01 /* TimelineTableViewController.h */,
+				094A3FC51BBC195B00B85C01 /* TimelineTableViewController.m */,
 			);
 			path = missingkids;
 			sourceTree = "<group>";
@@ -340,6 +351,8 @@
 				095C4BA61BB49F4700749CD8 /* Social.framework */,
 				09BF7A3D1BB07CEF00A48BEF /* Assets.xcassets */,
 				09BF7A3F1BB07CEF00A48BEF /* LaunchScreen.storyboard */,
+				094A3FC81BBC1B1B00B85C01 /* Fabric.framework */,
+				094A3FC91BBC1B1B00B85C01 /* Crashlytics.framework */,
 				09BF7A421BB07CEF00A48BEF /* Info.plist */,
 				09BF7A321BB07CEF00A48BEF /* main.m */,
 				09BF7AE21BB0AE4D00A48BEF /* MessageDispatcherRules.plist */,
@@ -536,6 +549,7 @@
 				09BF7A2A1BB07CEF00A48BEF /* Sources */,
 				09BF7A2B1BB07CEF00A48BEF /* Frameworks */,
 				09BF7A2C1BB07CEF00A48BEF /* Resources */,
+				094A3FC71BBC1B0300B85C01 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -653,6 +667,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		094A3FC71BBC1B0300B85C01 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run da64f4519b9611b9a992f39c4855b935714fc76e e87288de966dda080f1afb7d3bda8274cd823485c9f10f5e8c852f123cfeff1e";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		09BF7A2A1BB07CEF00A48BEF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -684,6 +715,7 @@
 				09BF7B061BB3817900A48BEF /* InsetTextView.m in Sources */,
 				09BF7AA11BB0834700A48BEF /* CommManager.m in Sources */,
 				09BF7AE71BB0B5A700A48BEF /* Message.m in Sources */,
+				094A3FC61BBC195B00B85C01 /* TimelineTableViewController.m in Sources */,
 				09281A071BB96DF50010E4BA /* FilterView.m in Sources */,
 				09BF7AEE1BB2057800A48BEF /* WYPopoverController.m in Sources */,
 				09BF7A9B1BB0830F00A48BEF /* AFURLConnectionOperation.m in Sources */,
@@ -847,6 +879,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Gal Blank (K23K6M63X8)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gal Blank (K23K6M63X8)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/missingkids",
+				);
 				INFOPLIST_FILE = missingkids/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -862,6 +898,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Gal Blank (K23K6M63X8)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gal Blank (K23K6M63X8)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/missingkids",
+				);
 				INFOPLIST_FILE = missingkids/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

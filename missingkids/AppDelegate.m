@@ -15,6 +15,8 @@
 #import "AFContact.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "DBManager.h"
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 
 
 @interface AppDelegate ()
@@ -42,7 +44,8 @@ AppDelegate *shared = nil;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
+    [Fabric with:@[[Crashlytics class]]];
+
     bShouldUpdateLocation = NO;
     NSLocale *currentLocale = [NSLocale currentLocale];  // get the current locale.
     NSString *countryCode = [currentLocale objectForKey:NSLocaleCountryCode];

@@ -14,6 +14,11 @@
     UITextView * textView;
     BOOL isKeyboardUp;
     UIView * bgView;
+    
+    CGFloat keyboardHeight;
+    
+    UIEdgeInsets originalChatViewEdgeInsets;
+    UIEdgeInsets originalChatViewScrollIndicatorInsets;
 }
 
 @property(nonatomic,strong)NSMutableArray * person;

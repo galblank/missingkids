@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Message.h"
-
+#import <UIKit/UIKit.h>
 @interface MessageDispatcher : NSObject
 {
     NSTimer *dispsatchTimer;
@@ -16,7 +16,7 @@
     
     NSMutableArray * dispatchedMessages;
     
-    void (^uploadFinishedBlock)(void);
+    void (^uploadFinishedBlock)(NSString*imageID);
     NSMutableArray *queueCallbacks;
 }
 + (MessageDispatcher*) sharedInstance;
@@ -26,4 +26,6 @@
 -(void)startDispatching;
 -(void)stopDispathing;
 -(NSString*)messageTypeToString:(messageType)Type;
+- (void)fetchAssetForImageID:(NSString*)imageID withBlock:(void (^)(UIImage* userimage))callbackBlock;
+-(void)uploadAsset:(UIImage *)asset withBlock:(void (^)(NSString*imageID))callbackBlock;
 @end

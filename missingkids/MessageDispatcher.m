@@ -205,6 +205,9 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_GET_ALL_MESSAGESFORCASE_RESPONSE:
             retMessage = @"MESSAGETYPE_GET_ALL_MESSAGESFORCASE_RESPONSE";
             break;
+        case MESSAGETYPE_DOWNLOAD_ASSET:
+            retMessage = @"MESSAGETYPE_DOWNLOAD_ASSET";
+            break;
         default:
             break;
     }
@@ -263,9 +266,9 @@ MessageDispatcher *sharedInstance = nil;
             break;
         case MESSAGETYPE_UPLOADIMAGE:
         {
-            NSMutableDictionary * response = [self saveImage:[message.params objectForKey:@"image"]];
-            NSURL * url = [response objectForKey:@"url"];
-            NSString * imageName = [response objectForKey:@"image"];
+            NSString * strUrl = [self saveImage:[message.params objectForKey:@"image"]];
+            NSURL * url = [NSURL fileURLWithPath:strUrl];
+            NSString * imageName = [strUrl lastPathComponent];
             [[CommManager sharedInstance] uploadImage:url andAssetName:imageName andAssetSize:[message.params objectForKey:@"size"] withDelegate:self];
         }
             break;
@@ -280,8 +283,50 @@ MessageDispatcher *sharedInstance = nil;
     }
 }
 
--(NSMutableDictionary*)generateSavingFileLocalPath
+
+-(void)downloadedAssetFinishedWithResult:(NSError*)error savedUrl:(NSURL*)url assetName:(NSString*)name
 {
+    
+    UIImage * image = [UIImage imageWithContentsOfFile:url.absoluteString];
+    NSMutableArray *arrayOfCurrentDownloads = [[CommManager sharedInstance].imagesDownloadQueue objectForKey:name];
+    for(void (^Queued_fetchImageWithBlock)(UIImage*) in arrayOfCurrentDownloads){
+        Queued_fetchImageWithBlock(image);
+    }
+    [[CommManager sharedInstance].imagesDownloadQueue removeObjectForKey:name];
+}
+
+
+- (void)fetchAssetForImageID:(NSString*)imageID withBlock:(void (^)(UIImage* userimage))callbackBlock
+{
+    UIImage * image = [UIImage imageWithContentsOfFile:[self generatelocalpathforImageID:imageID]];
+    if(image){
+        callbackBlock(image);
+        return;
+    }
+    NSMutableArray *arrayOfCurrentDownloads = [[CommManager sharedInstance].imagesDownloadQueue objectForKey:imageID];
+    if(arrayOfCurrentDownloads == nil){
+        arrayOfCurrentDownloads = [[NSMutableArray alloc] init];
+    }
+    else{
+        NSLog(@"Download image %@",imageID);
+        [arrayOfCurrentDownloads addObject:callbackBlock];
+        [[CommManager sharedInstance].imagesDownloadQueue setObject:arrayOfCurrentDownloads forKey:imageID];
+        return;
+    }
+    
+    [arrayOfCurrentDownloads addObject:callbackBlock];
+    [[CommManager sharedInstance].imagesDownloadQueue setObject:arrayOfCurrentDownloads forKey:imageID];
+    
+    NSURL * savingURL = [NSURL fileURLWithPath:[self generatelocalpathforImageID:imageID]];
+    [[CommManager sharedInstance] downloadAssetFromS3WithName:imageID andSavingUrl:savingURL withDelegate:self];
+}
+
+
+-(NSString*)generatelocalpathforImageID:(NSString*)imageID
+{
+    if(imageID == nil){
+        imageID = [NSString stringWithFormat:@"%f.jpg",[[NSDate date] timeIntervalSince1970]];
+    }
     NSArray *paths = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
     NSURL *documentURL = [paths objectAtIndex:0];
     documentURL = [documentURL URLByAppendingPathComponent:@"missingkids_images" isDirectory:YES];
@@ -295,42 +340,38 @@ MessageDispatcher *sharedInstance = nil;
     else{
         bExists = YES;
     }
-    
-    NSString * imageID = [NSString stringWithFormat:@"%f.jpg",[[NSDate date] timeIntervalSince1970]];
-
     NSString * url = [NSString stringWithFormat:@"%@/%@",documentURL.path,imageID];
-    return @{@"url":url,@"image":imageID}.mutableCopy;
+    return url;
 }
 
 
--(NSMutableDictionary *)saveImage:(UIImage*)image{
-    NSMutableDictionary * dic = [self generateSavingFileLocalPath];
-    NSString * saveurl = [dic objectForKey:@"url"];
-    BOOL bFileWritten = [UIImageJPEGRepresentation(image, 0.0) writeToFile:saveurl atomically:YES];
-    NSURL * url = [NSURL fileURLWithPath:saveurl];
-    [dic setObject:url forKey:@"url"];
-    return dic;
+
+-(NSString *)saveImage:(UIImage*)image{
+    NSString * localpath  = [self generatelocalpathforImageID:nil];
+    BOOL bFileWritten = [UIImageJPEGRepresentation(image, 0.0) writeToFile:localpath atomically:YES];
+    return localpath;
 }
 
 
--(void)uploadMediaWithBlock:(void (^)(void))callbackBlock
+-(void)uploadAsset:(UIImage *)asset withBlock:(void (^)(NSString*imageID))callbackBlock
 {
     uploadFinishedBlock = callbackBlock;
-    /*if(self.formImage != nil){
-     [self saveImage];
-     [[CommManager sharedInstance] uploadImage:self.assetLocation andAssetName:self.formimageS3name andAssetSize:self.assetSize withDelegate:self];
-     }*/
+    NSString * strUrl = [self saveImage:asset];
+    NSURL * url = [NSURL fileURLWithPath:strUrl];
+    NSString * imageName = [strUrl lastPathComponent];
+    NSData *imgData = UIImageJPEGRepresentation(asset, 0);
+    [[CommManager sharedInstance] uploadImage:url andAssetName:imageName andAssetSize:[NSNumber numberWithInteger:imgData.length] withDelegate:self];
 }
 
--(void)uploadAssetFinishedWithResult:(NSError*)error
+-(void)uploadAssetFinishedWithResult:(NSError*)error forAssetName:(NSString*)name
 {
     NSLog(@"uploadAssetFinishedWithResult %@",error);
     if(uploadFinishedBlock){
-        uploadFinishedBlock();
+        uploadFinishedBlock(name);
         uploadFinishedBlock = nil;
     }
-    for(void (^Queued_fetchImageWithBlock)(void) in queueCallbacks){
-        Queued_fetchImageWithBlock();
+    for(void (^Queued_fetchImageWithBlock)(NSString*) in queueCallbacks){
+        Queued_fetchImageWithBlock(name);
     }
     [queueCallbacks removeAllObjects];
 }

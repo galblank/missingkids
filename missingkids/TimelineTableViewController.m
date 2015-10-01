@@ -25,8 +25,7 @@
     [super viewDidLoad];
     
     tableData = [[NSMutableArray alloc] init];
-    NSString * query = [NSString stringWithFormat:@"select * from timeline where caseid = '%@' order by id desc",[person objectAtIndex:CASE_NUMBER]];
-    tableData = [[DBManager sharedInstance] loadDataFromDB:query];
+    [self loadmessagesfromDB];
 
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -55,6 +54,28 @@
     
 }
 
+-(void)loadmessagesfromDB
+{
+    NSString * query = [NSString stringWithFormat:@"select * from timeline where caseid = '%@' order by id desc",[person objectAtIndex:CASE_NUMBER]];
+    NSMutableArray * array = [[DBManager sharedInstance] loadDataFromDB:query];
+    for(NSMutableArray * onemsg in array){
+        NSNumber * _id          = [onemsg objectAtIndex:COLUMN_ID];
+        NSString * caseid       = [onemsg objectAtIndex:COLUMN_CASEID];
+        NSString * message      = [onemsg objectAtIndex:COLUMN_MESSAGE];
+        NSNumber * createdat    = [onemsg objectAtIndex:COLUMN_CREATEDAT];
+        NSString * submittedby  = [onemsg objectAtIndex:COLUMN_SUBMITTEDBY];
+        NSString * imageid      = [onemsg objectAtIndex:COLUMN_IMAGEID];
+        NSMutableDictionary * dicmessage = [[NSMutableDictionary alloc] init];
+        [dicmessage setObject:_id forKey:@"id"];
+        [dicmessage setObject:caseid forKey:@"caseid"];
+        [dicmessage setObject:message forKey:@"message"];
+        [dicmessage setObject:createdat forKey:@"createdat"];
+        [dicmessage setObject:submittedby forKey:@"submittedby"];
+        [dicmessage setObject:imageid forKey:@"imageid"];
+        [tableData addObject:dicmessage];
+    }
+}
+
 -(void)fetchMessagesFromServer
 {
     Message *msg = [[Message alloc] init];
@@ -70,10 +91,19 @@
     [[MessageDispatcher sharedInstance] addMessageToBus:msg];
 }
 
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    if ([self.navigationController.viewControllers indexOfObject:self] == NSNotFound)
+    {
+        [bgView removeFromSuperview];
+    }
+}
 -(void)messagesFromServer:(NSNotification*)notify
 {
     Message * msg = [notify.userInfo objectForKey:@"message"];
     NSMutableArray * messagesfromserver = (NSMutableArray *)(msg.params);
+    BOOL bHaveNewMessages = NO;
     for(NSMutableDictionary * onemessage in messagesfromserver){
         NSString * caseid = [onemessage objectForKey:@"caseid"];
         NSString * message = [onemessage objectForKey:@"message"];
@@ -82,10 +112,27 @@
         NSNumber * createdat = [onemessage objectForKey:@"createdat"];
         
         NSString * query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@'",createdat.floatValue,submittedby];
+        if(message && message.length > 0){
+            query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@' and message = '%@'",createdat.floatValue,submittedby,message];
+        }
+        else if(imageid && imageid.length > 0){
+            query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@' and imageid = '%@'",createdat.floatValue,submittedby,imageid];
+
+        }
         NSMutableArray * result = [[DBManager sharedInstance] loadDataFromDB:query];
         if(result && result.count > 0){
             //exists
         }
+        else{
+            bHaveNewMessages = YES;
+            query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@')",nil,caseid,message,createdat.doubleValue,submittedby,imageid];
+            [[DBManager sharedInstance] executeQuery:query];
+        }
+    }
+    
+    if(bHaveNewMessages){
+        [self loadmessagesfromDB];
+        [self.tableView reloadData];
     }
 }
 
@@ -129,7 +176,18 @@
 
 -(void)sendMessage
 {
-    [tableData addObject:textView.text];
+    NSString * message = [textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if(message.length == 0){
+        return;
+    }
+    
+    NSMutableDictionary * msgDic = [[NSMutableDictionary alloc] init];
+    [msgDic setObject:textView.text forKey:@"message"];
+    [msgDic setObject:[person objectAtIndex:CASE_NUMBER] forKey:@"caseid"];
+    [msgDic setObject:[NSNumber  numberWithDouble:[[NSDate date] timeIntervalSince1970]] forKey:@"createdat"];
+    [msgDic setObject:[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"] forKey:@"submittedby"];
+    
+    [tableData addObject:msgDic];
     [self.tableView reloadData];
     NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:tableData.count-1 inSection:0];
     [self.tableView scrollToRowAtIndexPath:lastIndex atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -200,13 +258,64 @@
     newFrame.origin.y -= keyboardFrame.size.height * 1;
     bgView.frame = newFrame;
     
-    self.tableView.frame = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y - keyboardFrame.size.height, self.tableView.frame.size.width, self.tableView.frame.size.height);
+    [self adjustChatviewOnKeyboardEvent:keyboardFrame.size.height];
+    //self.tableView.frame = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y - keyboardFrame.size.height, self.tableView.frame.size.width, self.tableView.frame.size.height);
     
     [UIView commitAnimations];
 }
 
+-(void)adjustChatviewOnKeyboardEvent:(CGFloat)animatedHeight
+{
+    
+    if(animatedHeight == 0){
+        keyboardHeight = 0;
+        if(UIEdgeInsetsEqualToEdgeInsets(originalChatViewEdgeInsets, UIEdgeInsetsZero) == YES){
+            originalChatViewEdgeInsets = self.tableView.contentInset;
+            originalChatViewScrollIndicatorInsets = self.tableView.scrollIndicatorInsets;
+            return;
+        }
+        self.tableView.contentInset = originalChatViewEdgeInsets;
+        self.tableView.scrollIndicatorInsets = originalChatViewScrollIndicatorInsets;
+    }
+    else{
+        keyboardHeight = animatedHeight;
+        
+        UIEdgeInsets currentContentInset = self.tableView.contentInset;
+        if(UIEdgeInsetsEqualToEdgeInsets(originalChatViewEdgeInsets, UIEdgeInsetsZero) == YES){
+            originalChatViewEdgeInsets = currentContentInset;
+        }
+        self.tableView.contentInset = UIEdgeInsetsMake(currentContentInset.top,currentContentInset.left, animatedHeight - currentContentInset.top,currentContentInset.right);
+        
+        UIEdgeInsets currentScrollInset = self.tableView.scrollIndicatorInsets;
+        if(UIEdgeInsetsEqualToEdgeInsets(originalChatViewScrollIndicatorInsets, UIEdgeInsetsZero) == YES){
+            originalChatViewScrollIndicatorInsets = currentScrollInset;
+        }
+        self.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(currentScrollInset.top,currentScrollInset.left, animatedHeight - currentScrollInset.top,currentScrollInset.right);
+        
+        if(tableData.count > 0)
+        {
+                NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:(tableData.count - 1) inSection:0];
+                [self.tableView scrollToRowAtIndexPath:lastIndex
+                                atScrollPosition:UITableViewScrollPositionBottom
+                                        animated:YES];
+            
+        }
+    }
+}
 
 
+-(void)adjustInsetsBy:(CGFloat)yInset
+{
+    UIEdgeInsets currentContentInset = self.tableView.contentInset;
+    self.tableView.contentInset = UIEdgeInsetsMake(currentContentInset.top,currentContentInset.left, currentContentInset.bottom + yInset,currentContentInset.right);
+    
+    UIEdgeInsets currentScrollInset = self.tableView.scrollIndicatorInsets;
+    self.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(currentScrollInset.top,currentScrollInset.left, currentScrollInset.bottom + yInset,currentScrollInset.right);
+    
+    CGPoint currentOffset = self.tableView.contentOffset;
+    currentOffset.y = currentOffset.y + yInset;
+    [self.tableView setContentOffset:currentOffset animated:YES];
+}
 
 - (void)keyboardWillHide:(NSNotification*)notification
 {
@@ -242,10 +351,11 @@
     newFrame.origin.y -= keyboardFrame.size.height * -1;
     bgView.frame = newFrame;
     
-    self.tableView.frame = CGRectMake(0,0, self.tableView.frame.size.width, self.tableView.frame.size.height);
+    //self.tableView.frame = CGRectMake(0,0, self.tableView.frame.size.width, self.tableView.frame.size.height);
     
     [UIView commitAnimations];
     
+    [self adjustChatviewOnKeyboardEvent:-keyboardFrame.size.height];
 }
 
 
@@ -303,31 +413,31 @@
             imageToUse = originalImage;
         }
         
-        NSUInteger imgSize  = CGImageGetHeight(imageToUse.CGImage) * CGImageGetBytesPerRow(imageToUse.CGImage);
         
-        Message * msg = [[Message alloc] init];
-        msg.mesRoute = MESSAGEROUTE_API;
-        msg.mesType = MESSAGETYPE_UPLOADIMAGE;
-        msg.ttl = TTL_NOW;
-         NSData *imgData = UIImageJPEGRepresentation(imageToUse, 0);
-        msg.params = [[NSMutableDictionary alloc] init];
-        [msg.params setObject:imageToUse forKey:@"image"];
-        [msg.params setObject:[NSNumber numberWithInteger:imgData.length] forKey:@"size"];
-        [[MessageDispatcher sharedInstance] addMessageToBus:msg];
         
-        [tableData addObject:imageToUse];
-        [self.tableView reloadData];
+        [[MessageDispatcher sharedInstance] uploadAsset:imageToUse withBlock:^(NSString *imageID) {
+            NSMutableDictionary * msgDic = [[NSMutableDictionary alloc] init];
+            [msgDic setObject:imageID forKey:@"imageid"];
+            [msgDic setObject:[person objectAtIndex:CASE_NUMBER] forKey:@"caseid"];
+            [msgDic setObject:[NSNumber  numberWithDouble:[[NSDate date] timeIntervalSince1970]] forKey:@"createdat"];
+            [msgDic setObject:[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"] forKey:@"submittedby"];
+            [tableData addObject:msgDic];
+            [self.tableView reloadData];
+            
+            Message * msg = [[Message alloc] init];
+            msg.mesRoute = MESSAGEROUTE_API;
+            msg.mesType = MESSAGETYPE_SENDMESSAGE;
+            msg.ttl = TTL_NOW;
+            msg.params = [[NSMutableDictionary alloc] init];
+            [msg.params setObject:imageID forKeyedSubscript:@"imageid"];
+            NSString * caseid = [self.person objectAtIndex:CASE_NUMBER];
+            [msg.params setObject:caseid forKey:@"caseid"];
+            [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+        }];
+        
+        
         NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:tableData.count-1 inSection:0];
         [self.tableView scrollToRowAtIndexPath:lastIndex atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-        
-        /*Message * msg = [[Message alloc] init];
-        msg.mesRoute = MESSAGEROUTE_API;
-        msg.mesType = MESSAGETYPE_SENDMESSAGE;
-        msg.ttl = TTL_NOW;
-        msg.params = [[NSMutableDictionary alloc] init];
-        [msg.params setObject:imageToUse forKeyedSubscript:@"image"];
-        [[MessageDispatcher sharedInstance] addMessageToBus:msg];*/
-        // Do something with imageToUse
     }
     
     // Handle a movied picked from a photo album
@@ -365,14 +475,21 @@
         cell.textLabel.textColor = [UIColor blackColor];
     }
     
-    id object = [tableData objectAtIndex:indexPath.row];
-    if([object isKindOfClass:[NSString class]]){
-        cell.textLabel.text = [tableData objectAtIndex:indexPath.row];
+    cell.tag = indexPath.row;
+    
+    NSMutableDictionary * message = [tableData objectAtIndex:indexPath.row];
+    if([[message objectForKey:@"message"] length] > 0) {
+        cell.textLabel.text = [message objectForKey:@"message"];
     }
-    else if([object isKindOfClass:[UIImage class]]){
-        UIImageView * image = [[UIImageView alloc] initWithFrame:CGRectMake(tableView.frame.size.width / 2 - 100, 5, 200, 200)];
-        image.image = (UIImage*)object;
-        [cell.contentView addSubview:image];
+    else if([[message objectForKey:@"imageid"] length] > 0) {
+        [[MessageDispatcher sharedInstance] fetchAssetForImageID:[message objectForKey:@"imageid"] withBlock:^(UIImage *assetimage) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (cell.tag == indexPath.row) {
+                    cell.imageView.image = assetimage;
+                    [cell setNeedsLayout];
+                }
+            });
+        }];
     }
 
     return cell;
@@ -381,16 +498,15 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    id object = [tableData objectAtIndex:indexPath.row];
-    if([object isKindOfClass:[NSString class]]){
-        NSString * text = [tableData objectAtIndex:indexPath.row];
+    NSMutableDictionary * message = [tableData objectAtIndex:indexPath.row];
+    if([[message objectForKey:@"message"] length] > 0) {
+        NSString * text = [message objectForKey:@"message"];
         CGSize s = [text sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14] constrainedToSize:CGSizeMake(tableView.frame.size.width, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
         return s.height + 10;
     }
-    else if([object isKindOfClass:[UIImage class]]){
+    else if([[message objectForKey:@"imageid"] length] > 0) {
         return 200.0 + 10;
     }
-    
     return 0.0;
 }
 /*

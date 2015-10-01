@@ -22,6 +22,8 @@
 
 static CommManager *sharedSampleSingletonDelegate = nil;
 
+@synthesize imagesDownloadQueue;
+
 
 + (CommManager *)sharedInstance {
     @synchronized(self) {
@@ -54,8 +56,7 @@ static CommManager *sharedSampleSingletonDelegate = nil;
 -(id)init
 {
     if (self = [super init]) {
-       
-    
+       self.imagesDownloadQueue = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -120,12 +121,70 @@ static CommManager *sharedSampleSingletonDelegate = nil;
         else{
             NSLog(@"Upload file error %@",task.error.description);
         }
-        if(theDelegate && [theDelegate respondsToSelector:@selector(uploadAssetFinishedWithResult:)]){
-            [theDelegate uploadAssetFinishedWithResult:task.error];
+        if(theDelegate && [theDelegate respondsToSelector:@selector(uploadAssetFinishedWithResult:forAssetName:)]){
+            [theDelegate uploadAssetFinishedWithResult:task.error forAssetName:assetName];
         }
         return nil;
     }];
 }
 
+-(void)downloadAssetFromS3WithName:(NSString*)name andSavingUrl:(NSURL*)savingUrl withDelegate:(id)theDelegate
+{
+    AWSS3TransferManagerDownloadRequest *downloadRequest = [AWSS3TransferManagerDownloadRequest new];
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    downloadRequest.bucket = S3_IMAGES_BUCKET;
+    downloadRequest.key = name;
+    downloadRequest.downloadingFileURL = savingUrl;
+    // Download the file.
+    
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    [params setObject:name forKeyedSubscript:@"assetName"];
+    [params setObject:downloadRequest.bucket forKeyedSubscript:@"bucket"];
+    
+    //Download the file
+    [[transferManager download:downloadRequest]continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask *task) {
+        if (task.error) {
+            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
+                switch (task.error.code) {
+                    case AWSS3TransferManagerErrorCancelled:
+                    case AWSS3TransferManagerErrorPaused:
+                        NSLog(@"Download paused or cancelled");
+                        if(theDelegate && [theDelegate respondsToSelector:@selector(downloadedAssetFinishedWithResult:savedUrl:assetName:)])
+                        {
+                            [theDelegate downloadedAssetFinishedWithResult:task.error savedUrl:savingUrl assetName:name];
+                        }
+                        break;
+                        
+                    default:
+                        NSLog(@"Error: %@", task.error);
+                        if(theDelegate && [theDelegate respondsToSelector:@selector(downloadedAssetFinishedWithResult:savedUrl:assetName:)])
+                        {
+                            [theDelegate downloadedAssetFinishedWithResult:task.error savedUrl:savingUrl assetName:name];
+                        }
+                        break;
+                }
+            }else{
+                //Unknown Error
+                NSLog(@"Error: %@", task.error);
+                if(theDelegate && [theDelegate respondsToSelector:@selector(downloadedAssetFinishedWithResult:savedUrl:assetName:)])
+                {
+                   [theDelegate downloadedAssetFinishedWithResult:task.error savedUrl:savingUrl assetName:name];
+                }
+                NSLog(@"Error: %@", task.error);
+            }
+        }
+        if (task.result) {
+            AWSS3TransferManagerDownloadOutput *downloadOutput = task.result;
+            NSLog(@"Downloaded file from S3: %@ Len: %ld",downloadOutput.body,downloadOutput.contentLength.longValue);
+            if(theDelegate && [theDelegate respondsToSelector:@selector(downloadedAssetFinishedWithResult:savedUrl:assetName:)])
+            {
+                [theDelegate downloadedAssetFinishedWithResult:task.error savedUrl:savingUrl assetName:name];
+            }
+        }
+        
+        return nil;
+    }];
+    
+}
 
 @end

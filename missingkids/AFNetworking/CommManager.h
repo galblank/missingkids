@@ -24,8 +24,10 @@
 @protocol CommunicationManagerDelegate <NSObject>
 @optional
 -(void)getApiFinished:(NSMutableDictionary*)response;
--(void)uploadAssetFinishedWithResult:(NSError*)error;
+-(void)uploadAssetFinishedWithResult:(NSError*)error forAssetName:(NSString*)name;
+-(void)downloadedAssetFinishedWithResult:(NSError*)error savedUrl:(NSURL*)url assetName:(NSString*)name;
 @end
+
 
 
 @interface CommManager : NSObject 
@@ -39,4 +41,7 @@
 -(void)postAPI:(NSString*)api andParams:(NSMutableDictionary*)params;
 -(void)getAPI:(NSString*)api andParams:(NSMutableDictionary*)params;
 -(void)uploadImage:(NSURL *)imageUrl andAssetName:(NSString*)assetName andAssetSize:(NSNumber*)assetSize withDelegate:(id)theDelegate;
+-(void)downloadAssetFromS3WithName:(NSString*)name andSavingUrl:(NSURL*)savingUrl withDelegate:(id)theDelegate;
+
+@property(nonatomic,retain)NSMutableDictionary *imagesDownloadQueue;
 @end

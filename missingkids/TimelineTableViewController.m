@@ -466,20 +466,31 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"chatcellid"];
     
+    NSMutableDictionary * message = [tableData objectAtIndex:indexPath.row];
+    
     if(cell == nil){
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"chatcellid"];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"chatcellid"];
         cell.layer.borderColor = [UIColor lightGrayColor].CGColor;
         cell.layer.borderWidth = 0.3;
         cell.backgroundColor = [UIColor whiteColor];
         cell.textLabel.numberOfLines = 0;
         cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
         cell.textLabel.textColor = [UIColor blackColor];
+        
+        NSNumber * createdat = [message objectForKey:@"createdat"];
+        NSDate * date = [NSDate dateWithTimeIntervalSince1970:(createdat.doubleValue / 1000)];
+        NSString *dateString = [NSDateFormatter localizedStringFromDate:date
+                                                              dateStyle:NSDateFormatterShortStyle
+                                                              timeStyle:NSDateFormatterShortStyle];
+        
+        cell.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
+        cell.detailTextLabel.text = dateString;
     }
     
     cell.tag = indexPath.row;
     cell.imageView.image = nil;
     cell.textLabel.text = @"";
-    NSMutableDictionary * message = [tableData objectAtIndex:indexPath.row];
+    
     if([[message objectForKey:@"message"] length] > 0) {
         cell.textLabel.text = [message objectForKey:@"message"];
     }
@@ -522,6 +533,8 @@
     textlabel.text = [NSString stringWithFormat:@"%@ %@\r\n%@",[person objectAtIndex:FIRST_NAME],[person objectAtIndex:LAST_NAME],[person objectAtIndex:CIRCUMSTANCE]];
     [textlabel sizeToFit];
     [header addSubview:textlabel];
+    
+    header.backgroundColor = THEME_WARNING_COLOR;
     return header;
 }
 

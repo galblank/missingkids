@@ -1355,6 +1355,7 @@
 		094A54E91BBC757B00B85C01 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 094A4FA71BBC757A00B85C01 /* README.md */; settings = {ASSET_TAGS = (); }; };
 		094A54EA1BBC757B00B85C01 /* README.html in Resources */ = {isa = PBXBuildFile; fileRef = 094A4FA91BBC757A00B85C01 /* README.html */; settings = {ASSET_TAGS = (); }; };
 		094A54EB1BBC757B00B85C01 /* README.html in Resources */ = {isa = PBXBuildFile; fileRef = 094A4FAB1BBC757A00B85C01 /* README.html */; settings = {ASSET_TAGS = (); }; };
+		094A55371BBF1D8900B85C01 /* ChatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 094A55361BBF1D8900B85C01 /* ChatTableViewCell.m */; settings = {ASSET_TAGS = (); }; };
 		095C4BA51BB46D3000749CD8 /* PersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BA41BB46D3000749CD8 /* PersonViewController.m */; settings = {ASSET_TAGS = (); }; };
 		095C4BA71BB49F4700749CD8 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 095C4BA61BB49F4700749CD8 /* Social.framework */; };
 		095C4BAA1BB5DBEA00749CD8 /* ABContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 095C4BA91BB5DBEA00749CD8 /* ABContactsViewController.m */; settings = {ASSET_TAGS = (); }; };
@@ -2801,6 +2802,8 @@
 		094A4FA91BBC757A00B85C01 /* README.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = README.html; sourceTree = "<group>"; };
 		094A4FAB1BBC757A00B85C01 /* README.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = README.html; sourceTree = "<group>"; };
 		094A54EC1BBC9CBC00B85C01 /* definitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = definitions.h; sourceTree = "<group>"; };
+		094A55351BBF1D8900B85C01 /* ChatTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatTableViewCell.h; sourceTree = "<group>"; };
+		094A55361BBF1D8900B85C01 /* ChatTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatTableViewCell.m; sourceTree = "<group>"; };
 		095C4BA31BB46D3000749CD8 /* PersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonViewController.h; sourceTree = "<group>"; };
 		095C4BA41BB46D3000749CD8 /* PersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonViewController.m; sourceTree = "<group>"; };
 		095C4BA61BB49F4700749CD8 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
@@ -4519,6 +4522,8 @@
 				0967472B1BBAC36E0048A7FA /* CallingCardView.m */,
 				094A3FC41BBC195B00B85C01 /* TimelineTableViewController.h */,
 				094A3FC51BBC195B00B85C01 /* TimelineTableViewController.m */,
+				094A55351BBF1D8900B85C01 /* ChatTableViewCell.h */,
+				094A55361BBF1D8900B85C01 /* ChatTableViewCell.m */,
 			);
 			path = missingkids;
 			sourceTree = "<group>";
@@ -6205,6 +6210,7 @@
 				09BF7B051BB3817900A48BEF /* InsetTextField.m in Sources */,
 				09BF7B491BB38C1200A48BEF /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				09BF7A971BB0830F00A48BEF /* AFHTTPRequestOperationManager.m in Sources */,
+				094A55371BBF1D8900B85C01 /* ChatTableViewCell.m in Sources */,
 				09BF7AB81BB0853000A48BEF /* UIImage+Resize.m in Sources */,
 				094A54E91BBC757B00B85C01 /* README.md in Sources */,
 				09BF7B4C1BB38C1200A48BEF /* UIImageView+AFNetworking.m in Sources */,

@@ -56,6 +56,7 @@
 
 -(void)loadmessagesfromDB
 {
+    [tableData removeAllObjects];
     NSString * query = [NSString stringWithFormat:@"select * from timeline where caseid = '%@' order by id desc",[person objectAtIndex:CASE_NUMBER]];
     NSMutableArray * array = [[DBManager sharedInstance] loadDataFromDB:query];
     for(NSMutableArray * onemsg in array){

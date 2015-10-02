@@ -55,7 +55,10 @@ MessageDispatcher *sharedInstance = nil;
             dispatchedMessages = [[NSMutableArray alloc] init];
         }
         
-        [NSTimer scheduledTimerWithTimeInterval:CLEANUP_TIMER target:self selector:@selector(clearDispastchedMessages) userInfo:nil repeats:YES];
+        
+             [NSTimer scheduledTimerWithTimeInterval:CLEANUP_TIMER target:self selector:@selector(clearDispastchedMessages) userInfo:nil repeats:YES];
+        
+       
     }
     return self;
 }
@@ -75,7 +78,9 @@ MessageDispatcher *sharedInstance = nil;
     else{
         NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
         [userInfo setObject:newmessage forKey:@"message"];
-        [NSTimer scheduledTimerWithTimeInterval:newmessage.ttl target:self selector:@selector(dispatchThisMessage:) userInfo:userInfo repeats:NO];
+        dispatch_async(dispatch_get_main_queue(), ^{
+        NSTimer * scheduled = [NSTimer scheduledTimerWithTimeInterval:newmessage.ttl target:self selector:@selector(dispatchThisMessage:) userInfo:userInfo repeats:NO];
+            });
     }
 }
 

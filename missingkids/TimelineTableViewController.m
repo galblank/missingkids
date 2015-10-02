@@ -111,22 +111,13 @@
         NSString * imageid = [onemessage objectForKey:@"imageid"];
         NSString * submittedby = [onemessage objectForKey:@"submittedby"];
         NSNumber * createdat = [onemessage objectForKey:@"createdat"];
-        
-        NSString * query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@'",createdat.doubleValue,submittedby];
-        if(message && message.length > 0){
-            query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@' and message = '%@'",createdat.doubleValue,submittedby,message];
-        }
-        else if(imageid && imageid.length > 0){
-            query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@' and imageid = '%@'",createdat.doubleValue,submittedby,imageid];
-
-        }
+        NSNumber * seedid = [onemessage objectForKey:@"seedid"];
+        NSString * query = [NSString stringWithFormat:@"select * from timeline where seedid = '%@'",seedid];
+       
         NSMutableArray * result = [[DBManager sharedInstance] loadDataFromDB:query];
-        if(result && result.count > 0){
-            //exists
-        }
-        else{
+        if(result == nil || result.count == 0){
             bHaveNewMessages = YES;
-            query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@')",nil,caseid,message,createdat.doubleValue,submittedby,imageid];
+            query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@','%@')",nil,caseid,message,createdat.doubleValue,submittedby,imageid,seedid];
             [[DBManager sharedInstance] executeQuery:query];
         }
     }
@@ -198,6 +189,8 @@
     msg.mesType = MESSAGETYPE_SENDMESSAGE;
     msg.ttl = TTL_NOW;
     msg.params = [[NSMutableDictionary alloc] init];
+    NSString * seedid = [NSString stringWithFormat:@"%@%f",[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],[[NSDate date] timeIntervalSince1970]];
+    [msg.params setObject:seedid forKeyedSubscript:@"seedid"];
     [msg.params setObject:textView.text forKeyedSubscript:@"message"];
     
     NSString * caseid = [self.person objectAtIndex:CASE_NUMBER];
@@ -430,12 +423,14 @@
             msg.mesType = MESSAGETYPE_SENDMESSAGE;
             msg.ttl = TTL_NOW;
             msg.params = [[NSMutableDictionary alloc] init];
+            NSString * seedid = [NSString stringWithFormat:@"%@%f",[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],[[NSDate date] timeIntervalSince1970]];
+            [msg.params setObject:seedid forKeyedSubscript:@"seedid"];
             [msg.params setObject:imageID forKeyedSubscript:@"imageid"];
             NSString * caseid = [self.person objectAtIndex:CASE_NUMBER];
             [msg.params setObject:caseid forKey:@"caseid"];
             [[MessageDispatcher sharedInstance] addMessageToBus:msg];
             
-            NSString * query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@')",nil,caseid,@"",[[NSDate date] timeIntervalSince1970],[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],imageID];
+            NSString * query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@','%@')",nil,caseid,@"",[[NSDate date] timeIntervalSince1970],[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],imageID,seedid];
             [[DBManager sharedInstance] executeQuery:query];
         }];
         

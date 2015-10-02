@@ -13,6 +13,7 @@
 #import "AppDelegate.h"
 #import "DBManager.h"
 #import "ImageResizer.h"
+#import "UIImageView+AFNetworking.h"
 
 @interface TimelineTableViewController ()
 
@@ -496,6 +497,38 @@
     return cell;
 }
 
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    NSString * images = [person objectAtIndex:IMAGE];
+    NSMutableArray *arrayOfImages = [[NSMutableArray alloc] init];
+    while (images.length > 0) {
+        NSString * oneimage = [images substringToIndex:2];
+        [arrayOfImages addObject:oneimage];
+        images = [images substringFromIndex:2];
+    }
+    NSString *imageurl = [arrayOfImages objectAtIndex:0];
+    UIView * header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100)];
+    UIImageView * personimage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 90, 90)];
+    NSString * buildFullPath = [NSString stringWithFormat:@"%@/%@%@%@.jpg",ROOT_IMAGES,[person objectAtIndex:ORG_PREFIX],[person objectAtIndex:CASE_NUMBER],imageurl];
+    
+    [personimage setImageWithURL:[NSURL URLWithString:buildFullPath] placeholderImage:[UIImage imageNamed:@"profile"]];
+    personimage.layer.cornerRadius = personimage.frame.size.height / 2;
+    personimage.layer.masksToBounds = YES;
+    [header addSubview:personimage];
+    
+    UILabel * textlabel = [[UILabel alloc] initWithFrame:CGRectMake(personimage.frame.size.width + 5, 5, tableView.frame.size.width - 10, header.frame.size.height)];
+    textlabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+    textlabel.textColor = [UIColor blackColor];
+    textlabel.text = [NSString stringWithFormat:@"%@ %@\r\n%@",[person objectAtIndex:FIRST_NAME],[person objectAtIndex:LAST_NAME],[person objectAtIndex:CIRCUMSTANCE]];
+    [textlabel sizeToFit];
+    [header addSubview:textlabel];
+    return header;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 100.0;
+}
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {

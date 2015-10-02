@@ -112,12 +112,12 @@
         NSString * submittedby = [onemessage objectForKey:@"submittedby"];
         NSNumber * createdat = [onemessage objectForKey:@"createdat"];
         
-        NSString * query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@'",createdat.floatValue,submittedby];
+        NSString * query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@'",createdat.doubleValue,submittedby];
         if(message && message.length > 0){
-            query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@' and message = '%@'",createdat.floatValue,submittedby,message];
+            query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@' and message = '%@'",createdat.doubleValue,submittedby,message];
         }
         else if(imageid && imageid.length > 0){
-            query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@' and imageid = '%@'",createdat.floatValue,submittedby,imageid];
+            query = [NSString stringWithFormat:@"select * from timeline where createdat = %f and submittedby = '%@' and imageid = '%@'",createdat.doubleValue,submittedby,imageid];
 
         }
         NSMutableArray * result = [[DBManager sharedInstance] loadDataFromDB:query];
@@ -434,6 +434,9 @@
             NSString * caseid = [self.person objectAtIndex:CASE_NUMBER];
             [msg.params setObject:caseid forKey:@"caseid"];
             [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+            
+            NSString * query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@')",nil,caseid,@"",[[NSDate date] timeIntervalSince1970],[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],imageID];
+            [[DBManager sharedInstance] executeQuery:query];
         }];
         
         
@@ -477,7 +480,8 @@
     }
     
     cell.tag = indexPath.row;
-    
+    cell.imageView.image = nil;
+    cell.textLabel.text = @"";
     NSMutableDictionary * message = [tableData objectAtIndex:indexPath.row];
     if([[message objectForKey:@"message"] length] > 0) {
         cell.textLabel.text = [message objectForKey:@"message"];

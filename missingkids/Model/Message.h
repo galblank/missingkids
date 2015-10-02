@@ -15,6 +15,6 @@
 @property(nonatomic)messageRoute mesRoute;
 @property(nonatomic)messageType mesType;
 @property(nonatomic,strong)id params;
-@property(nonatomic)int ttl;
+@property(nonatomic)float ttl;
 
 @end

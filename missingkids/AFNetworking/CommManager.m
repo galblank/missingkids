@@ -68,7 +68,7 @@ static CommManager *sharedSampleSingletonDelegate = nil;
     NSString *fullAPI = [NSString stringWithFormat:@"%@%@",ROOT_API,api];
     NSLog(@"GET: %@<>%@",fullAPI,params);
     [manager GET:fullAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        //NSLog(@"JSON: %@", responseObject);
+        NSLog(@"JSON: %@", responseObject);
         Message *msg = [[Message alloc] init];
         msg.mesRoute = MESSAGEROUTE_INTERNAL;
         msg.mesType = [[responseObject objectForKey:@"messageid"] intValue];

@@ -6,16 +6,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "missingkids/TimelineTableViewController.m"
-            timestampString = "465432477.510526"
+            filePath = "missingkids/MessageDispatcher.m"
+            timestampString = "465447344.482957"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "502"
-            endingLineNumber = "502"
-            landmarkName = "-tableView:heightForRowAtIndexPath:"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
+            landmarkName = "-addMessageToBus:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "missingkids/MessageDispatcher.m"
+            timestampString = "465447356.572714"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
+            landmarkName = "-dispatchThisMessage:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

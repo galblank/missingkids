@@ -32,12 +32,12 @@
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableView.backgroundColor = [UIColor whiteColor];
-    
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     [self addInputView];
-
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
     self.tableView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 40);
-    
+    [self.tableView setSeparatorInset:UIEdgeInsetsMake(0, 10, 0, 0)];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification object:nil];
@@ -59,7 +59,7 @@
 -(void)loadmessagesfromDB
 {
     [tableData removeAllObjects];
-    NSString * query = [NSString stringWithFormat:@"select * from timeline where caseid = '%@' order by id desc",[person objectAtIndex:CASE_NUMBER]];
+    NSString * query = [NSString stringWithFormat:@"select * from timeline where caseid = '%@' order by createdat desc",[person objectAtIndex:CASE_NUMBER]];
     NSMutableArray * array = [[DBManager sharedInstance] loadDataFromDB:query];
     for(NSMutableArray * onemsg in array){
         NSNumber * _id          = [onemsg objectAtIndex:COLUMN_ID];
@@ -178,10 +178,10 @@
     NSMutableDictionary * msgDic = [[NSMutableDictionary alloc] init];
     [msgDic setObject:textView.text forKey:@"message"];
     [msgDic setObject:[person objectAtIndex:CASE_NUMBER] forKey:@"caseid"];
-    [msgDic setObject:[NSNumber  numberWithDouble:[[NSDate date] timeIntervalSince1970]] forKey:@"createdat"];
+    [msgDic setObject:[NSNumber  numberWithDouble:([[NSDate date] timeIntervalSince1970] * 1000)] forKey:@"createdat"];
     [msgDic setObject:[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"] forKey:@"submittedby"];
     
-    [tableData addObject:msgDic];
+    [tableData insertObject:msgDic atIndex:0];
     [self.tableView reloadData];
     NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:tableData.count-1 inSection:0];
     [self.tableView scrollToRowAtIndexPath:lastIndex atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -199,6 +199,9 @@
     [msg.params setObject:caseid forKey:@"caseid"];
     [[MessageDispatcher sharedInstance] addMessageToBus:msg];
     textView.text = @"";
+    
+    NSString * query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@','%@')",nil,caseid,message,[[NSDate date] timeIntervalSince1970] * 1000,[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],@"",seedid];
+    [[DBManager sharedInstance] executeQuery:query];
 }
 
 -(void)chooseImage
@@ -255,8 +258,6 @@
     bgView.frame = newFrame;
     
     [self adjustChatviewOnKeyboardEvent:keyboardFrame.size.height];
-    //self.tableView.frame = CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y - keyboardFrame.size.height, self.tableView.frame.size.width, self.tableView.frame.size.height);
-    
     [UIView commitAnimations];
 }
 
@@ -417,7 +418,7 @@
             [msgDic setObject:[person objectAtIndex:CASE_NUMBER] forKey:@"caseid"];
             [msgDic setObject:[NSNumber  numberWithDouble:[[NSDate date] timeIntervalSince1970]] forKey:@"createdat"];
             [msgDic setObject:[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"] forKey:@"submittedby"];
-            [tableData addObject:msgDic];
+            [tableData insertObject:msgDic atIndex:0];
             [self.tableView reloadData];
             
             Message * msg = [[Message alloc] init];
@@ -477,19 +478,28 @@
         cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
         cell.textLabel.textColor = [UIColor blackColor];
         
-        NSNumber * createdat = [message objectForKey:@"createdat"];
-        NSDate * date = [NSDate dateWithTimeIntervalSince1970:(createdat.doubleValue / 1000)];
-        NSString *dateString = [NSDateFormatter localizedStringFromDate:date
-                                                              dateStyle:NSDateFormatterShortStyle
-                                                              timeStyle:NSDateFormatterShortStyle];
+        
         
         cell.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:10];
-        cell.detailTextLabel.text = dateString;
+        
     }
     
     cell.tag = indexPath.row;
     cell.imageView.image = nil;
     cell.textLabel.text = @"";
+    NSNumber * createdat = [message objectForKey:@"createdat"];
+    NSDate * date = [NSDate dateWithTimeIntervalSince1970:(createdat.doubleValue / 1000)];
+    NSString *dateString = [NSDateFormatter localizedStringFromDate:date
+                                                          dateStyle:NSDateFormatterShortStyle
+                                                          timeStyle:NSDateFormatterShortStyle];
+    
+    BOOL today = [[NSCalendar currentCalendar] isDateInToday:date];
+    if(today){
+        dateString = [NSDateFormatter localizedStringFromDate:date
+                                                    dateStyle:NSDateFormatterNoStyle
+                                                    timeStyle:NSDateFormatterShortStyle];
+    }
+    cell.detailTextLabel.text = dateString;
     
     if([[message objectForKey:@"message"] length] > 0) {
         cell.textLabel.text = [message objectForKey:@"message"];

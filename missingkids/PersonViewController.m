@@ -113,7 +113,7 @@
 
 -(void)showTimeline
 {
-    TimelineTableViewController * tl = [[TimelineTableViewController alloc] init];
+    TimelineTableViewController * tl = [[TimelineTableViewController alloc] initWithStyle:UITableViewStylePlain];
     tl.person = self.person;
     [self.navigationController pushViewController:tl animated:YES];
 }

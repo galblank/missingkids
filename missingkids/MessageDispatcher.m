@@ -303,7 +303,8 @@ MessageDispatcher *sharedInstance = nil;
 
 - (void)fetchAssetForImageID:(NSString*)imageID withBlock:(void (^)(UIImage* userimage))callbackBlock
 {
-    UIImage * image = [UIImage imageWithContentsOfFile:[self generatelocalpathforImageID:imageID]];
+    NSString * localpath = [self generatelocalpathforImageID:imageID];
+    UIImage * image = [UIImage imageWithContentsOfFile:localpath];
     if(image){
         callbackBlock(image);
         return;
@@ -322,7 +323,7 @@ MessageDispatcher *sharedInstance = nil;
     [arrayOfCurrentDownloads addObject:callbackBlock];
     [[CommManager sharedInstance].imagesDownloadQueue setObject:arrayOfCurrentDownloads forKey:imageID];
     
-    NSURL * savingURL = [NSURL fileURLWithPath:[self generatelocalpathforImageID:imageID]];
+    NSURL * savingURL = [NSURL fileURLWithPath:localpath];
     [[CommManager sharedInstance] downloadAssetFromS3WithName:imageID andSavingUrl:savingURL withDelegate:self];
 }
 

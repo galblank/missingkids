@@ -61,7 +61,7 @@
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(x, 0, scrollView.frame.size.width, scrollView.frame.size.height)];
         imageView.tag = i;
         imageView.contentMode = UIViewContentModeScaleAspectFit;
-      
+        imageView.backgroundColor = THEME_WARNING_COLOR;
         [imageView setImageWithURL:[NSURL URLWithString:buildFullPath] placeholderImage:[UIImage imageNamed:@"profile"]];
         float minimumScale = [scrollView frame].size.width  / [imageView frame].size.width;
         [scrollView setMinimumZoomScale:minimumScale];

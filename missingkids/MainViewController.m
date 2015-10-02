@@ -365,6 +365,9 @@
         }
         NSString * buildFullPath = [NSString stringWithFormat:@"%@/%@%@%@.jpg",ROOT_IMAGES,[person objectAtIndex:ORG_PREFIX],[person objectAtIndex:CASE_NUMBER],imagename];
         NSURL *url = [NSURL URLWithString:buildFullPath];
+        cell.imageview.layer.borderWidth = 2;
+        cell.imageview.layer.masksToBounds = YES;
+        cell.imageview.layer.borderColor = THEME_WARNING_COLOR.CGColor;
         [cell.imageview setImageWithURL:url placeholderImage:[UIImage imageNamed:@"profile"]];
     }
     else{

@@ -12,6 +12,7 @@
 #import "MessageDispatcher.h"
 #import "AppDelegate.h"
 #import "DBManager.h"
+#import "ImageResizer.h"
 
 @interface TimelineTableViewController ()
 

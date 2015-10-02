@@ -130,19 +130,16 @@ static CommManager *sharedSampleSingletonDelegate = nil;
 
 -(void)downloadAssetFromS3WithName:(NSString*)name andSavingUrl:(NSURL*)savingUrl withDelegate:(id)theDelegate
 {
-    AWSS3TransferManagerDownloadRequest *downloadRequest = [AWSS3TransferManagerDownloadRequest new];
+    
     AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    AWSS3TransferManagerDownloadRequest *downloadRequest = [AWSS3TransferManagerDownloadRequest new];
+    
     downloadRequest.bucket = S3_IMAGES_BUCKET;
     downloadRequest.key = name;
     downloadRequest.downloadingFileURL = savingUrl;
-    // Download the file.
-    
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    [params setObject:name forKeyedSubscript:@"assetName"];
-    [params setObject:downloadRequest.bucket forKeyedSubscript:@"bucket"];
     
     //Download the file
-    [[transferManager download:downloadRequest]continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask *task) {
+    [[transferManager download:downloadRequest] continueWithBlock:^id(AWSTask *task) {
         if (task.error) {
             if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
                 switch (task.error.code) {
@@ -168,7 +165,7 @@ static CommManager *sharedSampleSingletonDelegate = nil;
                 NSLog(@"Error: %@", task.error);
                 if(theDelegate && [theDelegate respondsToSelector:@selector(downloadedAssetFinishedWithResult:savedUrl:assetName:)])
                 {
-                   [theDelegate downloadedAssetFinishedWithResult:task.error savedUrl:savingUrl assetName:name];
+                    [theDelegate downloadedAssetFinishedWithResult:task.error savedUrl:savingUrl assetName:name];
                 }
                 NSLog(@"Error: %@", task.error);
             }

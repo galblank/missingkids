@@ -19,6 +19,7 @@
     
     UIEdgeInsets originalChatViewEdgeInsets;
     UIEdgeInsets originalChatViewScrollIndicatorInsets;
+    UIActivityIndicatorView * actView;
 }
 
 @property(nonatomic,strong)NSMutableArray * person;

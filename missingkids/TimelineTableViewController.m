@@ -81,6 +81,15 @@
 
 -(void)fetchMessagesFromServer
 {
+    if(tableData.count == 0){
+        if(actView == nil){
+            actView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+            actView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+        }
+        [self.view addSubview:actView];
+        actView.center = self.view.center;
+        [actView startAnimating];
+    }
     Message *msg = [[Message alloc] init];
     msg.mesRoute = MESSAGEROUTE_API;
     msg.mesType = MESSAGETYPE_GET_ALL_MESSAGESFORCASE;
@@ -104,6 +113,7 @@
 }
 -(void)messagesFromServer:(NSNotification*)notify
 {
+    [actView stopAnimating];
     Message * msg = [notify.userInfo objectForKey:@"message"];
     NSMutableArray * messagesfromserver = (NSMutableArray *)(msg.params);
     BOOL bHaveNewMessages = NO;

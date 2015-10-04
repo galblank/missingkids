@@ -19,8 +19,6 @@
 
 #define THEME_COLOR_DISABLED [UIColor colorWithRed:105.0 / 255.0 green:217.0 / 255.0 blue:255.0 / 255.0 alpha:1.0]
 
-#define AWSAccessKeyId   @"AKIAIRA3Y62O5JJ5HN6A"
-#define AWSSecretKey     @"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"
 #define AwsBucketUrl     @"http://s3.amazonaws.com"
 
 

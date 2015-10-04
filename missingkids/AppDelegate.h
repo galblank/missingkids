@@ -33,7 +33,7 @@
     BOOL bShouldUpdateLocation;
 }
 @property (strong, nonatomic) UIWindow *window;
-
+@property (strong, nonatomic) NSString *gotoCaseID;
 + (AppDelegate*)shared;
 
 

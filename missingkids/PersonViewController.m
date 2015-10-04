@@ -11,6 +11,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "MessageDispatcher.h"
 #import "TimelineTableViewController.h"
+#import "StringHelper.h"
 
 @interface PersonViewController ()
 
@@ -162,7 +163,7 @@
         cell.textLabel.text = [NSString stringWithFormat:@"Went missing on %@ from %@ %@",strDate,[person objectAtIndex:MISSING_CITY],[person objectAtIndex:MISSING_COUNTRY]];
     }
     else if(indexPath.row == 1){
-        cell.textLabel.text = [person objectAtIndex:CIRCUMSTANCE];
+        cell.textLabel.text = [[person objectAtIndex:CIRCUMSTANCE] urlDecode];
     }
     
     return cell;

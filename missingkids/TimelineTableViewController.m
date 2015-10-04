@@ -68,6 +68,7 @@
         NSNumber * createdat    = [onemsg objectAtIndex:COLUMN_CREATEDAT];
         NSString * submittedby  = [onemsg objectAtIndex:COLUMN_SUBMITTEDBY];
         NSString * imageid      = [onemsg objectAtIndex:COLUMN_IMAGEID];
+        NSString * seedid      = [onemsg objectAtIndex:COLUMN_SEEDID];
         NSMutableDictionary * dicmessage = [[NSMutableDictionary alloc] init];
         [dicmessage setObject:_id forKey:@"id"];
         [dicmessage setObject:caseid forKey:@"caseid"];
@@ -75,6 +76,7 @@
         [dicmessage setObject:createdat forKey:@"createdat"];
         [dicmessage setObject:submittedby forKey:@"submittedby"];
         [dicmessage setObject:imageid forKey:@"imageid"];
+        [dicmessage setObject:seedid forKey:@"seedid"];
         [tableData addObject:dicmessage];
     }
 }
@@ -97,8 +99,8 @@
     msg.params = [[NSMutableDictionary alloc] init];
     [msg.params setObject:[person objectAtIndex:CASE_NUMBER] forKey:@"caseid"];
     if(tableData && tableData.count > 0){
-        NSMutableDictionary * lastmessage = [tableData lastObject];
-        [msg.params setObject:[lastmessage objectForKey:@"id"] forKey:@"lastmessageid"];
+        NSMutableDictionary * lastmessage = [tableData firstObject];
+        [msg.params setObject:[lastmessage objectForKey:@"seedid"] forKey:@"lastmessageid"];
     }
     [[MessageDispatcher sharedInstance] addMessageToBus:msg];
 }
@@ -124,12 +126,12 @@
         NSString * submittedby = [onemessage objectForKey:@"submittedby"];
         NSNumber * createdat = [onemessage objectForKey:@"createdat"];
         NSNumber * seedid = [onemessage objectForKey:@"seedid"];
-        NSString * query = [NSString stringWithFormat:@"select * from timeline where seedid = '%@'",seedid];
+        NSString * query = [NSString stringWithFormat:@"select * from timeline where seedid = %f",seedid.doubleValue];
        
         NSMutableArray * result = [[DBManager sharedInstance] loadDataFromDB:query];
         if(result == nil || result.count == 0){
             bHaveNewMessages = YES;
-            query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@','%@')",nil,caseid,message,createdat.doubleValue,submittedby,imageid,seedid];
+            query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@',%f)",nil,caseid,message,createdat.doubleValue,submittedby,imageid,seedid.doubleValue];
             [[DBManager sharedInstance] executeQuery:query];
         }
     }
@@ -201,8 +203,8 @@
     msg.mesType = MESSAGETYPE_SENDMESSAGE;
     msg.ttl = TTL_NOW;
     msg.params = [[NSMutableDictionary alloc] init];
-    NSString * seedid = [NSString stringWithFormat:@"%@%f",[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],[[NSDate date] timeIntervalSince1970]];
-    [msg.params setObject:seedid forKeyedSubscript:@"seedid"];
+    double seedid = [[NSDate date] timeIntervalSince1970] * 1000;
+    [msg.params setObject:[NSNumber numberWithDouble:seedid] forKeyedSubscript:@"seedid"];
     [msg.params setObject:textView.text forKeyedSubscript:@"message"];
     
     NSString * caseid = [self.person objectAtIndex:CASE_NUMBER];
@@ -210,7 +212,7 @@
     [[MessageDispatcher sharedInstance] addMessageToBus:msg];
     textView.text = @"";
     
-    NSString * query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@','%@')",nil,caseid,message,[[NSDate date] timeIntervalSince1970] * 1000,[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],@"",seedid];
+    NSString * query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@',%f)",nil,caseid,message,[[NSDate date] timeIntervalSince1970] * 1000,[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],@"",seedid];
     [[DBManager sharedInstance] executeQuery:query];
 }
 
@@ -436,14 +438,15 @@
             msg.mesType = MESSAGETYPE_SENDMESSAGE;
             msg.ttl = TTL_NOW;
             msg.params = [[NSMutableDictionary alloc] init];
-            NSString * seedid = [NSString stringWithFormat:@"%@%f",[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],[[NSDate date] timeIntervalSince1970]];
-            [msg.params setObject:seedid forKeyedSubscript:@"seedid"];
+            double seedid = [[NSDate date] timeIntervalSince1970] * 1000;
+            
+            [msg.params setObject:[NSNumber numberWithDouble:seedid] forKeyedSubscript:@"seedid"];
             [msg.params setObject:imageID forKeyedSubscript:@"imageid"];
             NSString * caseid = [self.person objectAtIndex:CASE_NUMBER];
             [msg.params setObject:caseid forKey:@"caseid"];
             [[MessageDispatcher sharedInstance] addMessageToBus:msg];
             
-            NSString * query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@','%@')",nil,caseid,@"",[[NSDate date] timeIntervalSince1970],[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],imageID,seedid];
+            NSString * query = [NSString stringWithFormat:@"insert into timeline values(%@,'%@','%@',%f,'%@','%@',%f)",nil,caseid,@"",[[NSDate date] timeIntervalSince1970],[[NSUserDefaults standardUserDefaults] objectForKey:@"securitytoken"],imageID,seedid];
             [[DBManager sharedInstance] executeQuery:query];
         }];
         

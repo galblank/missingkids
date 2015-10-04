@@ -21,6 +21,7 @@
 #import <AWSCognito/AWSCognito.h>
 #import <AWSS3/AWSS3.h>
 
+
 @interface AppDelegate ()
 
 @end
@@ -85,7 +86,6 @@ AppDelegate *shared = nil;
     [self.window makeKeyAndVisible];
     
     
-    
     UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
     
     UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
@@ -132,6 +132,7 @@ AppDelegate *shared = nil;
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    application.applicationIconBadgeNumber = 0;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -145,6 +146,23 @@ AppDelegate *shared = nil;
 
 //////////////////////////DELEGATE FUNCTiONS/////////////////////////////////
 // Delegation methods
+-(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    application.applicationIconBadgeNumber = 0;
+    //self.textView.text = [userInfo description];
+    // We can determine whether an application is launched as a result of the user tapping the action
+    // button or whether the notification was delivered to the already-running application by examining
+    // the application state.
+    [self parsePushNotifications:userInfo];
+    /*if (application.applicationState == UIApplicationStateActive)
+    {
+        // Nothing to do if applicationState is Inactive, the iOS already displayed an alert view.
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Did receive a Remote Notification" message:[NSString stringWithFormat:@"Your App name received this notification while it was running:\n%@",[[userInfo objectForKey:@"aps"] objectForKey:@"alert"]]delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        
+        [alertView show];
+    }  */
+}
+
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     const unsigned *tokenBytes = [deviceToken bytes];
     NSString *hexToken = [NSString stringWithFormat:@"%08x%08x%08x%08x%08x%08x%08x%08x",
@@ -768,7 +786,16 @@ AppDelegate *shared = nil;
 {
     NSLog(@"[AppDelegate] -parsePushNotifications- push: %@", push);
     
-    NSNumber *type = [push objectForKey:@"type"];
+    NSString *caseid = [push objectForKey:@"caseid"];
+    if(caseid){
+        Message * msg = [[Message alloc] init];
+        msg.mesRoute = MESSAGEROUTE_INTERNAL;
+        msg.mesType = MESSAGETYPE_GOTOTIMELINE;
+        msg.params = [[NSMutableDictionary alloc] init];
+        [msg.params setObject:caseid forKey:@"caseid"];
+        msg.ttl = DEFAULT_TTL;
+        [[MessageDispatcher sharedInstance] addMessageToBus:msg];
+    }
 }
 
 - (UIViewController*)topViewController {

@@ -13,7 +13,8 @@
 #import "AppDelegate.h"
 #import "UIImageView+AFNetworking.h"
 #import "PersonViewController.h"
-
+#import "TimelineTableViewController.h"
+#import "StringHelper.h"
 
 @interface MainViewController ()
 
@@ -115,7 +116,21 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applyFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_APPLY_FILTER] object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearFilter) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_CLEAR_FILTER] object:nil];
     
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showTimeLine:) name:[[MessageDispatcher sharedInstance] messageTypeToString:MESSAGETYPE_GOTOTIMELINE] object:nil];
+
+}
+
+-(void)showTimeLine:(NSNotification*)notify
+{
+    Message * msg = [notify.userInfo objectForKey:@"message"];
+    NSString * caseid = [msg.params objectForKey:@"caseid"];
+    TimelineTableViewController * timeline = [[TimelineTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    NSString * query = [NSString stringWithFormat:@"select * from person where caseNumber = '%@'",caseid];
+    NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:query];
+    if(results && results.count > 0){
+        timeline.person = [results firstObject];
+        [self.navigationController pushViewController:timeline animated:YES];
+    }
 }
 
 -(void)clearFilter
@@ -319,13 +334,47 @@
                 //NSLog(@"person exist");
             }
             else{
+                NSString * fName = [person objectForKey:@"firstname"];
+                NSString * mName = [person objectForKey:@"middlename"];
+                NSString * lName = [person objectForKey:@"lastname"];
+                NSNumber * age = [person objectForKey:@"age"];
+                NSString * sex = [person objectForKey:@"sex"];
+                NSString * race = [person objectForKey:@"race"];
+                NSString * agenow = [person objectForKey:@"agenow"];
+                NSString * image = [person objectForKey:@"image"];
+                NSNumber * birthDate = [person objectForKey:@"birthDate"];
+                NSString * caseNumber = [person objectForKey:@"caseNumber"];
+                NSString * caseType = [person objectForKey:@"caseType"];
+                NSString * circumstance = [person objectForKey:@"circumstance"];
+                NSString * eyeColor = [person objectForKey:@"eyeColor"];
+                NSString * hairColor = [person objectForKey:@"hairColor"];
+                NSNumber * height = [person objectForKey:@"height"];
+                NSNumber * weight = [person objectForKey:@"weight"];
+                
+                 NSString * missingCity = [person objectForKey:@"missingCity"];
+                 NSString * missingCountry = [person objectForKey:@"missingCountry"];
+                 NSString * missingCounty = [person objectForKey:@"missingCounty"];
+                 NSString * missingProvince = [person objectForKey:@"missingProvince"];
+                 NSString * missingState = [person objectForKey:@"missingState"];
+                 NSNumber * missingDate = [person objectForKey:@"missingDate"];
+                 NSString * orgContactInfo = [person objectForKey:@"orgContactInfo"];
+                 NSString * orgLogo = [person objectForKey:@"orgLogo"];
+                 NSString * orgName = [person objectForKey:@"orgName"];
+                 NSString * orgPrefix = [person objectForKey:@"orgPrefix"];
+                
+                NSString * query = [NSString stringWithFormat:@"insert into person values(%@,'%@','%@','%@',%d,'%@','%@','%@','%@',%f,'%@','%@','%@','%@','%@',%d,%d,'%@','%@','%@','%@','%@',%f,'%@','%@','%@','%@',%f)",nil,[fName urlEncode] ,[mName urlEncode],[lName urlEncode],age.intValue,sex,race,agenow,image,birthDate.doubleValue,caseNumber,caseType,[circumstance urlEncode],eyeColor,hairColor,height.intValue,weight.intValue,missingCity,missingCountry,missingCounty,missingProvince,missingState,missingDate.doubleValue,[orgContactInfo urlEncode],orgLogo,[orgName urlEncode],orgPrefix,0.0];
+                NSLog(@"%@",query);
+                [[DBManager sharedInstance] executeQuery:query];
                 bFoundNew = YES;
             }
         }
         
         if(bFoundNew){
-            collectionData = msg.params;
-            [maincollectionView reloadData];
+            NSMutableArray * results = [[DBManager sharedInstance] loadDataFromDB:@"select * from person order by missingDate desc"];
+            if(results){
+                collectionData = results;
+                [maincollectionView reloadData];
+            }
         }
     });
     

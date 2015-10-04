@@ -24,8 +24,8 @@
 #define AwsBucketUrl     @"http://s3.amazonaws.com"
 
 
-#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
-//#define ROOT_API    @"http://localhost:8080/amberalertapi/"
+//#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
+#define ROOT_API    @"http://localhost:8080/amberalertapi/"
 
 typedef enum {
     FIRST_NAME = 1,
@@ -64,7 +64,8 @@ typedef enum{
     COLUMN_MESSAGE,
     COLUMN_CREATEDAT,
     COLUMN_SUBMITTEDBY,
-    COLUMN_IMAGEID
+    COLUMN_IMAGEID,
+    COLUMN_SEEDID
 }MESSAGES_TABLE_COLUMNS;
 
 
@@ -117,7 +118,8 @@ typedef enum{
     MESSAGETYPE_SENDMESSAGE_RESPONSE = 1024,
     MESSAGETYPE_GET_ALL_MESSAGESFORCASE = 1025,
     MESSAGETYPE_GET_ALL_MESSAGESFORCASE_RESPONSE = 1026,
-    MESSAGETYPE_DOWNLOAD_ASSET = 1027
+    MESSAGETYPE_DOWNLOAD_ASSET = 1027,
+    MESSAGETYPE_GOTOTIMELINE = 1028
 }messageType;
 
 typedef enum {

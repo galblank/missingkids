@@ -213,6 +213,9 @@ MessageDispatcher *sharedInstance = nil;
         case MESSAGETYPE_DOWNLOAD_ASSET:
             retMessage = @"MESSAGETYPE_DOWNLOAD_ASSET";
             break;
+        case MESSAGETYPE_GOTOTIMELINE:
+            retMessage = @"MESSAGETYPE_GOTOTIMELINE";
+            break;
         default:
             break;
     }

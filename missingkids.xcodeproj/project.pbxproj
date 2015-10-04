@@ -6316,8 +6316,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Gal Blank (XA52GGMKVQ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Gal Blank (XA52GGMKVQ)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Gal Blank (K23K6M63X8)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gal Blank (K23K6M63X8)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -6339,7 +6339,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "0582a767-d428-463a-8257-8cb80fe685c3";
+				PROVISIONING_PROFILE = "ba07692a-fa3a-44a2-857c-c79d6a8f0490";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -6362,8 +6362,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Gal Blank (XA52GGMKVQ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Gal Blank (XA52GGMKVQ)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Gal Blank (K23K6M63X8)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gal Blank (K23K6M63X8)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -6378,7 +6378,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "0582a767-d428-463a-8257-8cb80fe685c3";
+				PROVISIONING_PROFILE = "ba07692a-fa3a-44a2-857c-c79d6a8f0490";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -6389,8 +6389,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Gal Blank (XA52GGMKVQ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Gal Blank (XA52GGMKVQ)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Gal Blank (K23K6M63X8)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gal Blank (K23K6M63X8)";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6403,7 +6403,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.galblank.amberalert;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0582a767-d428-463a-8257-8cb80fe685c3";
+				PROVISIONING_PROFILE = "ba07692a-fa3a-44a2-857c-c79d6a8f0490";
 			};
 			name = Debug;
 		};
@@ -6411,8 +6411,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Gal Blank (XA52GGMKVQ)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Gal Blank (XA52GGMKVQ)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Gal Blank (K23K6M63X8)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Gal Blank (K23K6M63X8)";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6425,7 +6425,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.galblank.amberalert;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0582a767-d428-463a-8257-8cb80fe685c3";
+				PROVISIONING_PROFILE = "ba07692a-fa3a-44a2-857c-c79d6a8f0490";
 			};
 			name = Release;
 		};

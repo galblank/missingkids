@@ -24,8 +24,8 @@
 #define AwsBucketUrl     @"http://s3.amazonaws.com"
 
 
-//#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
-#define ROOT_API    @"http://localhost:8080/amberalertapi/"
+#define ROOT_API @"http://galblank.com:8080/amberalertapi/"
+//#define ROOT_API    @"http://localhost:8080/amberalertapi/"
 
 typedef enum {
     FIRST_NAME = 1,

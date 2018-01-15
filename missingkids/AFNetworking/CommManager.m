@@ -16,7 +16,7 @@
 #import <AWSSQS/AWSSQS.h>
 #import <AWSSNS/AWSSNS.h>
 #import <AWSCognito/AWSCognito.h>
-#import <AWSS3/AWSS3TransferUtility.h>*
+#import <AWSS3/AWSS3TransferUtility.h>
 @implementation CommManager
 
 

@@ -1,0 +1,90 @@
+PODS:
+  - Alamofire (4.6.0)
+  - AlamofireImage (3.3.0):
+    - Alamofire (~> 4.5)
+  - CircleMenu (2.0.5)
+  - Crashlytics (3.9.3):
+    - Fabric (~> 1.7.2)
+  - eventbussdk (0.1.3)
+  - expanding-collection (1.0.4)
+  - Fabric (1.7.2)
+  - FaceAware (1.2.0)
+  - Firebase/Core (4.8.0):
+    - FirebaseAnalytics (= 4.0.5)
+    - FirebaseCore (= 4.0.13)
+  - FirebaseAnalytics (4.0.5):
+    - FirebaseCore (~> 4.0)
+    - FirebaseInstanceID (~> 2.0)
+    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+    - nanopb (~> 0.3)
+  - FirebaseCore (4.0.13):
+    - GoogleToolboxForMac/NSData+zlib (~> 2.1)
+  - FirebaseInstanceID (2.0.8):
+    - FirebaseCore (~> 4.0)
+  - GoogleToolboxForMac/Defines (2.1.3)
+  - GoogleToolboxForMac/NSData+zlib (2.1.3):
+    - GoogleToolboxForMac/Defines (= 2.1.3)
+  - nanopb (0.3.8):
+    - nanopb/decode (= 0.3.8)
+    - nanopb/encode (= 0.3.8)
+  - nanopb/decode (0.3.8)
+  - nanopb/encode (0.3.8)
+  - pop (1.0.10)
+  - SCLAlertView (0.7.0)
+  - Spring (1.0.3)
+  - SwiftLint (0.24.0)
+  - SwiftMessages (4.1.0)
+  - SwiftyJSON (4.0.0)
+
+DEPENDENCIES:
+  - Alamofire
+  - AlamofireImage (~> 3.1)
+  - CircleMenu (~> 2.0.1)
+  - Crashlytics (~> 3.9)
+  - eventbussdk
+  - expanding-collection (~> 1.0.3)
+  - Fabric
+  - FaceAware
+  - Firebase/Core
+  - pop (~> 1.0)
+  - SCLAlertView
+  - Spring (from `https://github.com/MengTo/Spring.git`, branch `swift3`)
+  - SwiftLint
+  - SwiftMessages
+  - SwiftyJSON
+
+EXTERNAL SOURCES:
+  Spring:
+    :branch: swift3
+    :git: https://github.com/MengTo/Spring.git
+
+CHECKOUT OPTIONS:
+  Spring:
+    :commit: 8201b5c93bd7ebdf4cd18160bcde1e6e88c2be64
+    :git: https://github.com/MengTo/Spring.git
+
+SPEC CHECKSUMS:
+  Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
+  AlamofireImage: 2e784dc5d00f04903a52c1d169181469c805c3df
+  CircleMenu: 7cef16b4401de5b545e5f06d720cb202ec64800d
+  Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
+  eventbussdk: c4077882ae90312849e51fffedc4f407b3cf2d91
+  expanding-collection: be78b5822d7382d3da02b52d52273f4661567a64
+  Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
+  FaceAware: 421436f9d16aacdb26ffcf8e5a39a1dd68630395
+  Firebase: 710decbbc6d9d48530e9a5dba3209740c3532e05
+  FirebaseAnalytics: 5b02a63ead2c3f0259cfc7f15e053e440587ecf8
+  FirebaseCore: 3c02ec652db3d03fdc8bc6d9154af3e20d64b6f5
+  FirebaseInstanceID: 81df5805a08001e69138664bdd02c6719a9ac80f
+  GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
+  nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  pop: 82ca6b068ce9278fd350fd9dd09482a0ce9492e6
+  SCLAlertView: 8a14ffc40590c619e183eed2298b854385f30be1
+  Spring: 3f02b5dc3308572ef177b3cad0fa7bbc4b0706f7
+  SwiftLint: a014c92b4664e8b13f380f8640a51bb1733778ba
+  SwiftMessages: 1bacc783c8f10bdfdc57c14860cae8a1f1fa6591
+  SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
+
+PODFILE CHECKSUM: 60aaaf38cccc80e48111de64a3131a910aace40b
+
+COCOAPODS: 1.3.1
